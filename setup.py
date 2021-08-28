@@ -3,7 +3,7 @@ from setuptools import find_packages, setup  # type: ignore
 setup(
     name='gppt',
     version="0.4",
-    description='',
+    description='Get your Pixiv token (for running upbit/pixivpy)',
     description_content_type='',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',

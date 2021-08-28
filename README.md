@@ -2,7 +2,7 @@
 
 ![PyPI](https://img.shields.io/pypi/v/gppt?color=blue) [![Maintainability]](https://codeclimate.com/github/eggplants/get-pixiv-token/maintainability)
 
-- Get your Pixiv token (for running in pixivpy)
+- Get your Pixiv token (for running [upbit/pixivpy](https://github.com/upbit/pixivpy))
 - Refine [pixiv_auth.py](https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362)
 
 ## Install

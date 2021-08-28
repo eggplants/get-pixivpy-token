@@ -87,7 +87,7 @@ optional arguments:
 ```
 
 ```bash
-❭ gppt login -h
+❭ gppt l -h
 usage: gppt l [-h] [-u USERNAME] [-p PASSWORD]
 
 optional arguments:

@@ -2,7 +2,7 @@ from setuptools import find_packages, setup  # type: ignore
 
 setup(
     name='gppt',
-    version="0.2",
+    version="0.3",
     description='',
     description_content_type='',
     long_description=open('README.md').read(),

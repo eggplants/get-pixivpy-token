@@ -20,7 +20,42 @@
 ❭ ./setup.sh
 ```
 
-- Then
+### From Library
+
+```python
+from gppt import selenium as s
+gpt = s.GetPixivToken(headless=True, user="...", pass_="...")
+res = gpt.login()
+```
+
+- `res.response` returns
+
+```json
+{
+    "access_token":"***",
+    "expires_in":3600,
+    "refresh_token":"***",
+    "scope":"",
+    "token_type":"bearer",
+    "user":{
+        "account":"***",
+        "id":"***",
+        "is_mail_authorized":"bool",
+        "is_premium":"bool",
+        "mail_address":"***@***",
+        "name":"***",
+        "profile_image_urls":{
+            "px_16x16":"https://s.pximg.net/common/images/no_profile_ss.png",
+            "px_170x170":"https://s.pximg.net/common/images/no_profile.png",
+            "px_50x50":"https://s.pximg.net/common/images/no_profile_s.png"
+        },
+        "require_policy_agreement":"bool",
+        "x_restrict":2
+    }
+}
+```
+
+### From CLI
 
 ```bash
 ❭ gppt login

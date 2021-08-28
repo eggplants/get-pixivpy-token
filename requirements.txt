@@ -1,0 +1,4 @@
+requests
+selenium
+types-requests
+types-selenium

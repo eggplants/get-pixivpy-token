@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.4](https://github.com/eggplants/get-pixivpy-token/releases/tag/v0.4) - 2021-08-28 21:08:50 ([compare](https://github.com/eggplants/get-pixivpy-token/compare/v0.3...v0.4))
+
+- [eaf5115fe0f10b6db6350fede5895aa8663be81f](https://github.com/eggplants/get-pixivpy-token/commit/eaf5115fe0f10b6db6350fede5895aa8663be81f)
+  - v0.4: update docs and add license
+- [83a03b302299a277fd35f1ca39b1c7b0c5d8d8a0](https://github.com/eggplants/get-pixivpy-token/commit/83a03b302299a277fd35f1ca39b1c7b0c5d8d8a0)
+  - add: source
+- [471916d5b661d7eb14b3ad82dfdb2b0273027ed4](https://github.com/eggplants/get-pixivpy-token/commit/471916d5b661d7eb14b3ad82dfdb2b0273027ed4)
+  - Update README.md
+- [61bcd42f651ead44d18ab7323b0d7087e4a11a80](https://github.com/eggplants/get-pixivpy-token/commit/61bcd42f651ead44d18ab7323b0d7087e4a11a80)
+  - add: License
+
 ## [v0.3](https://github.com/eggplants/get-pixivpy-token/releases/tag/v0.3) - 2021-08-28 20:41:35 ([compare](https://github.com/eggplants/get-pixivpy-token/compare/v0.2...v0.3))
 
 - [30462fca5b90da9d995fbe1f221369fc9f47cea1](https://github.com/eggplants/get-pixivpy-token/commit/30462fca5b90da9d995fbe1f221369fc9f47cea1)

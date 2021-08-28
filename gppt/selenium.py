@@ -45,37 +45,6 @@ class GetPixivToken(object):
         else:
             self.driver = webdriver.Chrome(desired_capabilities=caps)
 
-    @staticmethod
-    def __get_headless_option() -> webdriver.chrome.options.Options:
-        options = webdriver.ChromeOptions()
-        options.add_argument('--headless')
-        options.add_argument('--disable-gpu')
-        options.add_argument('--disable-extensions')
-        options.add_argument("--disable-infobars")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-browser-side-navigation")
-        options.add_argument('--proxy-server="direct://"')
-        options.add_argument('--proxy-bypass-list=*')
-        options.add_argument('--start-maximized')
-        options.add_argument('--user-agent=' + USER_AGENT)
-        options.add_experimental_option(
-            "excludeSwitches", ["enable-automation"])
-        options.add_experimental_option('useAutomationExtension', False)
-        return options
-
-    @staticmethod
-    def __parse_log(driver: webdriver.chrome.webdriver.WebDriver) -> str:
-        code = "(None)"
-        for row in driver.get_log('performance'):
-            message = json.loads(row.get("message", {})).get("message", {})
-            if message.get("method") == "Network.requestWillBeSent":
-                url = message.get("params", {}).get("documentURL")
-                if url[:8] == "pixiv://":
-                    _ = re.search(r'code=([^&]*)', url)
-                    return code if _ is None else _.groups()[0]
-        else:
-            return code
-
     def login(self) -> dict[str, str]:
 
         code_verifier, code_challenge = self.__oauth_pkce()
@@ -136,6 +105,24 @@ class GetPixivToken(object):
         return response.json()
 
     @staticmethod
+    def __get_headless_option() -> webdriver.chrome.options.Options:
+        options = webdriver.ChromeOptions()
+        options.add_argument('--headless')
+        options.add_argument('--disable-gpu')
+        options.add_argument('--disable-extensions')
+        options.add_argument("--disable-infobars")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-browser-side-navigation")
+        options.add_argument('--proxy-server="direct://"')
+        options.add_argument('--proxy-bypass-list=*')
+        options.add_argument('--start-maximized')
+        options.add_argument('--user-agent=' + USER_AGENT)
+        options.add_experimental_option(
+            "excludeSwitches", ["enable-automation"])
+        options.add_experimental_option('useAutomationExtension', False)
+        return options
+
+    @staticmethod
     def __oauth_pkce() -> tuple[str, str]:
         """Proof Key for Code Exchange by OAuth Public Clients (RFC7636)."""
         def __s256(data: bytes) -> str:
@@ -147,3 +134,20 @@ class GetPixivToken(object):
         code_challenge = __s256(code_verifier.encode("ascii"))
 
         return code_verifier, code_challenge
+
+    @staticmethod
+    def __parse_log(driver: webdriver.chrome.webdriver.WebDriver) -> str:
+        messages = [
+            json.loads(row.get("message", {})).get("message", {})
+            for row in driver.get_log('performance')
+        ]
+
+        code = "(None)"
+        for message in [_ for _ in messages
+                        if _.get("method") == "Network.requestWillBeSent"]:
+            url = message.get("params", {}).get("documentURL")
+            if url[:8] == "pixiv://":
+                _ = re.search(r'code=([^&]*)', url)
+                return code if _ is None else _.groups()[0]
+        else:
+            return code

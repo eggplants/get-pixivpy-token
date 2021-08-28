@@ -5,14 +5,20 @@ import re
 import time
 from base64 import urlsafe_b64encode
 from hashlib import sha256
+from random import uniform
 from secrets import token_urlsafe
-from typing import Any
+from time import sleep
+from typing import Any, Optional
 from urllib.parse import urlencode
 
 import requests
 
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 # Original: https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362
 
@@ -33,7 +39,11 @@ REQUESTS_KWARGS: dict[str, Any] = {
 
 
 class GetPixivToken(object):
-    def __init__(self, headless: bool = False) -> None:
+    def __init__(self, headless: bool,
+                 user: Optional[str] = None,
+                 pass_: Optional[str] = None) -> None:
+        self.headless, self.user, self. pass_ = headless, user, pass_
+
         caps = DesiredCapabilities.CHROME.copy()
         caps["goog:loggingPrefs"] = {
             "performance": "ALL"}  # enable performance logs
@@ -55,6 +65,12 @@ class GetPixivToken(object):
         }
 
         self.driver.get(f"{LOGIN_URL}?{urlencode(login_params)}")
+        WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.ID, "LoginComponent")))
+        self.__fill_login_form()
+
+        if self.headless:
+            self.__try_login()
 
         while self.driver.current_url[:40] != REDIRECT_URI:
             time.sleep(1)  # wait for login
@@ -103,6 +119,42 @@ class GetPixivToken(object):
             **REQUESTS_KWARGS
         )
         return response.json()
+
+    def __fill_login_form(self) -> None:
+        if self.user is not None:
+            el = self.driver.find_element_by_xpath(
+                "//div[@id='LoginComponent']//*/input[@type='text']")
+            self.__slow_type(el, self.user)
+
+        if self.pass_ is not None:
+            el = self.driver.find_element_by_xpath(
+                "//div[@id='LoginComponent']//*/input[@type='password']")
+            self.__slow_type(el, self.pass_)
+
+    @staticmethod
+    def __slow_type(elm: Any, text: str) -> None:
+        for character in text:
+            elm.send_keys(character)
+            sleep(uniform(0.3, 0.7))
+
+    def __try_login(self) -> None:
+        el = self.driver.find_element_by_xpath(
+            "//div[@id='LoginComponent']"
+            "//button[@class='signup-form__submit']")
+        el.send_keys(Keys.ENTER)
+
+        sleep(0.1)
+        WebDriverWait(self.driver, 10).until_not(
+            EC.presence_of_element_located((By.CLASS_NAME, "busy-container")))
+        sleep(0.1)
+        c = 0
+        while 10 > c and self.driver.current_url[:40] != REDIRECT_URI:
+            c += 1
+            sleep(1)
+        else:
+            if c == 10:
+                self.driver.close()
+                raise ValueError("Failed to login")
 
     @staticmethod
     def __get_headless_option() -> webdriver.chrome.options.Options:

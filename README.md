@@ -24,6 +24,9 @@
 
 ```bash
 ❭ gppt login
+[!]: The browser will start. Please login.
+(Log in to Pixiv from the login screen that starts up.)
+[+]: Success!
 access_token: ***
 refresh_token: ***
 expires_in: 3600
@@ -33,25 +36,47 @@ expires_in: 3600
 
 ```bash
 ❭ gppt -h
-usage: gppt [-h] {login,refresh} ...
+usage: gppt [-h] {login,l,login-headless,lh,refresh,r} ...
+
+Get your Pixiv token (for running upbit/pixivpy)
 
 positional arguments:
-  {login,refresh}
+  {login,l,login-headless,lh,refresh,r}
+    login (l)           retrieving auth token
+    login-headless (lh)
+                        `login` in headless mode
+    refresh (r)         refresh tokens
 
 optional arguments:
-  -h, --help       show this help message and exit
+  -h, --help            show this help message and exit
 ```
 
 ```bash
 ❭ gppt login -h
-usage: gppt login [-h]
+usage: gppt l [-h] [-u USERNAME] [-p PASSWORD]
 
 optional arguments:
-  -h, --help  show this help message and exit
+  -h, --help            show this help message and exit
+  -u USERNAME, --username USERNAME
+                        your E-mail address / pixiv ID
+  -p PASSWORD, --password PASSWORD
+                        your current pixiv password
 ```
 
 ```bash
-❭ gppt refresh -h
+❭ gppt lh -h
+usage: gppt login-headless [-h] -u USERNAME -p PASSWORD
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -u USERNAME, --username USERNAME
+                        your E-mail address / pixiv ID
+  -p PASSWORD, --password PASSWORD
+                        your current pixiv password
+```
+
+```bash
+❭ gppt r -h
 usage: gppt refresh [-h] refresh_token
 
 positional arguments:

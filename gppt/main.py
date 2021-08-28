@@ -20,9 +20,21 @@ def print_auth_token_response(res: dict[str, str]) -> None:
     print("expires_in:", res.get("expires_in", 0))
 
 
-def func_login(_: argparse.Namespace) -> None:
-    g = s.GetPixivToken()
+def func_login(ns: argparse.Namespace) -> None:
+    g = s.GetPixivToken(headless=False,
+                        user=ns.username,
+                        pass_=ns.password)
     print('[!]: The browser will start. Please login.', file=stderr)
+    res = g.login()
+    print('[+]: Success!', file=stderr)
+    print_auth_token_response(res)
+
+
+def func_loginh(ns: argparse.Namespace) -> None:
+    g = s.GetPixivToken(headless=True,
+                        user=ns.username,
+                        pass_=ns.password)
+    print('[!]: The browser will start.', file=stderr)
     res = g.login()
     print('[+]: Success!', file=stderr)
     print_auth_token_response(res)
@@ -37,7 +49,10 @@ def func_refresh(ns:  argparse.Namespace) -> None:
 
 
 def parse() -> argparse.Namespace:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        prog='gppt',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description='Get your Pixiv token (for running upbit/pixivpy)')
 
     def func_help(_:  argparse.Namespace) -> None:
         parser.print_usage()
@@ -45,10 +60,26 @@ def parse() -> argparse.Namespace:
 
     subparsers = parser.add_subparsers()
 
-    login_parser = subparsers.add_parser("login")
+    login_parser = subparsers.add_parser("login", aliases=["l"],
+                                         help="retrieving auth token")
+    login_parser.add_argument("-u", "--username", metavar="USERNAME", type=str,
+                              help="your E-mail address / pixiv ID")
+    login_parser.add_argument("-p", "--password", metavar="PASSWORD", type=str,
+                              help="your current pixiv password")
     login_parser.set_defaults(func=func_login)
 
-    refresh_parser = subparsers.add_parser("refresh")
+    loginh_parser = subparsers.add_parser("login-headless", aliases=["lh"],
+                                          help="`login` in headless mode")
+    loginh_parser.add_argument("-u", "--username", metavar="USERNAME",
+                               type=str, required=True,
+                               help="your E-mail address / pixiv ID")
+    loginh_parser.add_argument("-p", "--password", metavar="PASSWORD",
+                               type=str, required=True,
+                               help="your current pixiv password")
+    loginh_parser.set_defaults(func=func_loginh)
+
+    refresh_parser = subparsers.add_parser("refresh", aliases=["r"],
+                                           help="refresh tokens")
     refresh_parser.add_argument("refresh_token")
     refresh_parser.set_defaults(func=func_refresh)
 

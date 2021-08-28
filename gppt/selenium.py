@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# Original 1: https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362
+# Original 2: https://gist.github.com/upbit/6edda27cb1644e94183291109b8a5fde
+
 import json
 import re
 import time
@@ -19,8 +22,6 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-
-# Original: https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362
 
 # Latest app version can be found using GET /v1/application-info/android
 USER_AGENT = "PixivIOSApp/7.13.3 (iOS 14.6; iPhone13,2)"

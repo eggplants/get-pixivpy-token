@@ -40,8 +40,8 @@ res = gpt.login()
   "user": {
     "account": "***",
     "id": "***",
-    "is_mail_authorized": "bool",
-    "is_premium": "bool",
+    "is_mail_authorized": <bool>,
+    "is_premium": <bool>,
     "mail_address": "***@***",
     "name": "***",
     "profile_image_urls": {
@@ -49,7 +49,7 @@ res = gpt.login()
       "px_170x170": "https://s.pximg.net/common/images/no_profile.png",
       "px_50x50": "https://s.pximg.net/common/images/no_profile_s.png"
     },
-    "require_policy_agreement": "bool",
+    "require_policy_agreement": <bool>,
     "x_restrict": 2
   }
 }

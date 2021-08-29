@@ -40,7 +40,8 @@ REQUESTS_KWARGS: dict[str, Any] = {
 
 
 class GetPixivToken(object):
-    def __init__(self, headless: bool,
+    def __init__(self,
+                 headless: Optional[bool] = False,
                  user: Optional[str] = None,
                  pass_: Optional[str] = None) -> None:
         self.headless, self.user, self. pass_ = headless, user, pass_

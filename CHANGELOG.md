@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.5](https://github.com/eggplants/get-pixivpy-token/releases/tag/v0.5) - 2021-08-29 14:28:12 ([compare](https://github.com/eggplants/get-pixivpy-token/compare/origin/main, origin/HEAD...v0.5))
+
+- [b4fa365dd44d9a8288a61531cdc3c28a4e276881](https://github.com/eggplants/get-pixivpy-token/commit/b4fa365dd44d9a8288a61531cdc3c28a4e276881)
+  - v0.5: add json option
+
 ## [v0.4](https://github.com/eggplants/get-pixivpy-token/releases/tag/v0.4) - 2021-08-28 21:08:50 ([compare](https://github.com/eggplants/get-pixivpy-token/compare/v0.3...v0.4))
 
 - [eaf5115fe0f10b6db6350fede5895aa8663be81f](https://github.com/eggplants/get-pixivpy-token/commit/eaf5115fe0f10b6db6350fede5895aa8663be81f)

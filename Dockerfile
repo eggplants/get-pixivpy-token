@@ -9,7 +9,7 @@ RUN apt-get install -qq -y google-chrome-stable
 # install chromedriver
 RUN apt-get install -qq -y unzip
 RUN wget -q -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip
-RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
+RUN unzip -qq /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
 
 # set display port to avoid crash
 ENV DISPLAY=:99
@@ -19,4 +19,4 @@ RUN pip install -U -q pip
 
 # install selenium
 RUN pip install -q selenium gppt
-CMD ["gppt", "lh"]
+CMD gppt lh -u "${PIXIV_ID}" -p "${PIXIV_PASS}"

@@ -67,6 +67,30 @@ refresh_token: ***
 expires_in: 3600
 ```
 
+### From Docker
+
+- Pull my image from Docker Hub
+
+```bash
+❭ docker pull eggplanter/gppt
+```
+
+- Run
+
+```bash
+❭ docker run -it eggplanter/gppt -e PIXIV_ID=<id> -e PIXIV_PASS=<pw>
+```
+
+- with envfile, create `.env` and run.
+
+
+```bash
+# In .env
+# PIXIV_ID=<id>
+# PIXIV_PASS=<pw>
+❭ docker run -it eggplanter/gppt --env-file .env
+```
+
 ## Help
 
 ```bash

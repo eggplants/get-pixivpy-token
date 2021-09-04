@@ -58,6 +58,7 @@ res = gpt.login()
 ### From CLI
 
 ```bash
+# from GUI
 ❭ gppt login
 [!]: The browser will start. Please login.
 (Log in to Pixiv from the login screen that starts up.)
@@ -65,17 +66,16 @@ res = gpt.login()
 access_token: ***
 refresh_token: ***
 expires_in: 3600
+# from headless
+❭ gppt login-headless -u <id> -p <pw>
+[!]: The browser will start. Please login.
+[+]: Success!
+access_token: ***
+refresh_token: ***
+expires_in: 3600
 ```
 
 ### From Docker
-
-- Pull my image from Docker Hub
-
-```bash
-❭ docker pull eggplanter/gppt
-```
-
-- Run
 
 ```bash
 ❭ docker run -it eggplanter/gppt -e PIXIV_ID=<id> -e PIXIV_PASS=<pw>

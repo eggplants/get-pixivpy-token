@@ -65,7 +65,7 @@ def parse() -> argparse.Namespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description='Get your Pixiv token (for running upbit/pixivpy)')
 
-    parser.set_defaults(func=lambda _: parser.print_usage)
+    parser.set_defaults(func=lambda _: parser.print_usage())
 
     subparsers = parser.add_subparsers()
 

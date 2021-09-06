@@ -23,8 +23,8 @@
 ### From Library
 
 ```python
-from gppt import selenium as s
-gpt = s.GetPixivToken(headless=True, user="...", pass_="...")
+from gppt import GetPixivToken as g
+gpt = g(headless=True, user="...", pass_="...")
 res = gpt.login()
 ```
 

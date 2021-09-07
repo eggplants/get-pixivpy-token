@@ -6,7 +6,7 @@ from pprint import pprint
 from sys import stderr
 from typing import Optional
 
-from . import selenium as s
+from .selenium import GetPixivToken
 
 
 def print_auth_token_response(res: dict[str, str],
@@ -33,27 +33,26 @@ def print_auth_token_response(res: dict[str, str],
 
 
 def func_login(ns: argparse.Namespace) -> None:
-    g = s.GetPixivToken(user=ns.username,
-                        pass_=ns.password)
+    g = GetPixivToken()
     print('[!]: The browser will start. Please login.', file=stderr)
-    res = g.login()
+    res = g.login(user=ns.username,                  pass_=ns.password)
     print('[+]: Success!', file=stderr)
     print_auth_token_response(res, json=ns.json)
 
 
 def func_loginh(ns: argparse.Namespace) -> None:
-    g = s.GetPixivToken(headless=True,
-                        user=ns.username,
-                        pass_=ns.password)
+    g = GetPixivToken()
     print('[!]: The browser will start.', file=stderr)
-    res = g.login()
+    res = g.login(headless=True,
+                  user=ns.username,
+                  pass_=ns.password)
     print('[+]: Success!', file=stderr)
     print_auth_token_response(res, json=ns.json)
 
 
 def func_refresh(ns: argparse.Namespace) -> None:
-    g = s.GetPixivToken()
-    print('[!]: The browser will start. Please login.', file=stderr)
+    g = GetPixivToken()
+    print('[!]: Chrome browser will be launched. Please login.', file=stderr)
     res = g.refresh(ns.refresh_token)
     print('[+]: Success!', file=stderr)
     print_auth_token_response(res, json=ns.json)

@@ -23,9 +23,9 @@
 ### From Library
 
 ```python
-from gppt import GetPixivToken as g
-gpt = g(headless=True, user="...", pass_="...")
-res = gpt.login()
+from gppt import GetPixivToken
+g = GetPixivToken()
+res = g.login(headless=True, user="...", pass_="...")
 ```
 
 - `res.response` returns
@@ -60,7 +60,7 @@ res = gpt.login()
 ```bash
 # from GUI
 ❭ gppt login
-[!]: The browser will start. Please login.
+[!]: Chrome browser will be launched. Please login.
 (Log in to Pixiv from the login screen that starts up.)
 [+]: Success!
 access_token: ***
@@ -68,7 +68,7 @@ refresh_token: ***
 expires_in: 3600
 # from headless
 ❭ gppt login-headless -u <id> -p <pw>
-[!]: The browser will start. Please login.
+[!]: Chrome browser will be launched. Please login.
 [+]: Success!
 access_token: ***
 refresh_token: ***
@@ -82,7 +82,6 @@ expires_in: 3600
 ```
 
 - with envfile, create `.env` and run.
-
 
 ```bash
 # In .env

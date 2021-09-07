@@ -40,24 +40,26 @@ REQUESTS_KWARGS: dict[str, Any] = {
 
 
 class GetPixivToken(object):
-    def __init__(self,
-                 headless: Optional[bool] = False,
-                 user: Optional[str] = None,
-                 pass_: Optional[str] = None) -> None:
+    def __init__(self) -> None:
+
+        self.caps = DesiredCapabilities.CHROME.copy()
+        self.caps["goog:loggingPrefs"] = {
+            "performance": "ALL"
+        }  # enable performance logs
+
+    def login(self,
+              headless: Optional[bool] = False,
+              user: Optional[str] = None,
+              pass_: Optional[str] = None) -> dict[str, str]:
         self.headless, self.user, self. pass_ = headless, user, pass_
 
-        caps = DesiredCapabilities.CHROME.copy()
-        caps["goog:loggingPrefs"] = {
-            "performance": "ALL"}  # enable performance logs
         if headless:
             opts = self.__get_headless_option()
             self.driver = webdriver.Chrome(
-                options=opts, desired_capabilities=caps)
+                options=opts, desired_capabilities=self.caps)
 
         else:
-            self.driver = webdriver.Chrome(desired_capabilities=caps)
-
-    def login(self) -> dict[str, str]:
+            self.driver = webdriver.Chrome(desired_capabilities=self.caps)
 
         code_verifier, code_challenge = self.__oauth_pkce()
         login_params = {

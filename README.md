@@ -58,7 +58,7 @@ res = g.login(headless=True, user="...", pass_="...")
 ### From CLI
 
 ```bash
-# from GUI
+# with browser
 ❭ gppt login
 [!]: Chrome browser will be launched. Please login.
 (Log in to Pixiv from the login screen that starts up.)
@@ -66,7 +66,8 @@ res = g.login(headless=True, user="...", pass_="...")
 access_token: ***
 refresh_token: ***
 expires_in: 3600
-# from headless
+
+# with headless browser
 ❭ gppt login-headless -u <id> -p <pw>
 [!]: Chrome browser will be launched. Please login.
 [+]: Success!
@@ -81,7 +82,7 @@ expires_in: 3600
 ❭ docker run -it eggplanter/gppt -e PIXIV_ID=<id> -e PIXIV_PASS=<pw>
 ```
 
-- with envfile, create `.env` and run.
+- with envfile
 
 ```bash
 # In .env

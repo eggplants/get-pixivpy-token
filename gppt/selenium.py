@@ -23,6 +23,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+from .login_response_types import LoginInfo
+
 # Latest app version can be found using GET /v1/application-info/android
 USER_AGENT = "PixivIOSApp/7.13.3 (iOS 14.6; iPhone13,2)"
 CALLBACK_URI = "https://app-api.pixiv.net/web/v1/users/auth/pixiv/callback"
@@ -50,7 +52,7 @@ class GetPixivToken(object):
     def login(self,
               headless: Optional[bool] = False,
               user: Optional[str] = None,
-              pass_: Optional[str] = None) -> dict[str, str]:
+              pass_: Optional[str] = None) -> LoginInfo:
         self.headless, self.user, self. pass_ = headless, user, pass_
 
         if headless:
@@ -105,7 +107,7 @@ class GetPixivToken(object):
         return response.json()
 
     @staticmethod
-    def refresh(refresh_token: str) -> dict[str, str]:
+    def refresh(refresh_token: str) -> LoginInfo:
         response = requests.post(
             AUTH_TOKEN_URL,
             data={

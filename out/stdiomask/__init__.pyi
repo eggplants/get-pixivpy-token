@@ -1,0 +1,6 @@
+STR_TYPE: type
+RUNNING_PYTHON_2: bool
+STR_TYPE = unicode
+
+def getch() -> str: ...
+def getpass(prompt: str = ..., mask: str = ...) -> str: ...

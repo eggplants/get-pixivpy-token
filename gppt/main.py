@@ -6,10 +6,12 @@ from pprint import pprint
 from sys import stderr
 from typing import Optional
 
+from .auth import PixivAuth
+from .login_response_types import LoginInfo
 from .selenium import GetPixivToken
 
 
-def print_auth_token_response(res: dict[str, str],
+def print_auth_token_response(res: LoginInfo,
                               json: Optional[bool] = False) -> None:
     try:
         access_token = res["access_token"]
@@ -34,15 +36,22 @@ def print_auth_token_response(res: dict[str, str],
 
 def func_login(ns: argparse.Namespace) -> None:
     g = GetPixivToken()
-    print('[!]: The browser will start. Please login.', file=stderr)
-    res = g.login(user=ns.username,                  pass_=ns.password)
+    print('[!]: Chrome browser will be launched. Please login.',
+          file=stderr)
+    res = g.login(user=ns.username, pass_=ns.password)
+    print('[+]: Success!', file=stderr)
+    print_auth_token_response(res, json=ns.json)
+
+
+def func_logini(ns: argparse.Namespace) -> None:
+    a = PixivAuth()
+    _, res = a.auth()
     print('[+]: Success!', file=stderr)
     print_auth_token_response(res, json=ns.json)
 
 
 def func_loginh(ns: argparse.Namespace) -> None:
     g = GetPixivToken()
-    print('[!]: The browser will start.', file=stderr)
     res = g.login(headless=True,
                   user=ns.username,
                   pass_=ns.password)
@@ -52,7 +61,6 @@ def func_loginh(ns: argparse.Namespace) -> None:
 
 def func_refresh(ns: argparse.Namespace) -> None:
     g = GetPixivToken()
-    print('[!]: Chrome browser will be launched. Please login.', file=stderr)
     res = g.refresh(ns.refresh_token)
     print('[+]: Success!', file=stderr)
     print_auth_token_response(res, json=ns.json)
@@ -77,6 +85,12 @@ def parse() -> argparse.Namespace:
     login_parser.add_argument("-j", "--json", action="store_true",
                               help="output response as json")
     login_parser.set_defaults(func=func_login)
+
+    logini_parser = subparsers.add_parser("login-interactive", aliases=["li"],
+                                          help="`login` in interactive mode")
+    logini_parser.add_argument("-j", "--json", action="store_true",
+                               help="output response as json")
+    logini_parser.set_defaults(func=func_logini)
 
     loginh_parser = subparsers.add_parser("login-headless", aliases=["lh"],
                                           help="`login` in headless mode")

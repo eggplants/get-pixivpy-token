@@ -95,13 +95,16 @@ expires_in: 3600
 
 ```bash
 ❭ gppt -h
-usage: gppt [-h] {login,l,login-headless,lh,refresh,r} ...
+usage: gppt [-h]
+            {login,l,login-interactive,li,login-headless,lh,refresh,r} ...
 
 Get your Pixiv token (for running upbit/pixivpy)
 
 positional arguments:
-  {login,l,login-headless,lh,refresh,r}
+  {login,l,login-interactive,li,login-headless,lh,refresh,r}
     login (l)           retrieving auth token
+    login-interactive (li)
+                        `login` in interactive mode
     login-headless (lh)
                         `login` in headless mode
     refresh (r)         refresh tokens
@@ -121,6 +124,15 @@ optional arguments:
   -p PASSWORD, --password PASSWORD
                         your current pixiv password
   -j, --json            output response as json
+```
+
+```bash
+❭ gppt li -h
+usage: gppt login-interactive [-h] [-j]
+
+optional arguments:
+  -h, --help  show this help message and exit
+  -j, --json  output response as json
 ```
 
 ```bash

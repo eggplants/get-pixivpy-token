@@ -5,7 +5,6 @@
 
 import json
 import re
-import time
 from base64 import urlsafe_b64encode
 from hashlib import sha256
 from random import uniform
@@ -73,16 +72,13 @@ class GetPixivToken(object):
         self.driver.get(f"{LOGIN_URL}?{urlencode(login_params)}")
         WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.ID, "LoginComponent")))
+
         self.__fill_login_form()
-
-        if self.headless:
-            self.__try_login()
-
-        while self.driver.current_url[:40] != REDIRECT_URI:
-            time.sleep(1)  # wait for login
+        sleep(uniform(0.3, 0.7))
+        self.__try_login()
 
         # filter code url from performance logs
-        code = self.__parse_log(self.driver)
+        code = self.__parse_log()
         self.driver.close()
 
         response = requests.post(
@@ -144,21 +140,21 @@ class GetPixivToken(object):
             sleep(uniform(0.3, 0.7))
 
     def __try_login(self) -> None:
-        el = self.driver.find_element_by_xpath(
-            "//div[@id='LoginComponent']"
-            "//button[@class='signup-form__submit']")
-        el.send_keys(Keys.ENTER)
+        if self.headless:
+            el = self.driver.find_element_by_xpath(
+                "//div[@id='LoginComponent']"
+                "//button[@class='signup-form__submit']")
+            el.send_keys(Keys.ENTER)
 
-        sleep(0.1)
         WebDriverWait(self.driver, 10).until_not(
             EC.presence_of_element_located((By.CLASS_NAME, "busy-container")))
-        sleep(0.1)
-        c = 0
-        while 10 > c and self.driver.current_url[:40] != REDIRECT_URI:
+
+        c = 0  # timeout if not redirecting for 20s
+        while 20 > c and self.driver.current_url[:40] != REDIRECT_URI:
             c += 1
             sleep(1)
         else:
-            if c == 10:
+            if c == 20:
                 self.driver.close()
                 raise ValueError("Failed to login")
 
@@ -195,11 +191,10 @@ class GetPixivToken(object):
 
         return code_verifier, code_challenge
 
-    @staticmethod
-    def __parse_log(driver: webdriver.chrome.webdriver.WebDriver) -> str:
+    def __parse_log(self) -> str:
         messages = [
             json.loads(row.get("message", {})).get("message", {})
-            for row in driver.get_log('performance')
+            for row in self.driver.get_log('performance')
         ]
 
         code = "(None)"

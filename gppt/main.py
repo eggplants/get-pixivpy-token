@@ -11,8 +11,7 @@ from .login_response_types import LoginInfo
 from .selenium import GetPixivToken
 
 
-def print_auth_token_response(res: LoginInfo,
-                              json: Optional[bool] = False) -> None:
+def print_auth_token_response(res: LoginInfo, json: Optional[bool] = False) -> None:
     try:
         access_token = res["access_token"]
         refresh_token = res["refresh_token"]
@@ -23,11 +22,16 @@ def print_auth_token_response(res: LoginInfo,
         exit(1)
 
     if json:
-        print(dumps({
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "expires_in": expires_in
-        }, indent=4))
+        print(
+            dumps(
+                {
+                    "access_token": access_token,
+                    "refresh_token": refresh_token,
+                    "expires_in": expires_in,
+                },
+                indent=4,
+            )
+        )
     else:
         print("access_token:", access_token)
         print("refresh_token:", refresh_token)
@@ -36,78 +40,104 @@ def print_auth_token_response(res: LoginInfo,
 
 def func_login(ns: argparse.Namespace) -> None:
     g = GetPixivToken()
-    print('[!]: Chrome browser will be launched. Please login.',
-          file=stderr)
+    print("[!]: Chrome browser will be launched. Please login.", file=stderr)
     res = g.login(user=ns.username, pass_=ns.password)
-    print('[+]: Success!', file=stderr)
+    print("[+]: Success!", file=stderr)
     print_auth_token_response(res, json=ns.json)
 
 
 def func_logini(ns: argparse.Namespace) -> None:
     a = PixivAuth()
     _, res = a.auth()
-    print('[+]: Success!', file=stderr)
+    print("[+]: Success!", file=stderr)
     print_auth_token_response(res, json=ns.json)
 
 
 def func_loginh(ns: argparse.Namespace) -> None:
     g = GetPixivToken()
-    res = g.login(headless=True,
-                  user=ns.username,
-                  pass_=ns.password)
-    print('[+]: Success!', file=stderr)
+    res = g.login(headless=True, user=ns.username, pass_=ns.password)
+    print("[+]: Success!", file=stderr)
     print_auth_token_response(res, json=ns.json)
 
 
 def func_refresh(ns: argparse.Namespace) -> None:
     g = GetPixivToken()
     res = g.refresh(ns.refresh_token)
-    print('[+]: Success!', file=stderr)
+    print("[+]: Success!", file=stderr)
     print_auth_token_response(res, json=ns.json)
 
 
 def parse() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        prog='gppt',
+        prog="gppt",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description='Get your Pixiv token (for running upbit/pixivpy)')
+        description="Get your Pixiv token (for running upbit/pixivpy)",
+    )
 
     parser.set_defaults(func=lambda _: parser.print_usage())
 
     subparsers = parser.add_subparsers()
 
-    login_parser = subparsers.add_parser("login", aliases=["l"],
-                                         help="retrieving auth token")
-    login_parser.add_argument("-u", "--username", metavar="USERNAME", type=str,
-                              help="your E-mail address / pixiv ID")
-    login_parser.add_argument("-p", "--password", metavar="PASSWORD", type=str,
-                              help="your current pixiv password")
-    login_parser.add_argument("-j", "--json", action="store_true",
-                              help="output response as json")
+    login_parser = subparsers.add_parser(
+        "login", aliases=["l"], help="retrieving auth token"
+    )
+    login_parser.add_argument(
+        "-u",
+        "--username",
+        metavar="USERNAME",
+        type=str,
+        help="your E-mail address / pixiv ID",
+    )
+    login_parser.add_argument(
+        "-p",
+        "--password",
+        metavar="PASSWORD",
+        type=str,
+        help="your current pixiv password",
+    )
+    login_parser.add_argument(
+        "-j", "--json", action="store_true", help="output response as json"
+    )
     login_parser.set_defaults(func=func_login)
 
-    logini_parser = subparsers.add_parser("login-interactive", aliases=["li"],
-                                          help="`login` in interactive mode")
-    logini_parser.add_argument("-j", "--json", action="store_true",
-                               help="output response as json")
+    logini_parser = subparsers.add_parser(
+        "login-interactive", aliases=["li"], help="`login` in interactive mode"
+    )
+    logini_parser.add_argument(
+        "-j", "--json", action="store_true", help="output response as json"
+    )
     logini_parser.set_defaults(func=func_logini)
 
-    loginh_parser = subparsers.add_parser("login-headless", aliases=["lh"],
-                                          help="`login` in headless mode")
-    loginh_parser.add_argument("-u", "--username", metavar="USERNAME",
-                               type=str, required=True,
-                               help="your E-mail address / pixiv ID")
-    loginh_parser.add_argument("-p", "--password", metavar="PASSWORD",
-                               type=str, required=True,
-                               help="your current pixiv password")
-    loginh_parser.add_argument("-j", "--json", action="store_true",
-                               help="output response as json")
+    loginh_parser = subparsers.add_parser(
+        "login-headless", aliases=["lh"], help="`login` in headless mode"
+    )
+    loginh_parser.add_argument(
+        "-u",
+        "--username",
+        metavar="USERNAME",
+        type=str,
+        required=True,
+        help="your E-mail address / pixiv ID",
+    )
+    loginh_parser.add_argument(
+        "-p",
+        "--password",
+        metavar="PASSWORD",
+        type=str,
+        required=True,
+        help="your current pixiv password",
+    )
+    loginh_parser.add_argument(
+        "-j", "--json", action="store_true", help="output response as json"
+    )
     loginh_parser.set_defaults(func=func_loginh)
 
-    refresh_parser = subparsers.add_parser("refresh", aliases=["r"],
-                                           help="refresh tokens")
-    refresh_parser.add_argument("-j", "--json", action="store_true",
-                                help="output response as json")
+    refresh_parser = subparsers.add_parser(
+        "refresh", aliases=["r"], help="refresh tokens"
+    )
+    refresh_parser.add_argument(
+        "-j", "--json", action="store_true", help="output response as json"
+    )
     refresh_parser.add_argument("refresh_token")
     refresh_parser.set_defaults(func=func_refresh)
 

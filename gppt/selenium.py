@@ -48,16 +48,17 @@ class GetPixivToken(object):
             "performance": "ALL"
         }  # enable performance logs
 
-    def login(self,
-              headless: Optional[bool] = False,
-              user: Optional[str] = None,
-              pass_: Optional[str] = None) -> LoginInfo:
-        self.headless, self.user, self. pass_ = headless, user, pass_
+    def login(
+        self,
+        headless: Optional[bool] = False,
+        user: Optional[str] = None,
+        pass_: Optional[str] = None,
+    ) -> LoginInfo:
+        self.headless, self.user, self.pass_ = headless, user, pass_
 
         if headless:
             opts = self.__get_headless_option()
-            self.driver = webdriver.Chrome(
-                options=opts, desired_capabilities=self.caps)
+            self.driver = webdriver.Chrome(options=opts, desired_capabilities=self.caps)
 
         else:
             self.driver = webdriver.Chrome(desired_capabilities=self.caps)
@@ -71,7 +72,8 @@ class GetPixivToken(object):
 
         self.driver.get(f"{LOGIN_URL}?{urlencode(login_params)}")
         WebDriverWait(self.driver, 10).until(
-            EC.presence_of_element_located((By.ID, "LoginComponent")))
+            EC.presence_of_element_located((By.ID, "LoginComponent"))
+        )
 
         self.__fill_login_form()
         sleep(uniform(0.3, 0.7))
@@ -97,7 +99,7 @@ class GetPixivToken(object):
                 "app-os-version": "14.6",
                 "app-os": "ios",
             },
-            **REQUESTS_KWARGS
+            **REQUESTS_KWARGS,
         )
 
         return response.json()
@@ -118,19 +120,21 @@ class GetPixivToken(object):
                 "app-os-version": "14.6",
                 "app-os": "ios",
             },
-            **REQUESTS_KWARGS
+            **REQUESTS_KWARGS,
         )
         return response.json()
 
     def __fill_login_form(self) -> None:
         if self.user is not None:
             el = self.driver.find_element_by_xpath(
-                "//div[@id='LoginComponent']//*/input[@type='text']")
+                "//div[@id='LoginComponent']//*/input[@type='text']"
+            )
             self.__slow_type(el, self.user)
 
         if self.pass_ is not None:
             el = self.driver.find_element_by_xpath(
-                "//div[@id='LoginComponent']//*/input[@type='password']")
+                "//div[@id='LoginComponent']//*/input[@type='password']"
+            )
             self.__slow_type(el, self.pass_)
 
     @staticmethod
@@ -142,12 +146,13 @@ class GetPixivToken(object):
     def __try_login(self) -> None:
         if self.headless:
             el = self.driver.find_element_by_xpath(
-                "//div[@id='LoginComponent']"
-                "//button[@class='signup-form__submit']")
+                "//div[@id='LoginComponent']" "//button[@class='signup-form__submit']"
+            )
             el.send_keys(Keys.ENTER)
 
         WebDriverWait(self.driver, 10).until_not(
-            EC.presence_of_element_located((By.CLASS_NAME, "busy-container")))
+            EC.presence_of_element_located((By.CLASS_NAME, "busy-container"))
+        )
 
         c = 0  # timeout if not redirecting for 20s
         while 20 > c and self.driver.current_url[:40] != REDIRECT_URI:
@@ -161,26 +166,26 @@ class GetPixivToken(object):
     @staticmethod
     def __get_headless_option() -> webdriver.chrome.options.Options:
         options = webdriver.ChromeOptions()
-        options.add_argument('--headless')
-        options.add_argument('--disable-gpu')
-        options.add_argument('--disable-extensions')
+        options.add_argument("--headless")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-extensions")
         options.add_argument("--disable-infobars")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-browser-side-navigation")
         options.add_argument('--proxy-server="direct://"')
-        options.add_argument('--proxy-bypass-list=*')
-        options.add_argument('--start-maximized')
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument('--user-agent=' + USER_AGENT)
-        options.add_experimental_option(
-            "excludeSwitches", ["enable-automation"])
-        options.add_experimental_option('useAutomationExtension', False)
+        options.add_argument("--proxy-bypass-list=*")
+        options.add_argument("--start-maximized")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--user-agent=" + USER_AGENT)
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option("useAutomationExtension", False)
         return options
 
     @staticmethod
     def __oauth_pkce() -> tuple[str, str]:
         """Proof Key for Code Exchange by OAuth Public Clients (RFC7636)."""
+
         def __s256(data: bytes) -> str:
             """S256 transformation method."""
             b = urlsafe_b64encode(sha256(data).digest()).rstrip(b"=")
@@ -194,15 +199,16 @@ class GetPixivToken(object):
     def __parse_log(self) -> str:
         messages = [
             json.loads(row.get("message", {})).get("message", {})
-            for row in self.driver.get_log('performance')
+            for row in self.driver.get_log("performance")
         ]
 
         code = "(None)"
-        for message in [_ for _ in messages
-                        if _.get("method") == "Network.requestWillBeSent"]:
+        for message in [
+            _ for _ in messages if _.get("method") == "Network.requestWillBeSent"
+        ]:
             url = message.get("params", {}).get("documentURL")
             if url[:8] == "pixiv://":
-                _ = re.search(r'code=([^&]*)', url)
+                _ = re.search(r"code=([^&]*)", url)
                 return code if _ is None else _.groups()[0]
         else:
             return code

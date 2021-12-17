@@ -8,7 +8,7 @@
 ## Install
 
 ```bash
-❭ pip install gppt
+pip install gppt
 ```
 
 ## Run
@@ -17,7 +17,7 @@
 - On Ubuntu, my setup script is available
 
 ```bash
-❭ ./setup.sh
+./setup.sh
 ```
 
 ### From Library
@@ -57,18 +57,19 @@ res = g.login(headless=True, user="...", pass_="...")
 
 ### From CLI
 
-```bash
+```shellsession
 # with browser
-❭ gppt login
+$ gppt login
 [!]: Chrome browser will be launched. Please login.
 (Log in to Pixiv from the login screen that starts up.)
 [+]: Success!
 access_token: ***
 refresh_token: ***
 expires_in: 3600
+...
 
 # with headless browser
-❭ gppt login-headless -u <id> -p <pw>
+$ gppt login-headless -u <id> -p <pw>
 [!]: Chrome browser will be launched. Please login.
 [+]: Success!
 access_token: ***
@@ -88,13 +89,13 @@ expires_in: 3600
 # In .env
 # PIXIV_ID=<id>
 # PIXIV_PASS=<pw>
-❭ docker run -it eggplanter/gppt --env-file .env
+docker run -it eggplanter/gppt --env-file .env
 ```
 
 ## Help
 
-```bash
-❭ gppt -h
+```shellsession
+$ gppt -h
 usage: gppt [-h]
             {login,l,login-interactive,li,login-headless,lh,refresh,r} ...
 
@@ -113,8 +114,8 @@ optional arguments:
   -h, --help            show this help message and exit
 ```
 
-```bash
-❭ gppt l -h
+```shellsession
+$ gppt l -h
 usage: gppt login [-h] [-u USERNAME] [-p PASSWORD] [-j]
 
 optional arguments:
@@ -126,8 +127,8 @@ optional arguments:
   -j, --json            output response as json
 ```
 
-```bash
-❭ gppt li -h
+```shellsession
+$ gppt li -h
 usage: gppt login-interactive [-h] [-j]
 
 optional arguments:
@@ -135,8 +136,8 @@ optional arguments:
   -j, --json  output response as json
 ```
 
-```bash
-❭ gppt lh -h
+```shellsession
+$ gppt lh -h
 usage: gppt login-headless [-h] -u USERNAME -p PASSWORD [-j]
 
 optional arguments:
@@ -148,8 +149,8 @@ optional arguments:
   -j, --json            output response as json
 ```
 
-```bash
-❭ gppt r -h
+```shellsession
+$ gppt r -h
 usage: gppt refresh [-h] [-j] refresh_token
 
 positional arguments:

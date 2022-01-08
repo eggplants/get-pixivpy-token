@@ -79,8 +79,13 @@ expires_in: 3600
 
 ### From Docker
 
-```bash
-❭ docker run -it eggplanter/gppt -e PIXIV_ID=<id> -e PIXIV_PASS=<pw>
+```shellsession
+$ docker run --rm -it eggplanter/gppt login-headless -u <id> -p <pw>
+[!]: Chrome browser will be launched. Please login.
+[+]: Success!
+access_token: ***
+refresh_token: ***
+expires_in: 3600
 ```
 
 - with envfile

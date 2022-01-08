@@ -26,4 +26,5 @@ RUN pip install --no-cache-dir -U pip
 
 # install selenium
 RUN pip install --no-cache-dir selenium gppt
-CMD ["gppt", "lh", "-u", "${PIXIV_ID}", "-p", "${PIXIV_PASS}"]
+# CMD ["gppt", "lh", "-u", "${PIXIV_ID}", "-p", "${PIXIV_PASS}"]
+ENTRYPOINT ["gppt"]

@@ -80,8 +80,7 @@ expires_in: 3600
 ### From Docker
 
 ```shellsession
-$ docker run --rm -it eggplanter/gppt login-headless -u <id> -p <pw>
-[!]: Chrome browser will be launched. Please login.
+$ docker run --rm -it eggplanter/gppt lh -u <id> -p <pw>
 [+]: Success!
 access_token: ***
 refresh_token: ***

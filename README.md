@@ -87,15 +87,6 @@ refresh_token: ***
 expires_in: 3600
 ```
 
-- with envfile
-
-```bash
-# In .env
-# PIXIV_ID=<id>
-# PIXIV_PASS=<pw>
-docker run -it eggplanter/gppt --env-file .env
-```
-
 ## Help
 
 ```shellsession

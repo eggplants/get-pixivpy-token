@@ -13,14 +13,43 @@ pip install gppt
 
 ## Run
 
-- Note: _In advance, please setup google-chrome-stable + selenium + webdriver_
-- On Ubuntu, my setup script is available
+### From Docker
 
-```bash
-./setup.sh
+```shellsession
+$ docker run --rm -it eggplanter/gppt lh -u <id> -p <pw>
+[+]: Success!
+access_token: ***
+refresh_token: ***
+expires_in: 3600
+```
+
+### From CLI
+
+- Note: _In advance, please setup google-chrome-stable + selenium + webdriver_
+
+```shellsession
+# with browser
+$ gppt login
+[!]: Chrome browser will be launched. Please login.
+(Log in to Pixiv from the login screen that starts up.)
+[+]: Success!
+access_token: ***
+refresh_token: ***
+expires_in: 3600
+...
+
+# with headless browser
+$ gppt login-headless -u <id> -p <pw>
+[!]: Chrome browser will be launched. Please login.
+[+]: Success!
+access_token: ***
+refresh_token: ***
+expires_in: 3600
 ```
 
 ### From Library
+
+- Note: _In advance, please setup google-chrome-stable + selenium + webdriver_
 
 ```python
 from gppt import GetPixivToken
@@ -53,38 +82,6 @@ res = g.login(headless=True, user="...", pass_="...")
     "x_restrict": 2
   }
 }
-```
-
-### From CLI
-
-```shellsession
-# with browser
-$ gppt login
-[!]: Chrome browser will be launched. Please login.
-(Log in to Pixiv from the login screen that starts up.)
-[+]: Success!
-access_token: ***
-refresh_token: ***
-expires_in: 3600
-...
-
-# with headless browser
-$ gppt login-headless -u <id> -p <pw>
-[!]: Chrome browser will be launched. Please login.
-[+]: Success!
-access_token: ***
-refresh_token: ***
-expires_in: 3600
-```
-
-### From Docker
-
-```shellsession
-$ docker run --rm -it eggplanter/gppt lh -u <id> -p <pw>
-[+]: Success!
-access_token: ***
-refresh_token: ***
-expires_in: 3600
 ```
 
 ## Help

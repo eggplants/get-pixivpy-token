@@ -13,6 +13,18 @@ pip install gppt
 
 ## Run
 
+Retrieved token can be used like below:
+
+```python
+from pixivpy3 import AppPixivAPI
+
+REFRESH_TOKEN = "***"  # or, REFRESH_TOKEN = res.refresh_token
+
+aapi = AppPixivAPI()
+aapi.auth(refresh_token=REFRESH_TOKEN)
+...
+```
+
 ### From Docker
 
 ```shellsession

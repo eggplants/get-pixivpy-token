@@ -10,11 +10,10 @@ from hashlib import sha256
 from random import uniform
 from secrets import token_urlsafe
 from time import sleep
-from typing import Any, Optional
+from typing import Any, Optional, cast
 from urllib.parse import urlencode
 
 import requests
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -102,7 +101,7 @@ class GetPixivToken(object):
             **REQUESTS_KWARGS,
         )
 
-        return response.json()
+        return cast(LoginInfo, response.json())
 
     @staticmethod
     def refresh(refresh_token: str) -> LoginInfo:
@@ -122,19 +121,19 @@ class GetPixivToken(object):
             },
             **REQUESTS_KWARGS,
         )
-        return response.json()
+        return cast(LoginInfo, response.json())
 
     def __fill_login_form(self) -> None:
         if self.user is not None:
             el = self.driver.find_element_by_xpath(
                 "//div[@id='LoginComponent']//*/input[@type='text']"
-            )
+            )  # type: ignore[no-untyped-call]
             self.__slow_type(el, self.user)
 
         if self.pass_ is not None:
             el = self.driver.find_element_by_xpath(
                 "//div[@id='LoginComponent']//*/input[@type='password']"
-            )
+            )  # type: ignore[no-untyped-call]
             self.__slow_type(el, self.pass_)
 
     @staticmethod
@@ -147,7 +146,7 @@ class GetPixivToken(object):
         if self.headless:
             el = self.driver.find_element_by_xpath(
                 "//div[@id='LoginComponent']" "//button[@class='signup-form__submit']"
-            )
+            )  # type: ignore[no-untyped-call]
             el.send_keys(Keys.ENTER)
 
         WebDriverWait(self.driver, 10).until_not(
@@ -199,7 +198,7 @@ class GetPixivToken(object):
     def __parse_log(self) -> str:
         messages = [
             json.loads(row.get("message", {})).get("message", {})
-            for row in self.driver.get_log("performance")
+            for row in self.driver.get_log("performance")  # type: ignore[no-untyped-call]
         ]
 
         code = "(None)"
@@ -209,6 +208,6 @@ class GetPixivToken(object):
             url = message.get("params", {}).get("documentURL")
             if url[:8] == "pixiv://":
                 _ = re.search(r"code=([^&]*)", url)
-                return code if _ is None else _.groups()[0]
+                return code if _ is None else str(_.group(1))
         else:
             return code

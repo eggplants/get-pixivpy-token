@@ -1,13 +1,4 @@
-from .auth import PixivAuth
-from .login_response_types import (
-    LoginCred,
-    LoginInfo,
-    LoginUserInfo,
-    OAuthAPIResponse,
-    PixivLoginFailed,
-    ProfileURIs,
-)
-from .selenium import (
+from ._selenium import (
     AUTH_TOKEN_URL,
     CALLBACK_URI,
     CLIENT_ID,
@@ -17,6 +8,15 @@ from .selenium import (
     REQUESTS_KWARGS,
     USER_AGENT,
     GetPixivToken,
+)
+from .auth import PixivAuth
+from .login_response_types import (
+    LoginCred,
+    LoginInfo,
+    LoginUserInfo,
+    OAuthAPIResponse,
+    PixivLoginFailed,
+    ProfileURIs,
 )
 
 __version__ = "1.6"

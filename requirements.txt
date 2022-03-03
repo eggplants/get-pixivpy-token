@@ -1,6 +1,0 @@
-requests
-selenium
-stdiomask
-pixivpy
-types-requests
-types-selenium

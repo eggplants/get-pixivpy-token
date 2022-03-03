@@ -6,9 +6,9 @@ from pprint import pprint
 from sys import stderr
 from typing import Optional
 
+from ._selenium import GetPixivToken
 from .auth import PixivAuth
 from .login_response_types import LoginInfo
-from .selenium import GetPixivToken
 
 
 def print_auth_token_response(res: LoginInfo, json: Optional[bool] = False) -> None:

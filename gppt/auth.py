@@ -1,12 +1,12 @@
 import json
 import os
-from typing import Optional, Tuple
+from typing import Optional, Tuple, cast
 
-import stdiomask
-from pixivpy3 import AppPixivAPI
+import stdiomask  # type: ignore[import]
+from pixivpy3 import AppPixivAPI  # type: ignore[import]
 
+from ._selenium import GetPixivToken
 from .login_response_types import LoginCred, LoginInfo, PixivLoginFailed
-from .selenium import GetPixivToken
 
 
 class PixivAuth:
@@ -60,7 +60,7 @@ class PixivAuth:
         if os.path.exists(self.auth_json_path):
             cred_data = json.load(open(self.auth_json_path, "r"))
             if set(cred_data.keys()) == {"pixiv_id", "password"}:
-                return cred_data
+                return cast(LoginCred, cred_data)
             else:
                 return None
         else:

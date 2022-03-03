@@ -19,7 +19,7 @@ from .login_response_types import (
     ProfileURIs,
 )
 
-__version__ = "1.6"
+__version__ = "1.7"
 
 __all__ = [
     "PixivAuth",

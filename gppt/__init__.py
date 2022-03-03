@@ -19,6 +19,8 @@ from .selenium import (
     GetPixivToken,
 )
 
+__version__ = "1.6"
+
 __all__ = [
     "PixivAuth",
     "PixivAuth",

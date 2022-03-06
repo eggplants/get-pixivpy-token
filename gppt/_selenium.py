@@ -127,13 +127,13 @@ class GetPixivToken(object):
         if self.user is not None:
             el = self.driver.find_element_by_xpath(
                 "//div[@id='LoginComponent']//*/input[@type='text']"
-            )  # type: ignore[no-untyped-call]
+            )
             self.__slow_type(el, self.user)
 
         if self.pass_ is not None:
             el = self.driver.find_element_by_xpath(
                 "//div[@id='LoginComponent']//*/input[@type='password']"
-            )  # type: ignore[no-untyped-call]
+            )
             self.__slow_type(el, self.pass_)
 
     @staticmethod
@@ -146,7 +146,7 @@ class GetPixivToken(object):
         if self.headless:
             el = self.driver.find_element_by_xpath(
                 "//div[@id='LoginComponent']" "//button[@class='signup-form__submit']"
-            )  # type: ignore[no-untyped-call]
+            )
             el.send_keys(Keys.ENTER)
 
         WebDriverWait(self.driver, 10).until_not(

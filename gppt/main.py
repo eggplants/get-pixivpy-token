@@ -1,17 +1,16 @@
-#!/usr/bin/env python
+from __future__ import annotations
 
 import argparse
 from json import dumps
 from pprint import pprint
 from sys import stderr
-from typing import Optional
 
 from ._selenium import GetPixivToken
 from .auth import PixivAuth
 from .login_response_types import LoginInfo
 
 
-def print_auth_token_response(res: LoginInfo, json: Optional[bool] = False) -> None:
+def print_auth_token_response(res: LoginInfo, json: bool | None = False) -> None:
     try:
         access_token = res["access_token"]
         refresh_token = res["refresh_token"]

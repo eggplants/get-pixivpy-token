@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import json
 import os
-from typing import Optional, Tuple, cast
+from typing import cast
 
-import pwinput
+import pwinput  # type: ignore[import]
 from pixivpy3 import AppPixivAPI  # type: ignore[import]
 
 from ._selenium import GetPixivToken
@@ -13,7 +15,7 @@ class PixivAuth:
     def __init__(self, auth_json_path: str = "client.json"):
         self.auth_json_path = auth_json_path
 
-    def auth(self) -> Tuple[AppPixivAPI, LoginInfo]:
+    def auth(self) -> tuple[AppPixivAPI, LoginInfo]:
         cnt = 0
         while cnt < 3:
             try:
@@ -27,9 +29,9 @@ class PixivAuth:
             print("[!]: The number of login attempts has been exceeded.")
             raise PixivLoginFailed
 
-    def __auth(self, cnt: int) -> Tuple[AppPixivAPI, LoginInfo]:
+    def __auth(self, cnt: int) -> tuple[AppPixivAPI, LoginInfo]:
         aapi: AppPixivAPI = AppPixivAPI()
-        login_cred: Optional[LoginCred] = self.read_client_cred()
+        login_cred: LoginCred | None = self.read_client_cred()
 
         if login_cred is not None and cnt == 0:
             ref = self.get_refresh_token(login_cred["pixiv_id"], login_cred["password"])
@@ -56,7 +58,7 @@ class PixivAuth:
         res = g.login(headless=True, user=pixiv_id, pass_=pixiv_pass)
         return res["refresh_token"]
 
-    def read_client_cred(self) -> Optional[LoginCred]:
+    def read_client_cred(self) -> LoginCred | None:
         if os.path.exists(self.auth_json_path):
             cred_data = json.load(open(self.auth_json_path, "r"))
             if set(cred_data.keys()) == {"pixiv_id", "password"}:

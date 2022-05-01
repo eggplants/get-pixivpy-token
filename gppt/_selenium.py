@@ -1,7 +1,9 @@
-#!/usr/bin/env python
+"""
+Original 1: https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362
+Original 2: https://gist.github.com/upbit/6edda27cb1644e94183291109b8a5fde
+"""
 
-# Original 1: https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362
-# Original 2: https://gist.github.com/upbit/6edda27cb1644e94183291109b8a5fde
+from __future__ import annotations
 
 import json
 import re
@@ -10,7 +12,7 @@ from hashlib import sha256
 from random import uniform
 from secrets import token_urlsafe
 from time import sleep
-from typing import Any, Optional, cast
+from typing import Any, cast
 from urllib.parse import urlencode
 
 import requests
@@ -49,9 +51,9 @@ class GetPixivToken(object):
 
     def login(
         self,
-        headless: Optional[bool] = False,
-        user: Optional[str] = None,
-        pass_: Optional[str] = None,
+        headless: bool | None = False,
+        user: str | None = None,
+        pass_: str | None = None,
     ) -> LoginInfo:
         self.headless, self.user, self.pass_ = headless, user, pass_
 
@@ -196,9 +198,9 @@ class GetPixivToken(object):
         return code_verifier, code_challenge
 
     def __parse_log(self) -> str:
+        perf_log = self.driver.get_log("performance")  # type: ignore[no-untyped-call]
         messages = [
-            json.loads(row.get("message", {})).get("message", {})
-            for row in self.driver.get_log("performance")  # type: ignore[no-untyped-call]
+            json.loads(row.get("message", {})).get("message", {}) for row in perf_log
         ]
 
         code = "(None)"

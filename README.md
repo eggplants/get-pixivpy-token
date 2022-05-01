@@ -1,6 +1,23 @@
 # `gppt`: get-pixivpy-token
 
-[![PyPI](https://img.shields.io/pypi/v/gppt?color=blue)](https://pypi.org/project/gppt/) [![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/eggplanter/gppt)](https://hub.docker.com/r/eggplanter/gppt) [![Maintainability]](https://codeclimate.com/github/eggplants/get-pixiv-token/maintainability)
+[![PyPI](
+  https://img.shields.io/pypi/v/gppt?color=blue
+  )](
+  https://pypi.org/project/gppt/
+) [![Docker Image Size (latest by date)](
+  https://img.shields.io/docker/image-size/eggplanter/gppt
+  )](
+  https://hub.docker.com/r/eggplanter/gppt
+) [![Maintainability](
+  https://api.codeclimate.com/v1/badges/b40b8fa2c9d71f869b9c/maintainability
+  )](
+  https://codeclimate.com/github/eggplants/get-pixiv-token/maintainability
+) [![pre-commit.ci status](
+  https://results.pre-commit.ci/badge/github/eggplants/get-pixivpy-token/main.svg
+  )](
+  https://results.pre-commit.ci/latest/github/eggplants/get-pixivpy-token/main
+)
+
 
 - Get your Pixiv token (for running [upbit/pixivpy](https://github.com/upbit/pixivpy))
 - Refine [pixiv_auth.py](https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362) + [its fork](https://gist.github.com/upbit/6edda27cb1644e94183291109b8a5fde)
@@ -164,5 +181,3 @@ optional arguments:
   -h, --help     show this help message and exit
   -j, --json     output response as json
 ```
-
-[maintainability]: https://api.codeclimate.com/v1/badges/b40b8fa2c9d71f869b9c/maintainability

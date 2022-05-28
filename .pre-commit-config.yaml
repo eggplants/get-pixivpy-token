@@ -48,6 +48,8 @@ repos:
           - types-setuptools
           - types-selenium
           - types-requests
+          - pyderman
+          - pixivpy3
         files: ^gppt/
         args: [--strict]
   - repo: https://github.com/crate-ci/typos

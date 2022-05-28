@@ -5,7 +5,7 @@ import os
 from typing import cast
 
 import pwinput  # type: ignore[import]
-from pixivpy3 import AppPixivAPI  # type: ignore[import]
+from pixivpy3 import AppPixivAPI
 
 from ._selenium import GetPixivToken
 from .login_response_types import LoginCred, LoginInfo, PixivLoginFailed

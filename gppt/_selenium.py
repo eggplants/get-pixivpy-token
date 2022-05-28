@@ -15,6 +15,7 @@ from time import sleep
 from typing import Any, cast
 from urllib.parse import urlencode
 
+import pyderman
 import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -56,13 +57,21 @@ class GetPixivToken(object):
         pass_: str | None = None,
     ) -> LoginInfo:
         self.headless, self.user, self.pass_ = headless, user, pass_
-
+        executable_path = pyderman.install(verbose=False, browser=pyderman.chrome)
+        if type(executable_path) is not str:
+            raise ValueError("Executable path is not str somehow.")
         if headless:
             opts = self.__get_headless_option()
-            self.driver = webdriver.Chrome(options=opts, desired_capabilities=self.caps)
+            self.driver = webdriver.Chrome(
+                executable_path=executable_path,
+                options=opts,
+                desired_capabilities=self.caps,
+            )
 
         else:
-            self.driver = webdriver.Chrome(desired_capabilities=self.caps)
+            self.driver = webdriver.Chrome(
+                executable_path=executable_path, desired_capabilities=self.caps
+            )
 
         code_verifier, code_challenge = self.__oauth_pkce()
         login_params = {
@@ -72,8 +81,9 @@ class GetPixivToken(object):
         }
 
         self.driver.get(f"{LOGIN_URL}?{urlencode(login_params)}")
-        WebDriverWait(self.driver, 10).until(
-            EC.presence_of_element_located((By.ID, "LoginComponent"))
+        WebDriverWait(self.driver, 20).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "sc-bn9ph6-6")),
+            f"Login form is not appeared. Please check connectivity for {LOGIN_URL}",
         )
 
         self.__fill_login_form()
@@ -151,18 +161,21 @@ class GetPixivToken(object):
             )
             el.send_keys(Keys.ENTER)
 
-        WebDriverWait(self.driver, 10).until_not(
-            EC.presence_of_element_located((By.CLASS_NAME, "busy-container"))
+        WebDriverWait(self.driver, 60).until_not(
+            EC.presence_of_element_located((By.CLASS_NAME, "busy-container")),
+            "Please fill in login forms and press enter within 60 seconds.",
         )
 
-        c = 0  # timeout if not redirecting for 20s
-        while 20 > c and self.driver.current_url[:40] != REDIRECT_URI:
-            c += 1
+        for _ in range(20):
+            if self.driver.current_url[:40] == REDIRECT_URI:
+                break
             sleep(1)
         else:
-            if c == 20:
-                self.driver.close()
-                raise ValueError("Failed to login")
+            self.driver.close()
+            raise ValueError(
+                "Failed to login. Please check your information or proxy. "
+                "(Maybe restricted by pixiv?)"
+            )
 
     @staticmethod
     def __get_headless_option() -> webdriver.chrome.options.Options:
@@ -197,19 +210,45 @@ class GetPixivToken(object):
 
         return code_verifier, code_challenge
 
-    def __parse_log(self) -> str:
+    def __parse_log(self) -> str | None:
+        perf_log: list[dict[str, str | int]]
         perf_log = self.driver.get_log("performance")  # type: ignore[no-untyped-call]
         messages = [
-            json.loads(row.get("message", {})).get("message", {}) for row in perf_log
+            json.loads(row["message"])
+            for row in perf_log
+            if "message" in row and type(row["message"]) is str
+        ]
+        messages = [
+            message["message"]
+            for message in messages
+            if "message" in message
+            and "method" in message["message"]
+            and message["message"]["method"] == "Network.requestWillBeSent"
         ]
 
-        code = "(None)"
-        for message in [
-            _ for _ in messages if _.get("method") == "Network.requestWillBeSent"
-        ]:
+        for message in messages:
             url = message.get("params", {}).get("documentURL")
-            if url[:8] == "pixiv://":
-                _ = re.search(r"code=([^&]*)", url)
-                return code if _ is None else str(_.group(1))
-        else:
-            return code
+            if url is not None and str(url).startswith("pixiv://"):
+                m = re.search(r"code=([^&]*)", url)
+                return None if m is None else str(m.group(1))
+        return None
+
+    # Example of pref log:
+    #
+    # {
+    #     'level': 'INFO',
+    #     'message': '{
+    #             "message":
+    #                 {
+    #                     "method": "Network.loadingFinished",
+    #                     "params":{
+    #                         "encodedDataLength": 0,
+    #                         "requestId": "B13E7DBAD4EB28AAD6B05EEA5D628CE5",
+    #                         "shouldReportCorbBlocking": false,
+    #                         "timestamp":105426.696689
+    #                     }
+    #                 },
+    #             "webview": "9D08CF686401F5B87539217E751861DD"
+    #     }',
+    #     'timestamp': 1653700994895
+    # }

@@ -1,4 +1,4 @@
-FROM python:3.11.0b1
+FROM python:3
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -22,9 +22,7 @@ RUN wget -qO /tmp/chromedriver.zip \
 ENV DISPLAY=:99
 
 # upgrade pip
-RUN pip install --no-cache-dir -U pip
+RUN python -m pip install --no-cache-dir -U pip \
+    && pip install --no-cache-dir gppt
 
-# install selenium
-RUN pip install --no-cache-dir selenium gppt
-# CMD ["gppt", "lh", "-u", "${PIXIV_ID}", "-p", "${PIXIV_PASS}"]
 ENTRYPOINT ["gppt"]

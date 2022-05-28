@@ -15,7 +15,7 @@ from time import sleep
 from typing import Any, cast
 from urllib.parse import urlencode
 
-import pyderman
+# import pyderman
 import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -57,20 +57,21 @@ class GetPixivToken(object):
         pass_: str | None = None,
     ) -> LoginInfo:
         self.headless, self.user, self.pass_ = headless, user, pass_
-        executable_path = pyderman.install(verbose=False, browser=pyderman.chrome)
-        if type(executable_path) is not str:
-            raise ValueError("Executable path is not str somehow.")
+        # executable_path = pyderman.install(verbose=False, browser=pyderman.chrome)
+        # if type(executable_path) is not str:
+        #     raise ValueError("Executable path is not str somehow.")
         if headless:
             opts = self.__get_headless_option()
             self.driver = webdriver.Chrome(
-                executable_path=executable_path,
+                # executable_path=executable_path,
                 options=opts,
                 desired_capabilities=self.caps,
             )
 
         else:
             self.driver = webdriver.Chrome(
-                executable_path=executable_path, desired_capabilities=self.caps
+                # executable_path=executable_path,
+                desired_capabilities=self.caps
             )
 
         code_verifier, code_challenge = self.__oauth_pkce()

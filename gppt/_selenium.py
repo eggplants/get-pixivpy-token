@@ -137,14 +137,12 @@ class GetPixivToken(object):
 
     def __fill_login_form(self) -> None:
         if self.user is not None:
-            el = self.driver.find_element_by_xpath(
-                "//div[@id='LoginComponent']//*/input[@type='text']"
-            )
+            el = self.driver.find_element_by_xpath("//input[@autocomplete='username']")
             self.__slow_type(el, self.user)
 
         if self.pass_ is not None:
             el = self.driver.find_element_by_xpath(
-                "//div[@id='LoginComponent']//*/input[@type='password']"
+                "//input[@autocomplete='current-password']"
             )
             self.__slow_type(el, self.pass_)
 
@@ -157,7 +155,7 @@ class GetPixivToken(object):
     def __try_login(self) -> None:
         if self.headless:
             el = self.driver.find_element_by_xpath(
-                "//div[@id='LoginComponent']" "//button[@class='signup-form__submit']"
+                "//button[@type='submit'][contains(text(), 'Login')]"
             )
             el.send_keys(Keys.ENTER)
 

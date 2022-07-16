@@ -18,7 +18,6 @@
   https://results.pre-commit.ci/latest/github/eggplants/get-pixivpy-token/main
 )
 
-
 - Get your Pixiv token (for running [upbit/pixivpy](https://github.com/upbit/pixivpy))
 - Refine [pixiv_auth.py](https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362) + [its fork](https://gist.github.com/upbit/6edda27cb1644e94183291109b8a5fde)
 

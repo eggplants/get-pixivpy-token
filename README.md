@@ -4,10 +4,10 @@
   https://img.shields.io/pypi/v/gppt?color=blue
   )](
   https://pypi.org/project/gppt/
-) [![Docker Image Size (latest by date)](
-  https://img.shields.io/docker/image-size/eggplanter/gppt
+) [![ghcr](
+  https://ghcr-badge.herokuapp.com/eggplants/get-pixivpy-token/size
   )](
-  https://hub.docker.com/r/eggplanter/gppt
+  https://github.com/eggplants/get-pixivpy-token/pkgs/container/get-pixivpy-token
 ) [![Maintainability](
   https://api.codeclimate.com/v1/badges/b40b8fa2c9d71f869b9c/maintainability
   )](
@@ -44,7 +44,7 @@ aapi.auth(refresh_token=REFRESH_TOKEN)
 ### From Docker
 
 ```shellsession
-$ docker run --rm -it eggplanter/gppt lh -u <id> -p <pw>
+$ docker run --rm -it ghcr.io/eggplants/get-pixivpy-token lh -u <id> -p <pw>
 [+]: Success!
 access_token: ***
 refresh_token: ***

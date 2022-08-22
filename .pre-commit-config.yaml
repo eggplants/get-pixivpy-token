@@ -53,7 +53,7 @@ repos:
         files: ^gppt/
         args: [--strict]
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.32.1
+    rev: v0.32.2
     hooks:
       - id: markdownlint-fix
         args: [--disable=MD013, --disable=MD033]

@@ -42,7 +42,7 @@ REQUESTS_KWARGS: dict[str, Any] = {
 }
 
 
-class GetPixivToken(object):
+class GetPixivToken:
     def __init__(self) -> None:
 
         self.caps = DesiredCapabilities.CHROME.copy()

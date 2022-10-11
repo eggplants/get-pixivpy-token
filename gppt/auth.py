@@ -60,7 +60,7 @@ class PixivAuth:
 
     def read_client_cred(self) -> LoginCred | None:
         if os.path.exists(self.auth_json_path):
-            cred_data = json.load(open(self.auth_json_path, "r"))
+            cred_data = json.load(open(self.auth_json_path))
             if set(cred_data.keys()) == {"pixiv_id", "password"}:
                 return cast(LoginCred, cred_data)
             else:

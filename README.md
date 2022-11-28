@@ -5,7 +5,7 @@
   )](
   https://pypi.org/project/gppt/
 ) [![ghcr](
-  https://ghcr-badge.herokuapp.com/eggplants/get-pixivpy-token/size
+  https://ghcr-badge.deta.dev/eggplants/get-pixivpy-token/size
   )](
   https://github.com/eggplants/get-pixivpy-token/pkgs/container/get-pixivpy-token
 ) [![Maintainability](

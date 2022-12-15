@@ -13,7 +13,7 @@ from hashlib import sha256
 from random import uniform
 from secrets import token_urlsafe
 from time import sleep
-from typing import Any, cast, Optional
+from typing import Any, Optional, cast
 from urllib.parse import urlencode
 
 import pyderman
@@ -44,30 +44,32 @@ REQUESTS_KWARGS: dict[str, Any] = {
 }
 
 
-def _get_system_proxy(proxy_type: str = 'https') -> Optional[str]:
+def _get_system_proxy(proxy_type: str = "https") -> str | None:
     """
     Load proxy from system, such as `export ALL_PROXY=xxxx` in ~/.bashrc.
     """
     _sys_proxies = urllib.request.getproxies()
-    if 'all' in _sys_proxies:
-        return _sys_proxies['all']
+    if "all" in _sys_proxies:
+        return _sys_proxies["all"]
     else:
         return _sys_proxies.get(proxy_type, None)
 
 
-def _get_proxy(proxy: Optional[str] = None, proxy_type: str = 'https') -> Optional[str]:
+def _get_proxy(proxy: str | None = None, proxy_type: str = "https") -> str | None:
     """
     If `proxy` is given, just use this one, otherwise load proxy from system.
     """
     return proxy or _get_system_proxy(proxy_type)
 
 
-def _get_proxies_for_requests(proxy: Optional[str] = None, proxy_type: str = 'https') -> Optional[dict]:
+def _get_proxies_for_requests(
+    proxy: str | None = None, proxy_type: str = "https"
+) -> dict | None:
     """
     Load proxy to dict-formatted proxies for `requests` module.
     """
     _proxy = _get_proxy(proxy, proxy_type)
-    return {'all': _proxy} if _proxy else None
+    return {"all": _proxy} if _proxy else None
 
 
 class GetPixivToken:
@@ -97,7 +99,7 @@ class GetPixivToken:
         self.driver = webdriver.Chrome(
             executable_path=executable_path,
             options=opts,
-            desired_capabilities=self.caps
+            desired_capabilities=self.caps,
         )
 
         code_verifier, code_challenge = self.__oauth_pkce()
@@ -137,14 +139,14 @@ class GetPixivToken:
                 "app-os-version": "14.6",
                 "app-os": "ios",
             },
-            proxies=_get_proxies_for_requests(proxy, 'https'),
+            proxies=_get_proxies_for_requests(proxy, "https"),
             **REQUESTS_KWARGS,
         )
 
         return cast(LoginInfo, response.json())
 
     @staticmethod
-    def refresh(refresh_token: str, proxy: Optional[str] = None) -> LoginInfo:
+    def refresh(refresh_token: str, proxy: str | None = None) -> LoginInfo:
         response = requests.post(
             AUTH_TOKEN_URL,
             data={
@@ -159,7 +161,7 @@ class GetPixivToken:
                 "app-os-version": "14.6",
                 "app-os": "ios",
             },
-            proxies=_get_proxies_for_requests(proxy, 'https'),
+            proxies=_get_proxies_for_requests(proxy, "https"),
             **REQUESTS_KWARGS,
         )
         return cast(LoginInfo, response.json())
@@ -184,7 +186,7 @@ class GetPixivToken:
     # For the users in different language areas, this text will be different,
     # so using `Login` directly may cause `NoSuchElementException`.
     # The code here may also need to be supplemented with versions in other languages.
-    __LOGIN_TEXTS__ = ['Login', '登录']
+    __LOGIN_TEXTS__ = ["Login", "登录"]
 
     def __try_login(self) -> None:
         if self.headless:
@@ -192,7 +194,8 @@ class GetPixivToken:
             for login_text in self.__LOGIN_TEXTS__:
                 try:
                     el = self.driver.find_element(
-                        By.XPATH, f"//button[@type='submit'][contains(text(), {login_text!r})]"
+                        By.XPATH,
+                        f"//button[@type='submit'][contains(text(), {login_text!r})]",
                     )
                 except NoSuchElementException as err:
                     lerr = err
@@ -221,16 +224,18 @@ class GetPixivToken:
             )
 
     @staticmethod
-    def __get_option(proxy: Optional[str] = None) -> webdriver.chrome.options.Options:
+    def __get_option(proxy: str | None = None) -> webdriver.chrome.options.Options:
         options = webdriver.ChromeOptions()
         proxy = _get_proxy(proxy)
         if proxy:
-            options.add_argument(f'--proxy-server={proxy}')
+            options.add_argument(f"--proxy-server={proxy}")
 
         return options
 
     @staticmethod
-    def __get_headless_option(proxy: Optional[str] = None) -> webdriver.chrome.options.Options:
+    def __get_headless_option(
+        proxy: str | None = None,
+    ) -> webdriver.chrome.options.Options:
         options = webdriver.ChromeOptions()
         options.add_argument("--headless")
         options.add_argument("--disable-gpu")
@@ -245,7 +250,7 @@ class GetPixivToken:
 
         proxy = _get_proxy(proxy)
         if proxy:
-            options.add_argument(f'--proxy-server={proxy}')
+            options.add_argument(f"--proxy-server={proxy}")
         else:
             options.add_argument('--proxy-server="direct://"')
             options.add_argument("--proxy-bypass-list=*")

@@ -62,9 +62,7 @@ def _get_proxy(proxy: str | None = None, proxy_type: str = "https") -> str | Non
     return proxy or _get_system_proxy(proxy_type)
 
 
-def _get_proxies_for_requests(
-    proxy: str | None = None, proxy_type: str = "https"
-):
+def _get_proxies_for_requests(proxy: str | None = None, proxy_type: str = "https"):
     """
     Load proxy to dict-formatted proxies for `requests` module.
     """

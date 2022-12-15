@@ -7,17 +7,19 @@ from __future__ import annotations
 
 import json
 import re
+import urllib.request
 from base64 import urlsafe_b64encode
 from hashlib import sha256
 from random import uniform
 from secrets import token_urlsafe
 from time import sleep
-from typing import Any, cast
+from typing import Any, cast, Optional
 from urllib.parse import urlencode
 
 import pyderman
 import requests
 from selenium import webdriver
+from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
@@ -42,6 +44,32 @@ REQUESTS_KWARGS: dict[str, Any] = {
 }
 
 
+def _get_system_proxy(proxy_type: str = 'https') -> Optional[str]:
+    """
+    Load proxy from system, such as `export ALL_PROXY=xxxx` in ~/.bashrc.
+    """
+    _sys_proxies = urllib.request.getproxies()
+    if 'all' in _sys_proxies:
+        return _sys_proxies['all']
+    else:
+        return _sys_proxies.get(proxy_type, None)
+
+
+def _get_proxy(proxy: Optional[str] = None, proxy_type: str = 'https') -> Optional[str]:
+    """
+    If `proxy` is given, just use this one, otherwise load proxy from system.
+    """
+    return proxy or _get_system_proxy(proxy_type)
+
+
+def _get_proxies_for_requests(proxy: Optional[str] = None, proxy_type: str = 'https') -> Optional[dict]:
+    """
+    Load proxy to dict-formatted proxies for `requests` module.
+    """
+    _proxy = _get_proxy(proxy, proxy_type)
+    return {'all': _proxy} if _proxy else None
+
+
 class GetPixivToken:
     def __init__(self) -> None:
 
@@ -55,23 +83,22 @@ class GetPixivToken:
         headless: bool | None = False,
         user: str | None = None,
         pass_: str | None = None,
+        proxy: str | None = None,
     ) -> LoginInfo:
         self.headless, self.user, self.pass_ = headless, user, pass_
         executable_path = pyderman.install(verbose=False, browser=pyderman.chrome)
         if type(executable_path) is not str:
             raise ValueError("Executable path is not str somehow.")
         if headless is not None and headless:
-            opts = self.__get_headless_option()
-            self.driver = webdriver.Chrome(
-                executable_path=executable_path,
-                options=opts,
-                desired_capabilities=self.caps,
-            )
-
+            opts = self.__get_headless_option(proxy)
         else:
-            self.driver = webdriver.Chrome(
-                executable_path=executable_path, desired_capabilities=self.caps
-            )
+            opts = self.__get_option(proxy)
+
+        self.driver = webdriver.Chrome(
+            executable_path=executable_path,
+            options=opts,
+            desired_capabilities=self.caps
+        )
 
         code_verifier, code_challenge = self.__oauth_pkce()
         login_params = {
@@ -110,13 +137,14 @@ class GetPixivToken:
                 "app-os-version": "14.6",
                 "app-os": "ios",
             },
+            proxies=_get_proxies_for_requests(proxy, 'https'),
             **REQUESTS_KWARGS,
         )
 
         return cast(LoginInfo, response.json())
 
     @staticmethod
-    def refresh(refresh_token: str) -> LoginInfo:
+    def refresh(refresh_token: str, proxy: Optional[str] = None) -> LoginInfo:
         response = requests.post(
             AUTH_TOKEN_URL,
             data={
@@ -131,6 +159,7 @@ class GetPixivToken:
                 "app-os-version": "14.6",
                 "app-os": "ios",
             },
+            proxies=_get_proxies_for_requests(proxy, 'https'),
             **REQUESTS_KWARGS,
         )
         return cast(LoginInfo, response.json())
@@ -152,12 +181,28 @@ class GetPixivToken:
             elm.send_keys(character)
             sleep(uniform(0.3, 0.7))
 
+    # For the users in different language areas, this text will be different,
+    # so using `Login` directly may cause `NoSuchElementException`.
+    # The code here may also need to be supplemented with versions in other languages.
+    __LOGIN_TEXTS__ = ['Login', '登录']
+
     def __try_login(self) -> None:
         if self.headless:
-            el = self.driver.find_element(
-                By.XPATH, "//button[@type='submit'][contains(text(), 'Login')]"
-            )
-            el.send_keys(Keys.ENTER)
+            el, lerr = None, None
+            for login_text in self.__LOGIN_TEXTS__:
+                try:
+                    el = self.driver.find_element(
+                        By.XPATH, f"//button[@type='submit'][contains(text(), {login_text!r})]"
+                    )
+                except NoSuchElementException as err:
+                    lerr = err
+                else:
+                    break
+
+            if el:
+                el.send_keys(Keys.ENTER)
+            else:
+                raise lerr
 
         WebDriverWait(self.driver, 60).until_not(
             EC.presence_of_element_located((By.CLASS_NAME, "busy-container")),
@@ -176,7 +221,16 @@ class GetPixivToken:
             )
 
     @staticmethod
-    def __get_headless_option() -> webdriver.chrome.options.Options:
+    def __get_option(proxy: Optional[str] = None) -> webdriver.chrome.options.Options:
+        options = webdriver.ChromeOptions()
+        proxy = _get_proxy(proxy)
+        if proxy:
+            options.add_argument(f'--proxy-server={proxy}')
+
+        return options
+
+    @staticmethod
+    def __get_headless_option(proxy: Optional[str] = None) -> webdriver.chrome.options.Options:
         options = webdriver.ChromeOptions()
         options.add_argument("--headless")
         options.add_argument("--disable-gpu")
@@ -184,12 +238,18 @@ class GetPixivToken:
         options.add_argument("--disable-infobars")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-browser-side-navigation")
-        options.add_argument('--proxy-server="direct://"')
-        options.add_argument("--proxy-bypass-list=*")
         options.add_argument("--start-maximized")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--user-agent=" + USER_AGENT)
+
+        proxy = _get_proxy(proxy)
+        if proxy:
+            options.add_argument(f'--proxy-server={proxy}')
+        else:
+            options.add_argument('--proxy-server="direct://"')
+            options.add_argument("--proxy-bypass-list=*")
+
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option("useAutomationExtension", False)
         return options

@@ -13,13 +13,13 @@ from hashlib import sha256
 from random import uniform
 from secrets import token_urlsafe
 from time import sleep
-from typing import Any, Optional, cast
+from typing import Any, cast
 from urllib.parse import urlencode
 
 import pyderman
 import requests
 from selenium import webdriver
-from selenium.common import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
@@ -64,7 +64,7 @@ def _get_proxy(proxy: str | None = None, proxy_type: str = "https") -> str | Non
 
 def _get_proxies_for_requests(
     proxy: str | None = None, proxy_type: str = "https"
-) -> dict | None:
+):
     """
     Load proxy to dict-formatted proxies for `requests` module.
     """
@@ -202,10 +202,10 @@ class GetPixivToken:
                 else:
                     break
 
-            if el:
-                el.send_keys(Keys.ENTER)
-            else:
+            if isinstance(lerr, NoSuchElementException):
                 raise lerr
+            else:
+                el.send_keys(Keys.ENTER)
 
         WebDriverWait(self.driver, 60).until_not(
             EC.presence_of_element_located((By.CLASS_NAME, "busy-container")),

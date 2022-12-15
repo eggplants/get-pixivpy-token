@@ -23,6 +23,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -62,7 +63,7 @@ def _get_proxy(proxy: str | None = None, proxy_type: str = "https") -> str | Non
     return proxy or _get_system_proxy(proxy_type)
 
 
-def _get_proxies_for_requests(proxy: str | None = None, proxy_type: str = "https"):
+def _get_proxies_for_requests(proxy: str | None = None, proxy_type: str = "https") -> dict[str, str] | None:
     """
     Load proxy to dict-formatted proxies for `requests` module.
     """
@@ -202,8 +203,10 @@ class GetPixivToken:
 
             if isinstance(lerr, NoSuchElementException):
                 raise lerr
-            else:
+            elif isinstance(el, WebElement):
                 el.send_keys(Keys.ENTER)
+            else:
+                assert False, 'Should not reach here!'
 
         WebDriverWait(self.driver, 60).until_not(
             EC.presence_of_element_located((By.CLASS_NAME, "busy-container")),

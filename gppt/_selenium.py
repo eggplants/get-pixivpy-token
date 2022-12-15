@@ -201,10 +201,10 @@ class GetPixivToken:
                 else:
                     break
 
-            if isinstance(lerr, NoSuchElementException):
-                raise lerr
-            elif isinstance(el, WebElement):
+            if isinstance(el, WebElement):
                 el.send_keys(Keys.ENTER)
+            elif isinstance(lerr, NoSuchElementException):
+                raise lerr
             else:
                 assert False, 'Should not reach here!'
 

@@ -40,7 +40,7 @@ def print_auth_token_response(res: LoginInfo, json: bool | None = False) -> None
 def func_login(ns: argparse.Namespace) -> None:
     g = GetPixivToken()
     print("[!]: Chrome browser will be launched. Please login.", file=stderr)
-    res = g.login(user=ns.username, pass_=ns.password)
+    res = g.login(username=ns.username, password=ns.password)
     print("[+]: Success!", file=stderr)
     print_auth_token_response(res, json=ns.json)
 
@@ -54,7 +54,7 @@ def func_logini(ns: argparse.Namespace) -> None:
 
 def func_loginh(ns: argparse.Namespace) -> None:
     g = GetPixivToken()
-    res = g.login(headless=True, user=ns.username, pass_=ns.password)
+    res = g.login(headless=True, username=ns.username, password=ns.password)
     print("[+]: Success!", file=stderr)
     print_auth_token_response(res, json=ns.json)
 

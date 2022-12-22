@@ -41,6 +41,10 @@ aapi.auth(refresh_token=REFRESH_TOKEN)
 ...
 ```
 
+## Enable Proxy
+
+Set `ALL_PROXY` or `HTTPS_PROXY` to your environment variables.
+
 ### From Docker
 
 ```shellsession
@@ -81,11 +85,12 @@ expires_in: 3600
 
 ```python
 from gppt import GetPixivToken
+
 g = GetPixivToken()
-res = g.login(headless=True, user="...", pass_="...")
+res = g.login(headless=True, username="...", password="...")
 ```
 
-- `res.response` returns
+- `res.response` returns:
 
 ```json
 {

@@ -27,6 +27,10 @@
 pip install gppt
 ```
 
+## Enable Proxy
+
+Set `ALL_PROXY` or `HTTPS_PROXY` to your environment variables.
+
 ## Run
 
 Retrieved token can be used like below:
@@ -40,10 +44,6 @@ aapi = AppPixivAPI()
 aapi.auth(refresh_token=REFRESH_TOKEN)
 ...
 ```
-
-## Enable Proxy
-
-Set `ALL_PROXY` or `HTTPS_PROXY` to your environment variables.
 
 ### From Docker
 

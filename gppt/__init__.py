@@ -5,7 +5,6 @@ from ._selenium import (
     CLIENT_SECRET,
     LOGIN_URL,
     REDIRECT_URI,
-    REQUESTS_KWARGS,
     USER_AGENT,
     GetPixivToken,
 )
@@ -36,7 +35,6 @@ __all__ = [
     "CLIENT_SECRET",
     "LOGIN_URL",
     "REDIRECT_URI",
-    "REQUESTS_KWARGS",
     "USER_AGENT",
     "GetPixivToken",
 ]

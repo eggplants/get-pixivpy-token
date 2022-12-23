@@ -27,6 +27,10 @@
 pip install gppt
 ```
 
+## Enable Proxy
+
+Set `ALL_PROXY` or `HTTPS_PROXY` to your environment variables.
+
 ## Run
 
 Retrieved token can be used like below:
@@ -81,11 +85,12 @@ expires_in: 3600
 
 ```python
 from gppt import GetPixivToken
+
 g = GetPixivToken()
-res = g.login(headless=True, user="...", pass_="...")
+res = g.login(headless=True, username="...", password="...")
 ```
 
-- `res.response` returns
+- `res.response` returns:
 
 ```json
 {

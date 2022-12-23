@@ -38,7 +38,7 @@ class PixivAuth:
             print("\x1b[?25l[+]: Login...")
             login_info = aapi.auth(refresh_token=ref)
         elif login_cred is None or cnt > 0:
-            print("[+]: ID is mail address, userid, account name.")
+            print("[+]: ID is mail address, username, or account name.")
             stdin_login = (
                 pwinput.pwinput(prompt="[?]: ID: ", mask=" "),
                 pwinput.pwinput(prompt="[?]: PW: ", mask=" "),
@@ -55,7 +55,7 @@ class PixivAuth:
     @staticmethod
     def get_refresh_token(pixiv_id: str, pixiv_pass: str) -> str:
         g = GetPixivToken()
-        res = g.login(headless=True, user=pixiv_id, pass_=pixiv_pass)
+        res = g.login(headless=True, username=pixiv_id, password=pixiv_pass)
         return res["refresh_token"]
 
     def read_client_cred(self) -> LoginCred | None:

@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import re
+import shutil
 from base64 import urlsafe_b64encode
 from hashlib import sha256
 from random import uniform
@@ -57,7 +58,9 @@ class GetPixivToken:
         self.username = username
         self.password = password
 
-        executable_path = pyderman.install(verbose=False, browser=pyderman.chrome)
+        executable_path = shutil.which('chromedriver')  # try load chrome driver from PATH
+        if not executable_path:
+            executable_path = pyderman.install(verbose=False, browser=pyderman.chrome)
         if type(executable_path) is not str:
             raise ValueError("Executable path is not str somehow.")
 

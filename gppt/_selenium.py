@@ -58,11 +58,14 @@ class GetPixivToken:
         self.username = username
         self.password = password
 
-        executable_path = shutil.which('chromedriver')  # try load chrome driver from PATH
-        if not executable_path:
-            executable_path = pyderman.install(verbose=False, browser=pyderman.chrome)
-        if type(executable_path) is not str:
-            raise ValueError("Executable path is not str somehow.")
+        executable_path = shutil.which('chromedriver')
+        if executable_path is None:
+            installed_executable_path = pyderman.install(verbose=False, browser=pyderman.chrome)
+
+            if not isinstance(installed_executable_path, str):
+                raise ValueError("Executable path is not str somehow.")
+
+            executable_path = installed_executable_path
 
         self.driver = webdriver.Chrome(
             executable_path=executable_path,

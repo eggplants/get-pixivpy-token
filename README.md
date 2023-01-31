@@ -1,21 +1,21 @@
 # `gppt`: get-pixivpy-token
 
 [![PyPI](
-  https://img.shields.io/pypi/v/gppt?color=blue
+  <https://img.shields.io/pypi/v/gppt?color=blue>
   )](
-  https://pypi.org/project/gppt/
+  <https://pypi.org/project/gppt/>
 ) [![ghcr](
-  https://ghcr-badge.deta.dev/eggplants/get-pixivpy-token/size
+  <https://ghcr-badge.deta.dev/eggplants/get-pixivpy-token/size>
   )](
-  https://github.com/eggplants/get-pixivpy-token/pkgs/container/get-pixivpy-token
+  <https://github.com/eggplants/get-pixivpy-token/pkgs/container/get-pixivpy-token>
 ) [![Maintainability](
-  https://api.codeclimate.com/v1/badges/b40b8fa2c9d71f869b9c/maintainability
+  <https://api.codeclimate.com/v1/badges/b40b8fa2c9d71f869b9c/maintainability>
   )](
-  https://codeclimate.com/github/eggplants/get-pixiv-token/maintainability
+  <https://codeclimate.com/github/eggplants/get-pixiv-token/maintainability>
 ) [![pre-commit.ci status](
-  https://results.pre-commit.ci/badge/github/eggplants/get-pixivpy-token/main.svg
+  <https://results.pre-commit.ci/badge/github/eggplants/get-pixivpy-token/main.svg>
   )](
-  https://results.pre-commit.ci/latest/github/eggplants/get-pixivpy-token/main
+  <https://results.pre-commit.ci/latest/github/eggplants/get-pixivpy-token/main>
 )
 
 - Get your Pixiv token (for running [upbit/pixivpy](https://github.com/upbit/pixivpy))

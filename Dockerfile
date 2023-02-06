@@ -1,5 +1,8 @@
 FROM python:3
 
+ARG VERSION
+ENV VERSION ${VERSION:-main}
+
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN wget -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
@@ -23,6 +26,6 @@ ENV DISPLAY=:99
 
 # upgrade pip
 RUN python -m pip install --no-cache-dir -U pip \
-    && pip install --no-cache-dir gppt
+    && pip install --no-cache-dir git+https://github.com/eggplants/get-pixivpy-token@${VERSION}
 
 ENTRYPOINT ["gppt"]

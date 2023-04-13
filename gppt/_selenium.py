@@ -155,15 +155,14 @@ class GetPixivToken:
             sleep(uniform(0.3, 0.7))
 
     def __try_login(self) -> None:
-        if self.headless:
-            label_selectors = [
-                f"contains(text(), '{label}')"
-                for label in ["ログイン", "Login", "登录", "로그인", "登入"]
-            ]
-            el = self.driver.find_element(
-                By.XPATH, f"//button[@type='submit'][{' or '.join(label_selectors)}]"
-            )
-            el.send_keys(Keys.ENTER)
+        label_selectors = [
+            f"contains(text(), '{label}')"
+            for label in ["ログイン", "Login", "登录", "로그인", "登入"]
+        ]
+        el = self.driver.find_element(
+            By.XPATH, f"//button[@type='submit'][{' or '.join(label_selectors)}]"
+        )
+        el.send_keys(Keys.ENTER)
 
         WebDriverWait(self.driver, 60).until_not(
             EC.presence_of_element_located((By.CLASS_NAME, "busy-container")),

@@ -58,6 +58,6 @@ repos:
       - id: markdownlint-fix
         args: [--disable=MD013, --disable=MD033]
   - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.30.0
+    rev: v1.31.0
     hooks:
       - id: yamllint

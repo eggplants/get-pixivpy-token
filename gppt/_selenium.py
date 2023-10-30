@@ -13,7 +13,7 @@ from hashlib import sha256
 from random import uniform
 from secrets import token_urlsafe
 from time import sleep
-from typing import Any, cast
+from typing import TYPE_CHECKING, cast
 from urllib.parse import urlencode
 from urllib.request import getproxies
 
@@ -23,19 +23,24 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from selenium.webdriver.support.ui import WebDriverWait
 
 from .login_response_types import LoginInfo
+
+if TYPE_CHECKING:
+    from selenium.webdriver.remote.webelement import WebElement
+
+TIMEOUT = 10.0
 
 # Latest app version can be found using GET /v1/application-info/android
 USER_AGENT = "PixivIOSApp/7.13.3 (iOS 14.6; iPhone13,2)"
 CALLBACK_URI = "https://app-api.pixiv.net/web/v1/users/auth/pixiv/callback"
 REDIRECT_URI = "https://accounts.pixiv.net/post-redirect"
 LOGIN_URL = "https://app-api.pixiv.net/web/v1/login"
-AUTH_TOKEN_URL = "https://oauth.secure.pixiv.net/auth/token"
+AUTH_TOKEN_URL = "https://oauth.secure.pixiv.net/auth/token"  # noqa: S105
 CLIENT_ID = "MOBrBDS8blbauoSck0ZfDbtuzpyT"
-CLIENT_SECRET = "lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj"
+CLIENT_SECRET = "lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj"  # noqa: S105
 PROXIES = getproxies()
 
 OptionsType = webdriver.chrome.options.Options
@@ -44,12 +49,11 @@ OptionsType = webdriver.chrome.options.Options
 class GetPixivToken:
     def __init__(self) -> None:
         self.caps = DesiredCapabilities.CHROME.copy()
-        self.caps["goog:loggingPrefs"] = {
-            "performance": "ALL"
-        }  # enable performance logs
+        self.caps["goog:loggingPrefs"] = {"performance": "ALL"}  # enable performance logs
 
     def login(
         self,
+        *,
         headless: bool | None = False,
         username: str | None = None,
         password: str | None = None,
@@ -60,12 +64,11 @@ class GetPixivToken:
 
         executable_path = shutil.which("chromedriver")
         if executable_path is None:
-            installed_executable_path = pyderman.install(
-                verbose=False, browser=pyderman.chrome
-            )
+            installed_executable_path = pyderman.install(verbose=False, browser=pyderman.chrome)
 
             if not isinstance(installed_executable_path, str):
-                raise ValueError("Executable path is not str somehow.")
+                msg = "Executable path is not str somehow."
+                raise ValueError(msg)
 
             executable_path = installed_executable_path
 
@@ -89,7 +92,7 @@ class GetPixivToken:
         )
 
         self.__fill_login_form()
-        sleep(uniform(0.3, 0.7))
+        sleep(uniform(0.3, 0.7))  # noqa: S311
         self.__try_login()
 
         # filter code url from performance logs
@@ -113,6 +116,7 @@ class GetPixivToken:
                 "app-os": "ios",
             },
             proxies=PROXIES,
+            timeout=TIMEOUT,
         )
 
         return cast(LoginInfo, response.json())
@@ -134,6 +138,7 @@ class GetPixivToken:
                 "app-os": "ios",
             },
             proxies=PROXIES,
+            timeout=TIMEOUT,
         )
         return cast(LoginInfo, response.json())
 
@@ -143,25 +148,18 @@ class GetPixivToken:
             self.__slow_type(el, self.username)
 
         if self.password:
-            el = self.driver.find_element(
-                By.XPATH, "//input[@autocomplete='current-password']"
-            )
+            el = self.driver.find_element(By.XPATH, "//input[@autocomplete='current-password']")
             self.__slow_type(el, self.password)
 
     @staticmethod
-    def __slow_type(elm: Any, text: str) -> None:
+    def __slow_type(elm: WebElement, text: str) -> None:
         for character in text:
             elm.send_keys(character)
-            sleep(uniform(0.3, 0.7))
+            sleep(uniform(0.3, 0.7))  # noqa: S311
 
     def __try_login(self) -> None:
-        label_selectors = [
-            f"contains(text(), '{label}')"
-            for label in ["ログイン", "Login", "登录", "로그인", "登入"]
-        ]
-        el = self.driver.find_element(
-            By.XPATH, f"//button[@type='submit'][{' or '.join(label_selectors)}]"
-        )
+        label_selectors = [f"contains(text(), '{label}')" for label in ["ログイン", "Login", "登录", "로그인", "登入"]]
+        el = self.driver.find_element(By.XPATH, f"//button[@type='submit'][{' or '.join(label_selectors)}]")
         el.send_keys(Keys.ENTER)
 
         WebDriverWait(self.driver, 60).until_not(
@@ -175,10 +173,8 @@ class GetPixivToken:
             sleep(1)
         else:
             self.driver.close()
-            raise ValueError(
-                "Failed to login. Please check your information or proxy. "
-                "(Maybe restricted by pixiv?)"
-            )
+            msg = "Failed to login. Please check your information or proxy. (Maybe restricted by pixiv?)"
+            raise ValueError(msg)
 
     @staticmethod
     def __get_chrome_option(headless: bool | None) -> OptionsType:
@@ -196,7 +192,7 @@ class GetPixivToken:
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--user-agent=" + USER_AGENT)
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options.add_experimental_option("useAutomationExtension", False)
+        options.add_experimental_option("useAutomationExtension", False)  # noqa: FBT003
 
         if "all" in PROXIES:
             options.add_argument(f"--proxy-server={PROXIES['all']}")
@@ -228,9 +224,7 @@ class GetPixivToken:
         perf_log: list[dict[str, str | int]]
         perf_log = self.driver.get_log("performance")  # type: ignore[no-untyped-call]
         messages = [
-            json.loads(row["message"])
-            for row in perf_log
-            if "message" in row and type(row["message"]) is str
+            json.loads(row["message"]) for row in perf_log if "message" in row and isinstance(row["message"], str)
         ]
         messages = [
             message["message"]

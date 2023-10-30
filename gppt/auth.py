@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-import os
+from pathlib import Path
 from typing import cast
 
 import pwinput  # type: ignore[import,unused-ignore]
@@ -12,12 +12,12 @@ from .login_response_types import LoginCred, LoginInfo, PixivLoginFailed
 
 
 class PixivAuth:
-    def __init__(self, auth_json_path: str = "client.json"):
+    def __init__(self, auth_json_path: str = "client.json") -> None:
         self.auth_json_path = auth_json_path
 
     def auth(self) -> tuple[AppPixivAPI, LoginInfo]:
         cnt = 0
-        while cnt < 3:
+        while cnt < 3:  # noqa: PLR2004
             try:
                 aapi, login_info = self.__auth(cnt)
             except (ValueError, UnboundLocalError):
@@ -25,9 +25,9 @@ class PixivAuth:
             else:
                 return aapi, login_info
             cnt += 1
-        else:
-            print("[!]: The number of login attempts has been exceeded.")
-            raise PixivLoginFailed
+
+        print("[!]: The number of login attempts has been exceeded.")
+        raise PixivLoginFailed
 
     def __auth(self, cnt: int) -> tuple[AppPixivAPI, LoginInfo]:
         aapi: AppPixivAPI = AppPixivAPI()
@@ -59,11 +59,10 @@ class PixivAuth:
         return res["refresh_token"]
 
     def read_client_cred(self) -> LoginCred | None:
-        if os.path.exists(self.auth_json_path):
-            cred_data = json.load(open(self.auth_json_path))
+        path = Path(self.auth_json_path)
+        if path.exists():
+            cred_data = json.load(path.open())
             if set(cred_data.keys()) == {"pixiv_id", "password"}:
                 return cast(LoginCred, cred_data)
-            else:
-                return None
-        else:
             return None
+        return None

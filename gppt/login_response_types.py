@@ -1,7 +1,7 @@
 from typing import TypedDict
 
 
-class PixivLoginFailed(Exception):
+class PixivLoginFailed(Exception):  # noqa: N818
     pass
 
 

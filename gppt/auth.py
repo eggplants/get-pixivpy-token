@@ -4,7 +4,7 @@ import json
 import os
 from typing import cast
 
-import pwinput  # type: ignore[import]
+import pwinput  # type: ignore[import,unused-ignore]
 from pixivpy3 import AppPixivAPI
 
 from ._selenium import GetPixivToken

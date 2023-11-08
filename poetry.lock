@@ -494,13 +494,13 @@ files = [
 
 [[package]]
 name = "pixivpy3"
-version = "3.7.3"
+version = "3.7.4"
 description = "Pixiv API for Python (with 6.x AppAPI supported)"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "pixivpy3-3.7.3-py3-none-any.whl", hash = "sha256:e4e18bd94c1fd52bcd9783c7185d8646d0e69d8d128d1fe511fb236f0ab05ae6"},
-    {file = "pixivpy3-3.7.3.tar.gz", hash = "sha256:049178f7e36477bef537985d672ba86aefe2a5a6cf9c22c4120cf68a75d785be"},
+    {file = "pixivpy3-3.7.4-py3-none-any.whl", hash = "sha256:a5984a38ac53e1c73619881afa606aeeca92a8d39bc3b694b5d0fda33addd600"},
+    {file = "pixivpy3-3.7.4.tar.gz", hash = "sha256:2415b45d88a8cb31c31b0c078a5909ea38ba2521ae6a72d25a53c4799f956f7e"},
 ]
 
 [package.dependencies]
@@ -508,7 +508,7 @@ cloudscraper = ">=1.2.58,<2.0.0"
 requests = ">=2.31.0,<3.0.0"
 requests-toolbelt = ">=1.0.0,<2.0.0"
 typing-extensions = ">=4.1.1,<5.0.0"
-urllib3 = ">=2.0.0,<3.0.0"
+urllib3 = ">=2.0.7,<3.0.0"
 
 [[package]]
 name = "platformdirs"

@@ -24,7 +24,7 @@ repos:
   - id: pretty-format-yaml
     args: [--autofix, --indent, '2']
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: 1.5.1
+  rev: 1.5.3
   hooks:
   - id: pyproject-fmt
 - repo: https://github.com/psf/black

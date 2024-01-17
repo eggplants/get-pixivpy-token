@@ -20,11 +20,11 @@ from urllib.request import getproxies
 import pyderman
 import requests
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.chrome.service import Service
 
 from .login_response_types import LoginInfo
 
@@ -69,10 +69,7 @@ class GetPixivToken:
             executable_path = installed_executable_path
 
         webdriver_service = Service(executable_path=executable_path)
-        self.driver = webdriver.Chrome(
-            service=webdriver_service,
-            options=self.__get_chrome_option(headless)
-        )
+        self.driver = webdriver.Chrome(service=webdriver_service, options=self.__get_chrome_option(headless))
 
         code_verifier, code_challenge = self.__oauth_pkce()
         login_params = {
@@ -189,7 +186,7 @@ class GetPixivToken:
         options.add_argument("--user-agent=" + USER_AGENT)
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         options.add_experimental_option("useAutomationExtension", False)  # noqa: FBT003
-        options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
+        options.set_capability("goog:loggingPrefs", {"performance": "ALL"})
 
         if "all" in PROXIES:
             options.add_argument(f"--proxy-server={PROXIES['all']}")

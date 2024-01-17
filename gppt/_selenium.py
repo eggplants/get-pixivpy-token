@@ -158,7 +158,7 @@ class GetPixivToken:
             sleep(uniform(0.3, 0.7))  # noqa: S311
 
     def __try_login(self) -> None:
-        label_selectors = [f"contains(text(), '{label}')" for label in ["ログイン", "Login", "登录", "로그인", "登入"]]
+        label_selectors = [f"contains(text(), '{label}')" for label in ["ログイン", "Log In", "登录", "로그인", "登入"]]
         el = self.driver.find_element(By.XPATH, f"//button[@type='submit'][{' or '.join(label_selectors)}]")
         el.send_keys(Keys.ENTER)
 

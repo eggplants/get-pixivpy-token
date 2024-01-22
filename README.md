@@ -33,15 +33,22 @@ Set `ALL_PROXY` or `HTTPS_PROXY` to your environment variables.
 
 ## Run
 
-Retrieved token can be used like below:
+### Example
 
 ```python
+from gppt import GetPixivToken
 from pixivpy3 import AppPixivAPI
 
-REFRESH_TOKEN = "***"  # or, REFRESH_TOKEN = res.refresh_token
+def get_refresh_token() -> str:
+    with open(".token.txt", "r+") with f:
+        if refresh_token := f.read().strip():
+            return refresh_token
+
+        g = GetPixivToken(headless=True)
+        f.write(g.login(username="...", password="...")["refresh_token"])
 
 aapi = AppPixivAPI()
-aapi.auth(refresh_token=REFRESH_TOKEN)
+aapi.auth(refresh_token=get_refresh_token())
 ...
 ```
 

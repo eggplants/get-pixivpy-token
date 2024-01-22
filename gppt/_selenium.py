@@ -29,6 +29,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from .login_response_types import LoginInfo
 
 if TYPE_CHECKING:
+    from selenium.webdriver.chrome.options import Options as ChromeOptions
     from selenium.webdriver.remote.webelement import WebElement
 
 TIMEOUT = 10.0
@@ -42,8 +43,6 @@ AUTH_TOKEN_URL = "https://oauth.secure.pixiv.net/auth/token"  # noqa: S105
 CLIENT_ID = "MOBrBDS8blbauoSck0ZfDbtuzpyT"
 CLIENT_SECRET = "lsACyCD94FhDUtGTXi3QzcFE2uU1hqtDaKeqrdwj"  # noqa: S105
 PROXIES = getproxies()
-
-OptionsType = webdriver.chrome.options.Options
 
 
 class GetPixivToken:
@@ -177,8 +176,8 @@ class GetPixivToken:
             raise ValueError(msg)
 
     @staticmethod
-    def __get_chrome_option(headless: bool | None) -> OptionsType:
-        options = webdriver.ChromeOptions()
+    def __get_chrome_option(headless: bool | None) -> ChromeOptions:
+        options: ChromeOptions = webdriver.ChromeOptions()
 
         if headless:
             options.add_argument("--headless")
@@ -222,7 +221,7 @@ class GetPixivToken:
 
     def __parse_log(self) -> str | None:
         perf_log: list[dict[str, str | int]]
-        perf_log = self.driver.get_log("performance")  # type: ignore[no-untyped-call]
+        perf_log = self.driver.get_log("performance")
         messages = [
             json.loads(row["message"]) for row in perf_log if "message" in row and isinstance(row["message"], str)
         ]

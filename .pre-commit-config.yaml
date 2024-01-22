@@ -42,7 +42,6 @@ repos:
   - id: mypy
     additional_dependencies:
     - types-setuptools
-    - types-selenium
     - types-requests
     - pyderman
     - pixivpy3

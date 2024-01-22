@@ -43,7 +43,6 @@ repos:
     additional_dependencies:
     - types-setuptools
     - types-requests
-    - pyderman
     - pixivpy3
     files: ^gppt/
 - repo: https://github.com/igorshubovych/markdownlint-cli

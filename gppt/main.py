@@ -6,8 +6,8 @@ from json import dumps
 from pprint import pprint
 from typing import TYPE_CHECKING
 
-from ._selenium import GetPixivToken
 from .auth import PixivAuth
+from .gppt import GetPixivToken
 
 if TYPE_CHECKING:
     from .login_response_types import LoginInfo

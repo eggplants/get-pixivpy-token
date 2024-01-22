@@ -27,7 +27,6 @@ version = "3.1.2"
 python = ">=3.8,<4"
 pixivpy3 = "^3.7.3"
 pwinput = "^1.0.3"
-pyderman = "^3.3.2"
 requests = "^2.31.0"
 selenium = "^4.14.0"
 
@@ -40,7 +39,7 @@ pytest = "^7.2.2"
 pytest-cov = "^4.0.0"
 
 [tool.poetry.scripts]
-gppt = "gppt_.main:main"
+gppt = "gppt.main:main"
 
 [tool.black]
 line-length = 120

@@ -18,11 +18,12 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from selenium.webdriver.support.ui import WebDriverWait
 
+from .consts import AUTH_TOKEN_URL, CALLBACK_URI, CLIENT_ID, CLIENT_SECRET, LOGIN_URL, REDIRECT_URI, USER_AGENT
 from .types import LoginInfo
-from .utils import _get_chrome_option, _oauth_pkce, _slow_type, PROXIES
-from .consts import USER_AGENT, CALLBACK_URI, REDIRECT_URI, LOGIN_URL, AUTH_TOKEN_URL, CLIENT_ID, CLIENT_SECRET
+from .utils import PROXIES, _get_chrome_option, _oauth_pkce, _slow_type
 
 TIMEOUT = 10.0
+
 
 class GetPixivToken:
     def __init__(
@@ -43,9 +44,12 @@ class GetPixivToken:
         username: str | None = None,
         password: str | None = None,
     ) -> LoginInfo:
-        if headless is not None: self.headless = headless
-        if username is not None: self.username = username
-        if password is not None: self.password = password
+        if headless is not None:
+            self.headless = headless
+        if username is not None:
+            self.username = username
+        if password is not None:
+            self.password = password
 
         self.driver = webdriver.Chrome(
             options=_get_chrome_option(self.headless),

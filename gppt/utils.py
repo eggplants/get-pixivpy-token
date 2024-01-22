@@ -1,24 +1,25 @@
 from __future__ import annotations
 
-from selenium.webdriver import ChromeOptions
-from urllib.request import getproxies
 from base64 import urlsafe_b64encode
-from secrets import token_urlsafe
 from hashlib import sha256
-from time import sleep
 from random import uniform
+from secrets import token_urlsafe
+from time import sleep
 from typing import TYPE_CHECKING
+from urllib.request import getproxies
+
+from selenium.webdriver import ChromeOptions
 
 from .consts import USER_AGENT
 
 if TYPE_CHECKING:
-    from selenium.webdriver.chrome.options import Options as ChromeOptions
     from selenium.webdriver.remote.webelement import WebElement
 
 PROXIES = getproxies()
 
+
 def _get_chrome_option(headless: bool | None) -> ChromeOptions:
-    options: ChromeOptions = ChromeOptions()
+    options = ChromeOptions()
 
     if headless:
         options.add_argument("--headless")
@@ -67,4 +68,5 @@ def _slow_type(elm: WebElement, text: str) -> None:
         elm.send_keys(character)
         sleep(uniform(0.3, 0.7))  # noqa: S311
 
-__all__ = ('_get_chrome_option','_oauth_pkce', '_slow_type')
+
+__all__ = ("_get_chrome_option", "_oauth_pkce", "_slow_type")

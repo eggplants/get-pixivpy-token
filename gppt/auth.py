@@ -7,8 +7,8 @@ from typing import cast
 import pwinput  # type: ignore[import,unused-ignore]
 from pixivpy3 import AppPixivAPI
 
-from ._selenium import GetPixivToken
-from .login_response_types import LoginCred, LoginInfo, PixivLoginFailed
+from .gppt import GetPixivToken
+from .types import LoginCred, LoginInfo, PixivLoginFailed
 
 
 class PixivAuth:
@@ -54,9 +54,8 @@ class PixivAuth:
 
     @staticmethod
     def get_refresh_token(pixiv_id: str, pixiv_pass: str) -> str:
-        g = GetPixivToken()
-        res = g.login(headless=True, username=pixiv_id, password=pixiv_pass)
-        return res["refresh_token"]
+        g = GetPixivToken(headless=True, username=pixiv_id, password=pixiv_pass)
+        return g.login()["refresh_token"]
 
     def read_client_cred(self) -> LoginCred | None:
         path = Path(self.auth_json_path)

@@ -40,7 +40,7 @@ from gppt import GetPixivToken
 from pixivpy3 import AppPixivAPI
 
 def get_refresh_token() -> str:
-    with open(".token.txt", "r+") with f:
+    with open(".token.txt", "r+") as f:
         if refresh_token := f.read().strip():
             return refresh_token
 

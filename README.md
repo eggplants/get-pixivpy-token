@@ -45,7 +45,9 @@ def get_refresh_token() -> str:
             return refresh_token
 
         g = GetPixivToken(headless=True)
-        f.write(g.login(username="...", password="...")["refresh_token"])
+        refresh_token = g.login(username="...", password="...")["refresh_token"]
+        f.write(refresh_token)
+        return refresh_token
 
 aapi = AppPixivAPI()
 aapi.auth(refresh_token=get_refresh_token())

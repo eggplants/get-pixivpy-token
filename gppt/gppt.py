@@ -40,7 +40,7 @@ class GetPixivToken:
     def login(
         self,
         *,
-        headless: bool | None = False,
+        headless: bool | None = None,
         username: str | None = None,
         password: str | None = None,
     ) -> LoginInfo:

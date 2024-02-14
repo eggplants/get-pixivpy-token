@@ -46,14 +46,16 @@ line-length = 120
 target-version = ['py39']
 
 [tool.ruff]
-select = ["ALL"]
-ignore = ["D", "ANN101"]
 line-length = 120
 
-[tool.ruff.mccabe]
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["D", "ANN101"]
+
+[tool.ruff.lint.mccabe]
 max-complexity = 18
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "gppt/main.py" = [
   "T201", # `print` found
   "T203", # `pprint` found

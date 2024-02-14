@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from typing import cast
 from urllib.parse import urlencode
 
@@ -18,7 +19,15 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC  # noqa: N812
 from selenium.webdriver.support.ui import WebDriverWait
 
-from .consts import AUTH_TOKEN_URL, CALLBACK_URI, CLIENT_ID, CLIENT_SECRET, LOGIN_URL, REDIRECT_URI, USER_AGENT
+from .consts import (
+    AUTH_TOKEN_URL,
+    CALLBACK_URI,
+    CLIENT_ID,
+    CLIENT_SECRET,
+    LOGIN_URL,
+    REDIRECT_URI,
+    USER_AGENT,
+)
 from .types import LoginInfo
 from .utils import PROXIES, _get_chrome_option, _oauth_pkce, _slow_type
 
@@ -76,7 +85,7 @@ class GetPixivToken:
             self.__fill_login_form()
             self.__try_login()
         else:
-            print("Waiting for manual login.")
+            print("Waiting for manual login.", file=sys.stderr)  # noqa: T201
             self.__wait_for_redirect()
 
         # filter code url from performance logs

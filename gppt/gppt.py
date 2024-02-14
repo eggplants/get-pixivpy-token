@@ -51,6 +51,10 @@ class GetPixivToken:
         if password is not None:
             self.password = password
 
+        # No headless if username or password are missing, manual input needed
+        if self.headless is True and (self.username is None or self.password is None):
+            self.headless = False
+
         self.driver = webdriver.Chrome(
             options=_get_chrome_option(self.headless),
         )

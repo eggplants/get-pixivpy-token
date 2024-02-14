@@ -68,7 +68,7 @@ class GetPixivToken:
             f"Login form is not appeared. Please check connectivity for {LOGIN_URL}",
         )
 
-        if self.headless:
+        if self.username is not None and self.password is not None:
             self.__fill_login_form()
             self.__try_login()
         else:

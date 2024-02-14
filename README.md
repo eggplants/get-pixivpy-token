@@ -40,7 +40,7 @@ from gppt import GetPixivToken
 from pixivpy3 import AppPixivAPI
 
 def get_refresh_token() -> str:
-    with open(".token.txt", "r+") as f:
+    with open("token.txt", "w+") as f:
         if refresh_token := f.read().strip():
             return refresh_token
 
@@ -91,12 +91,13 @@ expires_in: 3600
 ### From Library
 
 - Note: _In advance, please setup google-chrome-stable + selenium + webdriver_
+If either username or password are missing, manual input will be required.
 
 ```python
 from gppt import GetPixivToken
 
-g = GetPixivToken()
-res = g.login(headless=True, username="...", password="...")
+g = GetPixivToken(headless=False,username=None,password=None)
+res = g.login(headless=None,username=None,password=None)
 ```
 
 - `res.response` returns:

@@ -72,6 +72,7 @@ class GetPixivToken:
             self.__fill_login_form()
             self.__try_login()
         else:
+            print("Waiting for manual login.")
             self.__wait_for_redirect()
 
         # filter code url from performance logs

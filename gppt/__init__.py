@@ -9,7 +9,7 @@ from .types import (
     ProfileURIs,
 )
 
-__version__ = "4.0.0"
+__version__ = "4.0.1"
 
 __all__ = [
     "PixivAuth",

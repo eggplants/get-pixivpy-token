@@ -21,7 +21,7 @@ packages = [{include = "gppt"}]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/eggplants/get-pixivpy-token"
-version = "4.0.0"
+version = "4.0.1"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<4"

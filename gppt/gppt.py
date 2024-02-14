@@ -40,7 +40,7 @@ class GetPixivToken:
     def login(
         self,
         *,
-        headless: bool | None = False,
+        headless: bool | None = None,
         username: str | None = None,
         password: str | None = None,
     ) -> LoginInfo:
@@ -50,6 +50,10 @@ class GetPixivToken:
             self.username = username
         if password is not None:
             self.password = password
+
+        # No headless if username or password are missing, manual input needed
+        if self.headless is True and (self.username is None or self.password is None):
+            self.headless = False
 
         self.driver = webdriver.Chrome(
             options=_get_chrome_option(self.headless),
@@ -68,10 +72,11 @@ class GetPixivToken:
             f"Login form is not appeared. Please check connectivity for {LOGIN_URL}",
         )
 
-        if self.headless:
+        if self.username is not None and self.password is not None:
             self.__fill_login_form()
             self.__try_login()
         else:
+            print("Waiting for manual login.")
             self.__wait_for_redirect()
 
         # filter code url from performance logs

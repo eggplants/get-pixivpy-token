@@ -4,9 +4,10 @@ requires = [
   "poetry-core",
 ]
 
-[tool]
 [tool.poetry]
-authors = ["eggplants <w10776e8w@yahoo.co.jp>"]
+authors = [
+  "eggplants <w10776e8w@yahoo.co.jp>",
+]
 classifiers = [
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python",
@@ -15,9 +16,15 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
 ]
 description = "Get your Pixiv token (for running upbit/pixivpy)"
-keywords = ["pixiv", "api", "token"]
+keywords = [
+  "pixiv",
+  "api",
+  "token",
+]
 name = "gppt"
-packages = [{include = "gppt"}]
+packages = [
+  { include = "gppt" },
+]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/eggplants/get-pixivpy-token"
@@ -43,17 +50,21 @@ gppt = "gppt.main:main"
 
 [tool.black]
 line-length = 120
-target-version = ['py39']
+target-version = [
+  'py39',
+]
 
 [tool.ruff]
 line-length = 120
 
 [tool.ruff.lint]
-select = ["ALL"]
-ignore = ["D", "ANN101"]
-
-[tool.ruff.lint.mccabe]
-max-complexity = 18
+select = [
+  "ALL",
+]
+ignore = [
+  "D",
+  "ANN101",
+]
 
 [tool.ruff.lint.per-file-ignores]
 "gppt/main.py" = [
@@ -69,6 +80,8 @@ pretty = true
 python_version = "3.8"
 show_error_codes = true
 strict = true
+
+[tool]
 
 [tool.taskipy.tasks]
 test = "pytest --cov=gppt --cov-report=term"

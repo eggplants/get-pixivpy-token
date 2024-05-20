@@ -57,22 +57,19 @@ target-version = [
 [tool.ruff]
 line-length = 120
 
-[tool.ruff.lint]
-select = [
+lint.select = [
   "ALL",
 ]
-ignore = [
-  "D",
-  "ANN101",
+lint.per-file-ignores."gppt/auth.py" = [
+  "T201", # `print` found
 ]
-
-[tool.ruff.lint.per-file-ignores]
-"gppt/main.py" = [
+lint.per-file-ignores."gppt/main.py" = [
   "T201", # `print` found
   "T203", # `pprint` found
 ]
-"gppt/auth.py" = [
-  "T201", # `print` found
+lint.ignore = [
+  "ANN101",
+  "D",
 ]
 
 [tool.mypy]

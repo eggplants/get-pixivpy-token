@@ -60,16 +60,17 @@ line-length = 120
 lint.select = [
   "ALL",
 ]
+lint.ignore = [
+  "ANN101",
+  "D",
+]
+
 lint.per-file-ignores."gppt/auth.py" = [
   "T201", # `print` found
 ]
 lint.per-file-ignores."gppt/main.py" = [
   "T201", # `print` found
   "T203", # `pprint` found
-]
-lint.ignore = [
-  "ANN101",
-  "D",
 ]
 
 [tool.mypy]

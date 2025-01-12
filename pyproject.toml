@@ -1,41 +1,50 @@
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [
-  "poetry-core",
+  "poetry-core>=2",
 ]
 
-[tool.poetry]
-authors = [
-  "eggplants <w10776e8w@yahoo.co.jp>",
+[project]
+name = "gppt"
+version = "4.1.0"
+description = "Get your Pixiv token (for running upbit/pixivpy)"
+readme = "README.md"
+keywords = [
+  "api",
+  "pixiv",
+  "token",
 ]
+license = { text = "MIT" }
+authors = [
+  { name = "eggplants", email = "w10776e8w@yahoo.co.jp" },
+]
+requires-python = ">=3.9,<4"
 classifiers = [
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: Implementation :: CPython",
+  "Typing :: Typed",
 ]
-description = "Get your Pixiv token (for running upbit/pixivpy)"
-keywords = [
-  "pixiv",
-  "api",
-  "token",
+dependencies = [
+  "pixivpy3>=3.7.5,<4",
+  "pwinput>=1.0.3,<2",
+  "requests>=2.32.3,<3",
+  "selenium>=4.27.1,<5",
 ]
-name = "gppt"
+urls.Repository = "https://github.com/eggplants/get-pixivpy-token"
+scripts.gppt = "gppt.main:main"
+
+[tool.poetry]
+requires-poetry = ">=2.0"
 packages = [
   { include = "gppt" },
 ]
-license = "MIT"
-readme = "README.md"
-repository = "https://github.com/eggplants/get-pixivpy-token"
-version = "4.1.0"
-
-[tool.poetry.dependencies]
-python = ">=3.8,<4"
-pixivpy3 = "^3.7.3"
-pwinput = "^1.0.3"
-requests = "^2.31.0"
-selenium = "^4.14.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy = ">=0.991,<1.15"
@@ -45,8 +54,8 @@ types-requests = "^2.28.11.15"
 pytest = ">=7.2.2,<9.0.0"
 pytest-cov = ">=4,<6"
 
-[tool.poetry.scripts]
-gppt = "gppt.main:main"
+[tool.poetry.requires-plugins]
+poetry-plugin-shell = ">=1.0"
 
 [tool.black]
 line-length = 120
@@ -78,8 +87,6 @@ pretty = true
 python_version = "3.8"
 show_error_codes = true
 strict = true
-
-[tool]
 
 [tool.taskipy.tasks]
 test = "pytest --cov=gppt --cov-report=term"

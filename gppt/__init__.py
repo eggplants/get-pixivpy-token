@@ -1,6 +1,6 @@
 from .auth import PixivAuth
 from .gppt import GetPixivToken
-from .types import (
+from .model_types import (
     LoginCred,
     LoginInfo,
     LoginUserInfo,

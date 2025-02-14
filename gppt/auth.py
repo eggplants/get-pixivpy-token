@@ -8,7 +8,7 @@ import pwinput  # type: ignore[import,unused-ignore]
 from pixivpy3 import AppPixivAPI
 
 from .gppt import GetPixivToken
-from .types import LoginCred, LoginInfo, PixivLoginFailed
+from .model_types import LoginCred, LoginInfo, PixivLoginFailed
 
 
 class PixivAuth:

@@ -28,7 +28,7 @@ from .consts import (
     REDIRECT_URI,
     USER_AGENT,
 )
-from .types import LoginInfo
+from .model_types import LoginInfo
 from .utils import PROXIES, _get_chrome_option, _oauth_pkce, _slow_type
 
 TIMEOUT = 10.0

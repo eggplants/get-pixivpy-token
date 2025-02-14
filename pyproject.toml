@@ -70,7 +70,6 @@ lint.select = [
   "ALL",
 ]
 lint.ignore = [
-  "ANN101",
   "D",
 ]
 

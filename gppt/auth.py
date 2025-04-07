@@ -62,6 +62,6 @@ class PixivAuth:
         if path.exists():
             cred_data = json.load(path.open())
             if set(cred_data.keys()) == {"pixiv_id", "password"}:
-                return cast(LoginCred, cred_data)
+                return cast("LoginCred", cred_data)
             return None
         return None

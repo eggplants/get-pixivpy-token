@@ -112,7 +112,7 @@ class GetPixivToken:
             timeout=TIMEOUT,
         )
 
-        return cast(LoginInfo, response.json())
+        return cast("LoginInfo", response.json())
 
     @staticmethod
     def refresh(refresh_token: str) -> LoginInfo:
@@ -133,7 +133,7 @@ class GetPixivToken:
             proxies=PROXIES,
             timeout=TIMEOUT,
         )
-        return cast(LoginInfo, response.json())
+        return cast("LoginInfo", response.json())
 
     def __fill_login_form(self) -> None:
         if self.username:

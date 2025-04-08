@@ -1,3 +1,5 @@
+"""Command line interface for gppt."""
+
 from __future__ import annotations
 
 import argparse
@@ -10,10 +12,10 @@ from .auth import PixivAuth
 from .gppt import GetPixivToken
 
 if TYPE_CHECKING:
-    from .login_response_types import LoginInfo
+    from .model_types import LoginInfo
 
 
-def print_auth_token_response(res: LoginInfo, *, json: bool | None = False) -> None:
+def __print_auth_token_response(res: LoginInfo, *, json: bool | None = False) -> None:
     try:
         access_token = res["access_token"]
         refresh_token = res["refresh_token"]
@@ -40,36 +42,36 @@ def print_auth_token_response(res: LoginInfo, *, json: bool | None = False) -> N
         print("expires_in:", expires_in)
 
 
-def func_login(ns: argparse.Namespace) -> None:
+def __func_login(ns: argparse.Namespace) -> None:
     g = GetPixivToken()
     print("[!]: Chrome browser will be launched. Please login.", file=sys.stderr)
     res = g.login(username=ns.username, password=ns.password)
     print("[+]: Success!", file=sys.stderr)
-    print_auth_token_response(res, json=ns.json)
+    __print_auth_token_response(res, json=ns.json)
 
 
-def func_logini(ns: argparse.Namespace) -> None:
+def __func_logini(ns: argparse.Namespace) -> None:
     a = PixivAuth()
     _, res = a.auth()
     print("[+]: Success!", file=sys.stderr)
-    print_auth_token_response(res, json=ns.json)
+    __print_auth_token_response(res, json=ns.json)
 
 
-def func_loginh(ns: argparse.Namespace) -> None:
+def __func_loginh(ns: argparse.Namespace) -> None:
     g = GetPixivToken()
     res = g.login(headless=True, username=ns.username, password=ns.password)
     print("[+]: Success!", file=sys.stderr)
-    print_auth_token_response(res, json=ns.json)
+    __print_auth_token_response(res, json=ns.json)
 
 
-def func_refresh(ns: argparse.Namespace) -> None:
+def __func_refresh(ns: argparse.Namespace) -> None:
     g = GetPixivToken()
     res = g.refresh(ns.refresh_token)
     print("[+]: Success!", file=sys.stderr)
-    print_auth_token_response(res, json=ns.json)
+    __print_auth_token_response(res, json=ns.json)
 
 
-def parse() -> argparse.Namespace:
+def __parse() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="gppt",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -80,7 +82,11 @@ def parse() -> argparse.Namespace:
 
     subparsers = parser.add_subparsers()
 
-    login_parser = subparsers.add_parser("login", aliases=["l"], help="retrieving auth token")
+    login_parser = subparsers.add_parser(
+        "login",
+        aliases=["l"],
+        help="retrieving auth token",
+    )
     login_parser.add_argument(
         "-u",
         "--username",
@@ -95,14 +101,32 @@ def parse() -> argparse.Namespace:
         type=str,
         help="your current pixiv password",
     )
-    login_parser.add_argument("-j", "--json", action="store_true", help="output response as json")
-    login_parser.set_defaults(func=func_login)
+    login_parser.add_argument(
+        "-j",
+        "--json",
+        action="store_true",
+        help="output response as json",
+    )
+    login_parser.set_defaults(func=__func_login)
 
-    logini_parser = subparsers.add_parser("login-interactive", aliases=["li"], help="`login` in interactive mode")
-    logini_parser.add_argument("-j", "--json", action="store_true", help="output response as json")
-    logini_parser.set_defaults(func=func_logini)
+    logini_parser = subparsers.add_parser(
+        "login-interactive",
+        aliases=["li"],
+        help="`login` in interactive mode",
+    )
+    logini_parser.add_argument(
+        "-j",
+        "--json",
+        action="store_true",
+        help="output response as json",
+    )
+    logini_parser.set_defaults(func=__func_logini)
 
-    loginh_parser = subparsers.add_parser("login-headless", aliases=["lh"], help="`login` in headless mode")
+    loginh_parser = subparsers.add_parser(
+        "login-headless",
+        aliases=["lh"],
+        help="`login` in headless mode",
+    )
     loginh_parser.add_argument(
         "-u",
         "--username",
@@ -119,19 +143,34 @@ def parse() -> argparse.Namespace:
         required=True,
         help="your current pixiv password",
     )
-    loginh_parser.add_argument("-j", "--json", action="store_true", help="output response as json")
-    loginh_parser.set_defaults(func=func_loginh)
+    loginh_parser.add_argument(
+        "-j",
+        "--json",
+        action="store_true",
+        help="output response as json",
+    )
+    loginh_parser.set_defaults(func=__func_loginh)
 
-    refresh_parser = subparsers.add_parser("refresh", aliases=["r"], help="refresh tokens")
-    refresh_parser.add_argument("-j", "--json", action="store_true", help="output response as json")
+    refresh_parser = subparsers.add_parser(
+        "refresh",
+        aliases=["r"],
+        help="refresh tokens",
+    )
+    refresh_parser.add_argument(
+        "-j",
+        "--json",
+        action="store_true",
+        help="output response as json",
+    )
     refresh_parser.add_argument("refresh_token")
-    refresh_parser.set_defaults(func=func_refresh)
+    refresh_parser.set_defaults(func=__func_refresh)
 
     return parser.parse_args()
 
 
 def main() -> None:
-    args = parse()
+    """Main function to run the command line interface."""
+    args = __parse()
     args.func(args)
 
 

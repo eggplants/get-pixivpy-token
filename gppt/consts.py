@@ -1,3 +1,5 @@
+"""Pixiv API constants."""
+
 # Latest app version can be found using GET /v1/application-info/android
 USER_AGENT = "PixivIOSApp/7.13.3 (iOS 14.6; iPhone13,2)"
 CALLBACK_URI = "https://app-api.pixiv.net/web/v1/users/auth/pixiv/callback"

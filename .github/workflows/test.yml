@@ -1,0 +1,34 @@
+name: Test
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 1
+      fail-fast: false
+      matrix:
+        os:
+        - ubuntu-latest
+        python-version:
+        - '3.12'
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    - uses: astral-sh/setup-uv@v5
+      with:
+        enable-cache: true
+        cache-dependency-glob: uv.lock
+        python-version: ${{ matrix.python-version }}
+    - run: uv sync --all-extras --dev
+    - run: uv run task test:ci
+    - uses: qltysh/qlty-action/coverage@4147baf5f416bf8b60d036266d95d6099f0d3493
+      with:
+        coverage-token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+        files: ${{github.workspace}}/cov.xml

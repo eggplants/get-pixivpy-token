@@ -1,3 +1,7 @@
+""".. include:: ../README.md"""  # noqa: D415
+
+import importlib.metadata
+
 from .auth import PixivAuth
 from .gppt import GetPixivToken
 from .model_types import (
@@ -5,11 +9,15 @@ from .model_types import (
     LoginInfo,
     LoginUserInfo,
     OAuthAPIResponse,
-    PixivLoginFailed,
+    PixivLoginFailedError,
     ProfileURIs,
 )
 
-__version__ = "4.1.0"
+try:
+    __version__ = importlib.metadata.version(__name__)
+except importlib.metadata.PackageNotFoundError:
+    __version__ = "0.0.0"
+
 
 __all__ = [
     "AUTH_TOKEN_URL",
@@ -26,6 +34,6 @@ __all__ = [
     "OAuthAPIResponse",
     "PixivAuth",
     "PixivAuth",
-    "PixivLoginFailed",
+    "PixivLoginFailedError",
     "ProfileURIs",
 ]

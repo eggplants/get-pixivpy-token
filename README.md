@@ -9,13 +9,17 @@
   )](
   <https://github.com/eggplants/get-pixivpy-token/pkgs/container/get-pixivpy-token>
 ) [![Maintainability](
-  <https://api.codeclimate.com/v1/badges/b40b8fa2c9d71f869b9c/maintainability>
+  <https://qlty.sh/badges/8be7481b-d978-4e1a-808d-8bbb1984f864/maintainability.svg>
   )](
-  <https://codeclimate.com/github/eggplants/get-pixiv-token/maintainability>
+    <https://qlty.sh/gh/eggplants/projects/get-pixivpy-token>
 ) [![pre-commit.ci status](
   <https://results.pre-commit.ci/badge/github/eggplants/get-pixivpy-token/main.svg>
   )](
   <https://results.pre-commit.ci/latest/github/eggplants/get-pixivpy-token/main>
+) [![Code Coverage](
+  <https://qlty.sh/badges/8be7481b-d978-4e1a-808d-8bbb1984f864/test_coverage.svg>
+  )](
+  <https://qlty.sh/gh/eggplants/projects/get-pixivpy-token>
 )
 
 - Get your Pixiv token (for running [upbit/pixivpy](https://github.com/upbit/pixivpy))

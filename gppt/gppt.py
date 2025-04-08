@@ -1,6 +1,14 @@
-"""
-Original 1: https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362
-Original 2: https://gist.github.com/upbit/6edda27cb1644e94183291109b8a5fde
+"""This module contains the GetPixivToken class, which is used to obtain an OAuth token from Pixiv.
+
+It uses the Pixiv API and Selenium to automate the login process. The class supports both headless and
+non-headless modes for the web driver.
+
+It also provides a method to refresh the token using the refresh token obtained during login.
+The code is based on the work of other developers and has been modified for better readability and maintainability.
+
+The original code was found in the following Gists:
+- Original 1: https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362
+- Original 2: https://gist.github.com/upbit/6edda27cb1644e94183291109b8a5fde
 """
 
 from __future__ import annotations
@@ -8,7 +16,7 @@ from __future__ import annotations
 import json
 import re
 import sys
-from typing import cast
+from typing import TYPE_CHECKING, cast
 from urllib.parse import urlencode
 
 import requests
@@ -28,13 +36,21 @@ from .consts import (
     REDIRECT_URI,
     USER_AGENT,
 )
-from .model_types import LoginInfo
 from .utils import PROXIES, _get_chrome_option, _oauth_pkce, _slow_type
+
+if TYPE_CHECKING:
+    from .model_types import LoginInfo
 
 TIMEOUT = 10.0
 
 
 class GetPixivToken:
+    """GetPixivToken class for obtaining OAuth tokens from Pixiv.
+
+    This class uses Selenium to automate the login process and retrieve the OAuth token.
+    It supports both headless and non-headless modes for the web driver.
+    """
+
     def __init__(
         self,
         *,
@@ -42,6 +58,16 @@ class GetPixivToken:
         username: str | None = None,
         password: str | None = None,
     ) -> None:
+        """Initialize the GetPixivToken class.
+
+        Args:
+            headless (bool | None): Whether to run the web driver in headless mode. Defaults to False.
+            username (str | None): The username for Pixiv login. Defaults to None.
+            password (str | None): The password for Pixiv login. Defaults to None.
+
+        Raises:
+            ValueError: If headless mode is enabled but username or password is not provided.
+        """
         self.headless = headless
         self.username = username
         self.password = password
@@ -53,6 +79,21 @@ class GetPixivToken:
         username: str | None = None,
         password: str | None = None,
     ) -> LoginInfo:
+        """Login to Pixiv and obtain the OAuth token.
+
+        This method uses Selenium to automate the login process and retrieve the OAuth token.
+
+        Args:
+            headless (bool | None): Whether to run the web driver in headless mode. Defaults to None.
+            username (str | None): The username for Pixiv login. Defaults to None.
+            password (str | None): The password for Pixiv login. Defaults to None.
+
+        Returns:
+            LoginInfo: The login information containing the OAuth token and other details.
+
+        Raises:
+            ValueError: If headless mode is enabled but username or password is not provided.
+        """
         if headless is not None:
             self.headless = headless
         if username is not None:
@@ -112,10 +153,23 @@ class GetPixivToken:
             timeout=TIMEOUT,
         )
 
-        return cast(LoginInfo, response.json())
+        return cast("LoginInfo", response.json())
 
     @staticmethod
     def refresh(refresh_token: str) -> LoginInfo:
+        """Refresh the OAuth token using the refresh token.
+
+        This method sends a request to the Pixiv API to refresh the token.
+
+        Args:
+            refresh_token (str): The refresh token obtained during login.
+
+        Returns:
+            LoginInfo: The login information containing the new OAuth token and other details.
+
+        Raises:
+            ValueError: If the refresh token is not provided.
+        """
         response = requests.post(
             AUTH_TOKEN_URL,
             data={
@@ -133,20 +187,29 @@ class GetPixivToken:
             proxies=PROXIES,
             timeout=TIMEOUT,
         )
-        return cast(LoginInfo, response.json())
+        return cast("LoginInfo", response.json())
 
     def __fill_login_form(self) -> None:
         if self.username:
-            el = self.driver.find_element(By.XPATH, "//input[starts-with(@autocomplete, 'username')]")
+            el = self.driver.find_element(
+                By.XPATH,
+                "//input[starts-with(@autocomplete, 'username')]",
+            )
             _slow_type(el, self.username)
 
         if self.password:
-            el = self.driver.find_element(By.XPATH, "//input[starts-with(@autocomplete, 'current-password')]")
+            el = self.driver.find_element(
+                By.XPATH,
+                "//input[starts-with(@autocomplete, 'current-password')]",
+            )
             _slow_type(el, self.password)
 
     def __try_login(self) -> None:
         label_selectors = [f"contains(text(), '{label}')" for label in ["ログイン", "Log In", "登录", "로그인", "登入"]]
-        el = self.driver.find_element(By.XPATH, f"//button[@type='submit'][{' or '.join(label_selectors)}]")
+        el = self.driver.find_element(
+            By.XPATH,
+            f"//button[@type='submit'][{' or '.join(label_selectors)}]",
+        )
         el.send_keys(Keys.ENTER)
 
         self.__wait_for_redirect()

@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 PROXIES = getproxies()
 
 
-def _get_chrome_option(headless: bool | None) -> ChromeOptions:
+def _get_chrome_option(*, headless: bool | None) -> ChromeOptions:
     options = ChromeOptions()
 
     if headless:

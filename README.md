@@ -62,8 +62,6 @@ expires_in: 3600
 
 ### From CLI
 
-- Note: _In advance, please setup google-chrome-stable + selenium + webdriver_
-
 ```shellsession
 # with browser
 $ gppt login
@@ -85,9 +83,6 @@ expires_in: 3600
 ```
 
 ### From Library
-
-- Note: _In advance, please setup google-chrome-stable + selenium + webdriver_
-If either username or password are missing, manual input will be required.
 
 ```python
 from gppt import GetPixivToken

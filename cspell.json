@@ -1,0 +1,41 @@
+{
+  "language": "en_US",
+  "words": [
+    "aapi",
+    "chromedriver",
+    "getproxies",
+    "gppt",
+    "infobars",
+    "loginh",
+    "logini",
+    "networkidle",
+    "noninteractive",
+    "pipefail",
+    "Pixiv",
+    "pixivpy",
+    "Prefs",
+    "pwinput",
+    "pymarkdown",
+    "pymarkdownlnt",
+    "pyproject",
+    "pytest",
+    "shellsession",
+    "upbit",
+    "webelement"
+  ],
+  "dictionaries": [
+    "companies",
+    "markdown",
+    "misc",
+    "softwareTerms",
+    "useCompounds"
+  ],
+  "ignorePaths": [
+    ".gitignore",
+    ".cspell.json"
+  ],
+  "features": {
+    "weighted-suggestions": true
+  },
+  "useGitignore": true
+}

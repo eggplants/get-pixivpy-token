@@ -2,53 +2,62 @@
 
 from __future__ import annotations
 
+import asyncio
 from base64 import urlsafe_b64encode
 from hashlib import sha256
 from random import uniform
 from secrets import token_urlsafe
-from time import sleep
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict
 from urllib.request import getproxies
-
-from selenium.webdriver import ChromeOptions
 
 from .consts import USER_AGENT
 
 if TYPE_CHECKING:
-    from selenium.webdriver.remote.webelement import WebElement
+    from playwright.async_api import Locator, ProxySettings
 
 PROXIES = getproxies()
 
 
-def _get_chrome_option(*, headless: bool | None) -> ChromeOptions:
-    options = ChromeOptions()
+class BrowserOptions(TypedDict):
+    headless: bool
+    args: list[str]
+    proxy: ProxySettings | None
 
-    if headless:
-        options.add_argument("--headless")
-    options.add_argument("--disable-gpu")
-    options.add_argument("--disable-extensions")
-    options.add_argument("--disable-infobars")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-browser-side-navigation")
-    options.add_argument("--start-maximized")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--user-agent=" + USER_AGENT)
-    options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    options.add_experimental_option("useAutomationExtension", False)  # noqa: FBT003
-    options.set_capability("goog:loggingPrefs", {"performance": "ALL"})
 
+def _get_browser_options(*, headless: bool | None) -> BrowserOptions:
+    """Get browser launch options for Playwright.
+
+    Args:
+        headless (bool | None): Whether to run the browser in headless mode.
+
+    Returns:
+        dict: Browser launch options for Playwright.
+    """
+    args = [
+        "--disable-gpu",
+        "--disable-extensions",
+        "--disable-infobars",
+        "--disable-dev-shm-usage",
+        "--disable-browser-side-navigation",
+        "--start-maximized",
+        "--no-sandbox",
+        "--disable-dev-shm-usage",
+        f"--user-agent={USER_AGENT}",
+    ]
+
+    proxy: ProxySettings | None = None
     if "all" in PROXIES:
-        options.add_argument(f"--proxy-server={PROXIES['all']}")
+        proxy = {"server": PROXIES["all"]}
     elif "https" in PROXIES:
-        options.add_argument(f"--proxy-server={PROXIES['https']}")
+        proxy = {"server": PROXIES["https"]}
     elif "http" in PROXIES:
-        options.add_argument(f"--proxy-server={PROXIES['http']}")
-    else:
-        options.add_argument('--proxy-server="direct://"')
-        options.add_argument("--proxy-bypass-list=*")
+        proxy = {"server": PROXIES["http"]}
 
-    return options
+    return {
+        "headless": headless if headless is not None else False,
+        "args": args,
+        "proxy": proxy,
+    }
 
 
 def _oauth_pkce() -> tuple[str, str]:
@@ -65,10 +74,16 @@ def _oauth_pkce() -> tuple[str, str]:
     return code_verifier, code_challenge
 
 
-def _slow_type(elm: WebElement, text: str) -> None:
+async def _slow_type(elm: Locator, text: str) -> None:
+    """Type text slowly into an element.
+
+    Args:
+        elm (Locator): The Playwright Locator to type into.
+        text (str): The text to type.
+    """
     for character in text:
-        elm.send_keys(character)
-        sleep(uniform(0.3, 0.7))  # noqa: S311
+        await elm.type(character)
+        await asyncio.sleep(uniform(0.3, 0.7))  # noqa: S311
 
 
-__all__ = ("_get_chrome_option", "_oauth_pkce", "_slow_type")
+__all__ = ("_get_browser_options", "_oauth_pkce", "_slow_type")

@@ -28,10 +28,11 @@ classifiers = [
 ]
 dynamic = [ "version" ]
 dependencies = [
+  "install-playwright>=0.1.1",
   "pixivpy3>=3.7.5,<4",
+  "playwright>=1.57",
   "pwinput>=1.0.3,<2",
   "requests>=2.32.3,<3",
-  "selenium>=4.27.1,<5",
 ]
 
 urls.Repository = "https://github.com/eggplants/get-pixivpy-token"

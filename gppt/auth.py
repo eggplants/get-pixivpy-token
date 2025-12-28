@@ -7,6 +7,7 @@ logging in with a username and password, and retrieving a refresh token.
 
 from __future__ import annotations
 
+import asyncio
 import json
 from pathlib import Path
 from typing import cast
@@ -97,7 +98,7 @@ class PixivAuth:
             str: The refresh token for the Pixiv account.
         """
         g = GetPixivToken(headless=True, username=pixiv_id, password=pixiv_pass)
-        return g.login()["refresh_token"]
+        return asyncio.run(g.login())["refresh_token"]
 
     def read_client_cred(self) -> LoginCred | None:
         """Read the client credentials from the JSON file.

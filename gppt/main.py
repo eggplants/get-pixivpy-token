@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import asyncio
 import sys
 from json import dumps
 from pprint import pprint
@@ -45,7 +46,7 @@ def __print_auth_token_response(res: LoginInfo, *, json: bool | None = False) ->
 def __func_login(ns: argparse.Namespace) -> None:
     g = GetPixivToken()
     print("[!]: Chrome browser will be launched. Please login.", file=sys.stderr)
-    res = g.login(username=ns.username, password=ns.password)
+    res = asyncio.run(g.login(username=ns.username, password=ns.password))
     print("[+]: Success!", file=sys.stderr)
     __print_auth_token_response(res, json=ns.json)
 
@@ -59,7 +60,7 @@ def __func_logini(ns: argparse.Namespace) -> None:
 
 def __func_loginh(ns: argparse.Namespace) -> None:
     g = GetPixivToken()
-    res = g.login(headless=True, username=ns.username, password=ns.password)
+    res = asyncio.run(g.login(headless=True, username=ns.username, password=ns.password))
     print("[+]: Success!", file=sys.stderr)
     __print_auth_token_response(res, json=ns.json)
 

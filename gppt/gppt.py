@@ -106,7 +106,7 @@ class GetPixivToken:
             self.headless = False
 
         self.driver = webdriver.Chrome(
-            options=_get_chrome_option(self.headless),
+            options=_get_chrome_option(headless=self.headless),
         )
 
         code_verifier, code_challenge = _oauth_pkce()

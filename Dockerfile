@@ -1,31 +1,18 @@
-FROM python:3
-
-ARG VERSION
-ENV VERSION ${VERSION:-main}
+FROM mcr.microsoft.com/playwright/python:v1.57.0-noble
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-RUN wget -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+COPY . /app
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
+ENV UV_NO_DEV=1
+ENV PYTHONUNBUFFERED=1
 
-RUN apt-get -y update \
-    && apt-get install -y --no-install-recommends \
-    google-chrome-stable \
-    unzip \
-    && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+RUN uv sync --locked --no-dev
 
-# install chromedriver
-RUN wget -qO /tmp/chromedriver.zip \
-    "http://chromedriver.storage.googleapis.com/$(wget -qO- chromedriver.storage.googleapis.com/LATEST_RELEASE)/chromedriver_linux64.zip" \
-    && unzip -qq /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
+ENV PATH="/app/.venv/bin:$PATH"
 
-# set display port to avoid crash
-ENV DISPLAY=:99
-
-# upgrade pip
-RUN python -m pip install --no-cache-dir -U pip \
-    && pip install --no-cache-dir git+https://github.com/eggplants/get-pixivpy-token@${VERSION}
-
-ENTRYPOINT ["gppt"]
+CMD ["uv", "run", "gppt"]

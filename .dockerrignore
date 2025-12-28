@@ -1,0 +1,8 @@
+__pycache__/
+.github/
+.devcontainer/
+.pytest_cache/
+.ruff_cache/
+tests/
+cspell.json
+mise.toml

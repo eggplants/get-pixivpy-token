@@ -13,12 +13,11 @@ keywords = [
 ]
 license = { text = "MIT" }
 authors = [ { name = "eggplants", email = "w10776e8w@yahoo.co.jp" } ]
-requires-python = ">=3.9,<4"
+requires-python = ">=3.10,<4"
 classifiers = [
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
@@ -40,14 +39,14 @@ scripts.gppt = "gppt.main:main"
 
 [dependency-groups]
 dev = [
-  "mypy>=0.991,<1.19",
-  "pre-commit>=2.20,<5",
-  "pytest>=7.2.2,<9",
-  "pytest-cov>=4,<8",
-  "taskipy>=1.10.3,<2",
-  "types-requests>=2.28.11.15,<3",
+  "pymarkdownlnt>=0.9.33",
+  "pyproject-fmt>=2.11.1",
+  "pytest>=9.0.2",
+  "pytest-cov>=7",
 ]
-docs = [ "pdoc" ]
+docs = [
+  "pdoc>=16",
+]
 
 [tool.hatch.version]
 # tool.hatch.version.source is not listed in official schema.
@@ -61,19 +60,19 @@ include = [ "gppt" ]
 include = [ "gppt" ]
 
 [tool.uv]
+preview = true
 default-groups = [
   "dev",
   "docs",
 ]
+exclude-newer = "P7D"
 
 [tool.ruff]
 line-length = 120
 format.indent-style = "space"
 format.quote-style = "double"
-lint.select = [
-  "ALL",
-]
-
+lint.select = [ "ALL" ]
+lint.ignore = [ "COM812" ]
 lint.per-file-ignores."gppt/auth.py" = [
   "T201", # `print` found
 ]
@@ -87,21 +86,7 @@ lint.per-file-ignores."tests/*.py" = [
 ]
 lint.pydocstyle.convention = "google"
 
-[tool.mypy]
-pretty = true
-python_version = "3.8"
-show_error_codes = true
-strict = true
-
 [tool.uv-dynamic-versioning]
 vcs = "git"
 style = "semver"
 fallback-version = "0.0.0"
-
-[tool.taskipy.tasks]
-test = "pytest --cov=gppt --cov-report=term"
-"test:html" = "task test --cov-report=html && open htmlcov/index.html"
-"test:ci" = "task test --cov-report=xml:cov.xml"
-lint = "pre-commit run -a"
-profile = "python -m cProfile"
-gendoc = "pdoc gppt -o ./docs --docformat google"

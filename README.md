@@ -8,18 +8,10 @@
   <https://ghcr-badge.egpl.dev/eggplants/get-pixivpy-token/size>
   )](
   <https://github.com/eggplants/get-pixivpy-token/pkgs/container/get-pixivpy-token>
-) [![Maintainability](
-  <https://qlty.sh/badges/8be7481b-d978-4e1a-808d-8bbb1984f864/maintainability.svg>
+) [![ci](
+  <https://github.com/eggplants/scrapbox-client/actions/workflows/ci.yml/badge.svg>
   )](
-    <https://qlty.sh/gh/eggplants/projects/get-pixivpy-token>
-) [![pre-commit.ci status](
-  <https://results.pre-commit.ci/badge/github/eggplants/get-pixivpy-token/main.svg>
-  )](
-  <https://results.pre-commit.ci/latest/github/eggplants/get-pixivpy-token/main>
-) [![Code Coverage](
-  <https://qlty.sh/badges/8be7481b-d978-4e1a-808d-8bbb1984f864/test_coverage.svg>
-  )](
-  <https://qlty.sh/gh/eggplants/projects/get-pixivpy-token>
+  <https://github.com/eggplants/scrapbox-client/actions/workflows/ci.yml>
 )
 
 - Get your Pixiv token (for running [upbit/pixivpy](https://github.com/upbit/pixivpy))

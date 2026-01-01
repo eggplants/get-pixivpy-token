@@ -3,7 +3,7 @@ revision = 3
 requires-python = ">=3.10, <4"
 
 [options]
-exclude-newer = "2025-12-21T14:44:21.076874328Z"
+exclude-newer = "2025-12-25T20:19:16.396507339Z"
 exclude-newer-span = "P7D"
 
 [[package]]
@@ -297,7 +297,7 @@ docs = [
 requires-dist = [
     { name = "install-playwright", specifier = ">=0.1.1" },
     { name = "pixivpy3", specifier = ">=3.7.5,<4" },
-    { name = "playwright", specifier = ">=1.57.0" },
+    { name = "playwright", specifier = ">=1.57" },
     { name = "pwinput", specifier = ">=1.0.3,<2" },
     { name = "requests", specifier = ">=2.32.3,<3" },
 ]
@@ -727,25 +727,25 @@ wheels = [
 
 [[package]]
 name = "pymarkdownlnt"
-version = "0.9.33"
+version = "0.9.34"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "application-properties" },
     { name = "columnar" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/30/15/cb76156751bafceebba839aa3f679940dda4fadee20b8864a4d36a9b1644/pymarkdownlnt-0.9.33.tar.gz", hash = "sha256:4486eb34fed9b66d2e4e91c5b5159b5242b816a7847585aa2a94afc58cc5583d", size = 422332, upload-time = "2025-10-24T03:17:15.291Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/46/13/8c099421a933702706476abfc44b852ab6c8297061e68722ec25aba9cc8b/pymarkdownlnt-0.9.34.tar.gz", hash = "sha256:75057ea5d8527842ae50a4a3f47d6498258766efdcf4a6e1432f1cc96b0ae360", size = 430003, upload-time = "2025-12-21T15:47:15.602Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9c/b1/04c96cbbf8a209ff4059560c2c5c3e4be23926ce397699f09e4551510703/pymarkdownlnt-0.9.33-py3-none-any.whl", hash = "sha256:c5341a6f2539d087f76c88cda2dfc0c39e7632ebae915ea9399a083030951f35", size = 505133, upload-time = "2025-10-24T03:17:14.05Z" },
+    { url = "https://files.pythonhosted.org/packages/35/8e/e7a792bd51d0f873225b1a8b6669218365c25db0c54cf9c996a0a6c5e93a/pymarkdownlnt-0.9.34-py3-none-any.whl", hash = "sha256:ac3814747d670bfd58b660ad0c46c19750f96562c4714c6212e9bc8264eac217", size = 511066, upload-time = "2025-12-21T15:47:14.172Z" },
 ]
 
 [[package]]
 name = "pyparsing"
-version = "3.2.5"
+version = "3.3.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/f2/a5/181488fc2b9d093e3972d2a472855aae8a03f000592dbfce716a512b3359/pyparsing-3.2.5.tar.gz", hash = "sha256:2df8d5b7b2802ef88e8d016a2eb9c7aeaa923529cd251ed0fe4608275d4105b6", size = 1099274, upload-time = "2025-09-21T04:11:06.277Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/33/c1/1d9de9aeaa1b89b0186e5fe23294ff6517fce1bc69149185577cd31016b2/pyparsing-3.3.1.tar.gz", hash = "sha256:47fad0f17ac1e2cad3de3b458570fbc9b03560aa029ed5e16ee5554da9a2251c", size = 1550512, upload-time = "2025-12-23T03:14:04.391Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/10/5e/1aa9a93198c6b64513c9d7752de7422c06402de6600a8767da1524f9570b/pyparsing-3.2.5-py3-none-any.whl", hash = "sha256:e38a4f02064cf41fe6593d328d0512495ad1f3d8a91c4f73fc401b3079a59a5e", size = 113890, upload-time = "2025-09-21T04:11:04.117Z" },
+    { url = "https://files.pythonhosted.org/packages/8b/40/2614036cdd416452f5bf98ec037f38a1afb17f327cb8e6b652d4729e0af8/pyparsing-3.3.1-py3-none-any.whl", hash = "sha256:023b5e7e5520ad96642e2c6db4cb683d3970bd640cdf7115049a6e9c3682df82", size = 121793, upload-time = "2025-12-23T03:14:02.103Z" },
 ]
 
 [[package]]

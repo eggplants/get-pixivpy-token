@@ -136,7 +136,7 @@ class GetPixivToken:
         return code_verifier
 
     async def __setup_browser(self, p: AsyncPlaywright) -> None:
-        install(p.chromium, with_deps=True)
+        install([p.chromium], with_deps=True)
         browser_options = _get_browser_options(headless=self.headless)
 
         # Extract proxy and args from options

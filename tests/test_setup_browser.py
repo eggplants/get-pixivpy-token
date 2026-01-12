@@ -73,7 +73,7 @@ def test_setup_browser_calls_install_and_creates_page(monkeypatch: Any) -> None:
     token = GetPixivToken(headless=True)
     p = DummyPlaywright()
 
-    asyncio.run(token._GetPixivToken__setup_browser(p))
+    asyncio.run(token._GetPixivToken__setup_browser(p))  # ty:ignore[unresolved-attribute]
 
     assert len(install_calls) == 1
     assert install_calls[0]["browsers"] == [p.chromium]

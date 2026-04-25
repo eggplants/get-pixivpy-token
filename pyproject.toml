@@ -11,7 +11,7 @@ keywords = [
   "pixiv",
   "token",
 ]
-license = { text = "MIT" }
+license = "MIT"
 authors = [ { name = "eggplants", email = "w10776e8w@yahoo.co.jp" } ]
 requires-python = ">=3.10,<4"
 classifiers = [
@@ -34,7 +34,6 @@ dependencies = [
   "pwinput>=1.0.3,<2",
   "requests>=2.32.3,<3",
 ]
-
 urls.Repository = "https://github.com/eggplants/get-pixivpy-token"
 scripts.gppt = "gppt.main:main"
 
@@ -49,22 +48,19 @@ docs = [
   "pdoc>=16",
 ]
 
-[tool.hatch.version]
-source = "uv-dynamic-versioning"
-
-[tool.hatch.build.targets.sdist]
-include = [ "gppt" ]
-
-[tool.hatch.build.targets.wheel]
-include = [ "gppt" ]
+[tool.hatch]
+build.targets.sdist.include = [ "gppt" ]
+build.targets.wheel.include = [ "gppt" ]
+version.source = "uv-dynamic-versioning"
 
 [tool.uv]
-preview = true
+python-downloads = "never"
 default-groups = [
   "dev",
   "docs",
 ]
 exclude-newer = "P7D"
+preview = true
 
 [tool.ruff]
 line-length = 120

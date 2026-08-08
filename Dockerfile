@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright/python:v1.57.0-noble
+FROM mcr.microsoft.com/playwright/python:v1.57.0-noble@sha256:3de745b23fc4b33fccbcb3f592ee52dd5c80ce79f19f839c825ce23364e403c1
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -15,4 +15,5 @@ RUN uv sync --locked --no-dev
 
 ENV PATH="/app/.venv/bin:$PATH"
 
-CMD ["uv", "run", "gppt"]
+ENTRYPOINT ["gppt"]
+CMD ["login"]

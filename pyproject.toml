@@ -29,13 +29,12 @@ classifiers = [
 dynamic = [ "version" ]
 dependencies = [
   "install-playwright>=0.1.1",
-  "pixivpy3>=3.7.5,<4",
   "playwright>=1.57",
-  "pwinput>=1.0.3,<2",
+  "pyotp>=2.9,<3",
   "requests>=2.32.3,<3",
 ]
 urls.Repository = "https://github.com/eggplants/get-pixivpy-token"
-scripts.gppt = "gppt.main:main"
+scripts.gppt = "gppt.cli:main"
 
 [dependency-groups]
 dev = [
@@ -49,9 +48,9 @@ docs = [
 ]
 
 [tool.hatch]
-build.targets.sdist.include = [ "gppt" ]
-build.targets.wheel.include = [ "gppt" ]
 version.source = "uv-dynamic-versioning"
+build.targets.wheel.include = [ "gppt" ]
+build.targets.sdist.include = [ "gppt" ]
 
 [tool.uv]
 python-downloads = "never"
@@ -68,16 +67,20 @@ format.indent-style = "space"
 format.quote-style = "double"
 lint.select = [ "ALL" ]
 lint.ignore = [ "COM812" ]
-lint.per-file-ignores."gppt/auth.py" = [
-  "T201", # `print` found
+lint.per-file-ignores."gppt/api.py" = [
+  "PLR0913", # Too many arguments -- they are optional keyword-only knobs
 ]
-lint.per-file-ignores."gppt/main.py" = [
+lint.per-file-ignores."gppt/cli.py" = [
   "T201", # `print` found
-  "T203", # `pprint` found
 ]
 lint.per-file-ignores."tests/*.py" = [
+  "ANN401",  # Dynamically typed expressions (`typing.Any`) disallowed
   "D",
-  "S101", # Use of `assert` detected
+  "PLR2004", # Magic value used in comparison
+  "S101",    # Use of `assert` detected
+  "S105",    # Possible hardcoded password assigned to a variable
+  "S106",    # Possible hardcoded password assigned to an argument
+  "S107",    # Possible hardcoded password assigned to a function default
 ]
 lint.pydocstyle.convention = "google"
 

@@ -1,21 +1,10 @@
-"""Pixiv login related data types."""
+"""pixiv OAuth response data types."""
 
 from typing import TypedDict
 
 
-class PixivLoginFailedError(Exception):
-    """Custom exception for Pixiv login failures."""
-
-
-class LoginCred(TypedDict):
-    """Login credentials for Pixiv."""
-
-    pixiv_id: str
-    password: str
-
-
 class ProfileURIs(TypedDict):
-    """Profile image URLs for Pixiv user."""
+    """Profile image URLs for a pixiv user."""
 
     px_16x16: str
     px_50x50: str
@@ -23,7 +12,7 @@ class ProfileURIs(TypedDict):
 
 
 class LoginUserInfo(TypedDict):
-    """Login user information for Pixiv."""
+    """Account information returned alongside a token."""
 
     profile_image_urls: ProfileURIs
     id: str
@@ -36,19 +25,8 @@ class LoginUserInfo(TypedDict):
     require_policy_agreement: bool
 
 
-class OAuthAPIResponse(TypedDict):
-    """OAuth API response for Pixiv login."""
-
-    access_token: str
-    expires_in: int
-    token_type: str
-    scope: str
-    refresh_token: str
-    user: LoginUserInfo
-
-
 class LoginInfo(TypedDict):
-    """Login information for Pixiv."""
+    """Body of a successful ``/auth/token`` response."""
 
     access_token: str
     expires_in: int
@@ -56,4 +34,3 @@ class LoginInfo(TypedDict):
     scope: str
     refresh_token: str
     user: LoginUserInfo
-    response: OAuthAPIResponse

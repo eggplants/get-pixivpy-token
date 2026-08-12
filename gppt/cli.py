@@ -8,7 +8,7 @@ import json
 import sys
 from typing import TYPE_CHECKING
 
-from gppt import api, config, token
+from gppt import __version__, api, config, token
 from gppt.browser import LoginError
 
 if TYPE_CHECKING:
@@ -27,6 +27,12 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="gppt",
         description="Get your pixiv token (for running upbit/pixivpy).",
+    )
+    parser.add_argument(
+        "-V",
+        "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
     )
     sub = parser.add_subparsers(dest="command", required=True)
 

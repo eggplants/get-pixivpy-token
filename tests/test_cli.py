@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any
 
 import pytest
 
-from gppt import api, cli, config, token
+from gppt import api, cli, config, token, __version__
 from gppt.browser import Authorization, LoginError
 
 if TYPE_CHECKING:
@@ -212,6 +212,15 @@ def test_configure_keeps_existing_values_on_empty_input(
     assert cli.main(["configure", "-p", "work"]) == 0
 
     assert config.load("work") == stored
+
+
+@pytest.mark.parametrize("flag", ["-V", "--version"])
+def test_version_flag_prints_the_version(flag: str, capsys: pytest.CaptureFixture[str]) -> None:
+    with pytest.raises(SystemExit) as exc:
+        cli.main([flag])
+
+    assert exc.value.code == 0
+    assert capsys.readouterr().out.strip() == f"gppt {__version__}"
 
 
 def test_no_subcommand_is_an_error() -> None:

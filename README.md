@@ -33,8 +33,6 @@ pip install gppt
 
 `gppt` has two commands: `configure` stores an account in a profile, `login` gets you a token.
 
-### 1. Configure a profile
-
 ```bash
 # Configure a profile (writes to: ~/.config/gppt/<profile>.json by default)
 gppt configure

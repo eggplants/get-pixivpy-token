@@ -1,11 +1,14 @@
 """Public Python API.
 
-Three entry points, in increasing order of how much they do for you:
+Four entry points, in increasing order of how much they do for you:
 
 - :func:`refresh` turns a refresh token into a fresh one. No browser, no files.
 - :func:`login` drives the browser once and returns the token. No files.
+- :func:`oauth_login` is the same, but you log in in your own browser and paste
+  the code back, so no credentials are needed. No files.
 - :func:`get_token` is what ``gppt login`` runs: reuse the cached token,
-  else refresh it, else open the browser -- against a stored profile.
+  else refresh it, else log in -- against a stored profile, by whichever
+  method that profile is configured for.
 
 Everything here is synchronous and returns a :class:`gppt.token.Token`.
 """
@@ -16,6 +19,7 @@ from typing import TYPE_CHECKING
 
 from gppt import config, token
 from gppt.browser import TotpProvider, fetch_authorization, is_chromium_installed
+from gppt.oauth import request_authorization
 from gppt.secrets import resolve_secret
 
 if TYPE_CHECKING:
@@ -89,9 +93,41 @@ def login(
     return token.exchange(fetch_authorization(username, password, headless=headless, totp=totp))
 
 
+def oauth_login(
+    *,
+    open_browser: bool = True,
+    prompt: Callable[[str], str] | None = None,
+    notify: Callable[[str], None] | None = None,
+) -> Token:
+    """Log in through the OAuth2 PKCE flow and return the issued token.
+
+    You open pixiv in your own browser and paste the authorization code back,
+    so gppt never sees your credentials and no headless browser is launched.
+    Nothing is read from or written to disk.
+
+    Args:
+        open_browser (bool): Also try to open the login URL in the default
+            browser. It is printed to stderr either way.
+        prompt (Callable[[str], str] | None): Called with a prompt string to
+            read the pasted code. Defaults to reading a line from stdin, with
+            the prompt itself written to stderr.
+        notify (Callable[[str], None] | None): Called with the instructions and
+            the login URL. Defaults to writing to stderr.
+
+    Returns:
+        Token: The issued token.
+
+    Raises:
+        LoginError: If the pasted text carries no authorization code.
+        TokenError: If pixiv rejects the authorization code.
+    """
+    return token.exchange(request_authorization(open_browser=open_browser, prompt=prompt, notify=notify))
+
+
 def get_token(
     profile: str = config.DEFAULT_PROFILE,
     *,
+    method: str | None = None,
     headless: bool = True,
     force: bool = False,
     save: bool = True,
@@ -101,37 +137,47 @@ def get_token(
     """Return a usable token for a stored profile, logging in only if needed.
 
     The cached token is returned while it is still valid, then refreshed with
-    its refresh token, and only then is the browser opened. This is exactly
-    what ``gppt login`` does.
+    its refresh token, and only then is a login started. This is exactly what
+    ``gppt login`` does.
 
     Args:
         profile (str): Profile name, as created by ``gppt configure``.
             ``GPPT_USERNAME`` / ``GPPT_PASSWORD`` override its credentials.
+        method (str | None): ``"e2e"`` to drive a browser with the profile's
+            stored credentials, ``"oauth"`` to log in yourself and paste the
+            code back. None uses the profile's configured method, which
+            ``GPPT_AUTH_METHOD`` overrides.
         headless (bool): Run the browser without a visible window. Forced to
-            False when the profile has no credentials to type in.
-        force (bool): Ignore the cached token and log in through the browser.
+            False when the profile has no credentials to type in. Unused by
+            the ``oauth`` method.
+        force (bool): Ignore the cached token and log in again.
         save (bool): Write the issued token back to the profile's cache.
         notify (Callable[[str], None] | None): Called with progress messages
             ("Reusing the cached token.", ...). Silent by default.
         totp_prompt (Callable[[], str] | None): Called for a verification code
-            when 2FA is requested and the profile has no TOTP secret.
+            when 2FA is requested and the profile has no TOTP secret. Unused
+            by the ``oauth`` method.
 
     Returns:
         Token: A token that is valid now.
 
     Raises:
-        LoginError: If the browser login does not yield an authorization code.
+        ValueError: If ``method`` names no known authentication method.
+        LoginError: If the login does not yield an authorization code.
         TokenError: If pixiv rejects the authorization code.
     """
     say = notify or _silent
 
     issued = None if force else _from_cache(profile, say)
     if issued is None:
-        issued = _browser_login(
-            config.load_or_default(profile),
-            headless=headless,
-            say=say,
-            totp_prompt=totp_prompt,
+        profile_config = config.load_or_default(profile)
+        resolved = config.normalize_auth_method(method or profile_config.auth_method)
+        issued = (
+            # `notify`, not `say`: `say` is silent by default, and this flow
+            # reads a pasted code -- nobody can answer an invisible prompt.
+            oauth_login(notify=notify)
+            if resolved == config.AUTH_OAUTH
+            else _browser_login(profile_config, headless=headless, say=say, totp_prompt=totp_prompt)
         )
 
     if save:

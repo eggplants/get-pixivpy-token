@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from base64 import urlsafe_b64encode
-from hashlib import sha256
 from typing import Any
 
 import pyotp
@@ -57,26 +55,6 @@ class FakePage:
 
 def _handle_totp(page: Any, totp: Any = None, captured: dict[str, str] | None = None) -> None:
     browser._handle_totp(page, totp, {} if captured is None else captured)  # noqa: SLF001
-
-
-def test_oauth_pkce_challenge_is_the_s256_of_the_verifier() -> None:
-    verifier, challenge = browser._oauth_pkce()  # noqa: SLF001
-
-    expected = urlsafe_b64encode(sha256(verifier.encode("ascii")).digest()).rstrip(b"=").decode("ascii")
-    assert challenge == expected
-    assert "=" not in challenge
-
-
-def test_oauth_pkce_is_not_reused() -> None:
-    assert browser._oauth_pkce()[0] != browser._oauth_pkce()[0]  # noqa: SLF001
-
-
-def test_login_params_carry_the_challenge() -> None:
-    assert browser._login_params("chal") == {  # noqa: SLF001
-        "code_challenge": "chal",
-        "code_challenge_method": "S256",
-        "client": "pixiv-android",
-    }
 
 
 def test_proxy_settings_prefer_all_proxy(monkeypatch: pytest.MonkeyPatch) -> None:

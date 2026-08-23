@@ -31,6 +31,7 @@ def config_dir(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
     monkeypatch.delenv(config.USERNAME_ENV, raising=False)
     monkeypatch.delenv(config.PASSWORD_ENV, raising=False)
     monkeypatch.delenv(config.TOTP_SECRET_ENV, raising=False)
+    monkeypatch.delenv(config.AUTH_METHOD_ENV, raising=False)
     return tmp_path
 
 
@@ -48,8 +49,22 @@ def no_browser(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, Any]]:
     return calls
 
 
+@pytest.fixture
+def oauth_flow(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, Any]]:
+    calls: list[dict[str, Any]] = []
+
+    def fake_request(**kwargs: Any) -> Authorization:
+        calls.append(kwargs)
+        return Authorization(code="the-code", code_verifier="the-verifier")
+
+    monkeypatch.setattr(api, "request_authorization", fake_request)
+    monkeypatch.setattr(token, "exchange", lambda _: _token())
+    return calls
+
+
 def test_the_public_surface_is_importable() -> None:
     assert gppt.login is api.login
+    assert gppt.oauth_login is api.oauth_login
     assert gppt.refresh is api.refresh
     assert gppt.get_token is api.get_token
     assert gppt.Token is token.Token
@@ -234,3 +249,81 @@ def test_get_token_falls_back_to_the_totp_prompt(
     gppt.get_token("work", totp_prompt=lambda: "654321")
 
     assert no_browser[0]["totp"].code() == "654321"
+
+
+def test_oauth_login_returns_a_token_without_touching_disk(oauth_flow: list[dict[str, Any]]) -> None:
+    issued = gppt.oauth_login(open_browser=False, prompt=lambda _: "the-code")
+
+    assert issued.access_token == "at"
+    assert oauth_flow[0] == {"open_browser": False, "prompt": oauth_flow[0]["prompt"], "notify": None}
+
+
+def test_get_token_uses_the_profiles_configured_method(
+    monkeypatch: pytest.MonkeyPatch,
+    config_dir: Path,  # noqa: ARG001
+    oauth_flow: list[dict[str, Any]],
+) -> None:
+    def explode(*_: Any, **__: Any) -> Authorization:
+        msg = "the e2e path should not run for an oauth profile"
+        raise AssertionError(msg)
+
+    monkeypatch.setattr(api, "fetch_authorization", explode)
+    config.save("work", config.ProfileConfig(auth_method=config.AUTH_OAUTH))
+
+    assert gppt.get_token("work").access_token == "at"
+    assert len(oauth_flow) == 1
+
+
+def test_get_token_method_argument_beats_the_profile(
+    config_dir: Path,  # noqa: ARG001
+    no_browser: list[dict[str, Any]],
+    oauth_flow: list[dict[str, Any]],
+) -> None:
+    config.save("work", config.ProfileConfig(username="me", password="pw", auth_method=config.AUTH_OAUTH))
+
+    gppt.get_token("work", method=config.AUTH_E2E)
+
+    assert oauth_flow == []
+    assert no_browser[0]["username"] == "me"
+
+
+def test_get_token_auth_method_environment_variable_beats_the_profile(
+    monkeypatch: pytest.MonkeyPatch,
+    config_dir: Path,  # noqa: ARG001
+    oauth_flow: list[dict[str, Any]],
+) -> None:
+    config.save("work", config.ProfileConfig(username="me", password="pw"))
+    monkeypatch.setenv(config.AUTH_METHOD_ENV, config.AUTH_OAUTH)
+
+    gppt.get_token("work")
+
+    assert len(oauth_flow) == 1
+
+
+def test_get_token_forwards_notify_to_the_oauth_instructions(
+    config_dir: Path,  # noqa: ARG001
+    oauth_flow: list[dict[str, Any]],
+) -> None:
+    messages: list[str] = []
+    config.save("work", config.ProfileConfig(auth_method=config.AUTH_OAUTH))
+
+    gppt.get_token("work", notify=messages.append)
+
+    oauth_flow[0]["notify"]("open this URL")
+    assert messages == ["open this URL"]
+
+
+def test_get_token_leaves_the_oauth_instructions_on_stderr_for_a_silent_caller(
+    config_dir: Path,  # noqa: ARG001
+    oauth_flow: list[dict[str, Any]],
+) -> None:
+    config.save("work", config.ProfileConfig(auth_method=config.AUTH_OAUTH))
+
+    gppt.get_token("work")
+
+    assert oauth_flow[0]["notify"] is None
+
+
+def test_get_token_rejects_an_unknown_method(config_dir: Path) -> None:  # noqa: ARG001
+    with pytest.raises(ValueError, match="e2e, oauth"):
+        gppt.get_token("work", method="chrome")

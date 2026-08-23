@@ -11,6 +11,7 @@
     "pipefail",
     "Pixiv",
     "pixivpy",
+    "PKCE",
     "Prefs",
     "pymarkdown",
     "pymarkdownlnt",

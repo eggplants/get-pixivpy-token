@@ -6,7 +6,7 @@ import json
 import os
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Final
 
 CONFIG_DIR = Path(
     os.environ.get("GPPT_CONFIG_DIR") or (Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "gppt"),
@@ -14,9 +14,15 @@ CONFIG_DIR = Path(
 
 DEFAULT_PROFILE = "default"
 
+# How a profile logs in when no cached token can be reused.
+AUTH_E2E: Final = "e2e"  # gppt drives a headless browser and types the credentials
+AUTH_OAUTH: Final = "oauth"  # the user logs in themselves and pastes the code back
+AUTH_METHODS: Final = (AUTH_E2E, AUTH_OAUTH)
+
 USERNAME_ENV = "GPPT_USERNAME"
 PASSWORD_ENV = "GPPT_PASSWORD"  # noqa: S105
 TOTP_SECRET_ENV = "GPPT_TOTP_SECRET"  # noqa: S105
+AUTH_METHOD_ENV = "GPPT_AUTH_METHOD"
 
 
 @dataclass
@@ -30,6 +36,9 @@ class ProfileConfig:
     # Base32 secret or otpauth:// URI, for accounts with two-factor
     # authentication enabled. Empty means "ask when pixiv asks".
     totp_secret: str = ""
+    # "e2e" or "oauth". Last, so positional construction keeps working and a
+    # profile written before this field existed loads as "e2e".
+    auth_method: str = AUTH_E2E
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> ProfileConfig:
@@ -51,6 +60,27 @@ class ProfileConfig:
             dict[str, Any]: The serialisable configuration.
         """
         return asdict(self)
+
+
+def normalize_auth_method(value: str) -> str:
+    """Validate an authentication method, from a config file, an env var or a flag.
+
+    Args:
+        value (str): The configured method. Empty means the default.
+
+    Returns:
+        str: One of :data:`AUTH_METHODS`.
+
+    Raises:
+        ValueError: If the value names no known method.
+    """
+    method = value.strip().lower()
+    if not method:
+        return AUTH_E2E
+    if method not in AUTH_METHODS:
+        msg = f"Unknown authentication method '{value}'. Expected one of: {', '.join(AUTH_METHODS)}."
+        raise ValueError(msg)
+    return method
 
 
 def profile_path(profile: str) -> Path:
@@ -100,9 +130,9 @@ def load(profile: str) -> ProfileConfig:
 def load_or_default(profile: str) -> ProfileConfig:
     """Load the profile's configuration, falling back to an empty one.
 
-    ``GPPT_USERNAME`` / ``GPPT_PASSWORD`` / ``GPPT_TOTP_SECRET`` override the
-    stored values so a throwaway environment (a container, CI) can log in
-    without a config file.
+    ``GPPT_USERNAME`` / ``GPPT_PASSWORD`` / ``GPPT_TOTP_SECRET`` /
+    ``GPPT_AUTH_METHOD`` override the stored values so a throwaway environment
+    (a container, CI) can log in without a config file.
 
     Args:
         profile (str): Profile name.
@@ -119,6 +149,7 @@ def load_or_default(profile: str) -> ProfileConfig:
     config.username = os.environ.get(USERNAME_ENV) or config.username
     config.password = os.environ.get(PASSWORD_ENV) or config.password
     config.totp_secret = os.environ.get(TOTP_SECRET_ENV) or config.totp_secret
+    config.auth_method = os.environ.get(AUTH_METHOD_ENV) or config.auth_method
     return config
 
 

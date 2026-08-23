@@ -32,6 +32,7 @@ def test_save_then_load_roundtrip(monkeypatch: pytest.MonkeyPatch, tmp_path: Pat
         "username": "me@example.com",
         "password": "hunter2",
         "totp_secret": "JBSWY3DPEHPK3PXP",
+        "auth_method": "e2e",
     }
     assert config.load("work") == saved
 
@@ -81,3 +82,31 @@ def test_token_path_sits_beside_the_profile(monkeypatch: pytest.MonkeyPatch, tmp
     _use_tmp_config_dir(monkeypatch, tmp_path)
 
     assert config.token_path("work") == tmp_path / "work.token.json"
+
+
+def test_a_profile_written_before_auth_method_existed_loads_as_e2e(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    _use_tmp_config_dir(monkeypatch, tmp_path)
+    (tmp_path / "work.json").write_text(json.dumps({"username": "me", "password": "pw"}), encoding="utf-8")
+
+    assert config.load("work").auth_method == config.AUTH_E2E
+
+
+def test_auth_method_env_overrides_the_profile(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    _use_tmp_config_dir(monkeypatch, tmp_path)
+    config.save("work", config.ProfileConfig(auth_method=config.AUTH_E2E))
+    monkeypatch.setenv(config.AUTH_METHOD_ENV, config.AUTH_OAUTH)
+
+    assert config.load_or_default("work").auth_method == config.AUTH_OAUTH
+
+
+@pytest.mark.parametrize(("given", "expected"), [("", "e2e"), ("  OAuth ", "oauth"), ("E2E", "e2e")])
+def test_normalize_auth_method_accepts_known_methods(given: str, expected: str) -> None:
+    assert config.normalize_auth_method(given) == expected
+
+
+def test_normalize_auth_method_names_the_valid_methods_when_it_rejects_one() -> None:
+    with pytest.raises(ValueError, match="e2e, oauth"):
+        config.normalize_auth_method("chrome")

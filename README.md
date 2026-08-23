@@ -47,7 +47,8 @@ gppt login
 {
   "username": "<plain username or op:// link>",
   "password": "<plain password or op:// link>",
-  "totp_secret": "<base32 secret, otpauth:// URI, or op:// link>"
+  "totp_secret": "<base32 secret, otpauth:// URI, or op:// link>",
+  "auth_method": "e2e" // or "oauth"
 }
 ```
 
@@ -68,26 +69,30 @@ gppt login
 ### Two-factor authentication
 
 If your account has 2FA enabled, pixiv asks for a verification code after the
-password. `gppt` fills it in from `totp_secret` — the base32 secret pixiv shows
-you when you set up an authenticator app, the `otpauth://` URI behind its QR
-code, or an `op://` reference to either. This is what makes an unattended
-headless login possible on a 2FA account.
+password. With the `e2e` method `gppt` fills it in from `totp_secret` — the
+base32 secret pixiv shows you when you set up an authenticator app, the
+`otpauth://` URI behind its QR code, or an `op://` reference to either. This is
+what makes an unattended headless login possible on a 2FA account.
 
 Leave `totp_secret` blank and `gppt login` prompts for a code on stdin instead,
 only when pixiv actually asks for one. Accounts without 2FA are unaffected.
+
+None of this applies to the `oauth` method: you are in your own browser, so
+pixiv's 2FA prompt is just part of the login you are doing by hand.
 
 ### Environment variables
 
 | Variable | Effect |
 | --- | --- |
 | `GPPT_USERNAME`, `GPPT_PASSWORD`, `GPPT_TOTP_SECRET` | Override the profile's credentials — lets a container or CI job log in with no config file |
+| `GPPT_AUTH_METHOD` | Override the profile's authentication method (`e2e` or `oauth`) |
 | `GPPT_CONFIG_DIR` | Directory holding profiles and cached tokens (default: `$XDG_CONFIG_HOME/gppt`) |
 | `ALL_PROXY`, `HTTPS_PROXY`, `HTTP_PROXY` | Proxy used by both the browser and the token requests |
 
 ### From Python
 
 `gppt.get_token()` is the library form of `gppt login`: it reuses the cached
-token, refreshes it, or opens the browser if needed.
+token, refreshes it, or logs in — by the profile's method — if needed.
 
 ```python
 import gppt
@@ -101,6 +106,16 @@ aapi.auth(refresh_token=token.refresh_token)
 
 It is silent by default; pass `notify=print` to see the same progress messages
 the CLI writes.
+
+`gppt.oauth_login()` is the OAuth2 PKCE flow as a library call — it prints the
+login URL, opens it, and reads the pasted code from stdin. No credentials, no
+files:
+
+```python
+token = gppt.oauth_login()
+```
+
+Point it at your own UI with `prompt=` and `notify=`, and pass `open_browser=False` to only print the URL.
 
 For a one-off login that reads and writes nothing on disk, use `gppt.login()`:
 
@@ -125,8 +140,9 @@ token = gppt.refresh("...")
 
 | Name | Purpose |
 | --- | --- |
-| `gppt.get_token(profile="default", *, headless=True, force=False, save=True, notify=None, totp_prompt=None)` | A valid token for a stored profile, logging in only if needed |
+| `gppt.get_token(profile="default", *, method=None, headless=True, force=False, save=True, notify=None, totp_prompt=None)` | A valid token for a stored profile, logging in only if needed. `method` is `"e2e"`, `"oauth"`, or None for whatever the profile says |
 | `gppt.login(username="", password="", totp_secret="", *, headless=None, totp_prompt=None)` | One browser login; no files touched |
+| `gppt.oauth_login(*, open_browser=True, prompt=None, notify=None)` | One OAuth2 PKCE login — you paste the code; no files touched |
 | `gppt.refresh(refresh_token)` | Refresh token → new token |
 | `gppt.Token` | Result dataclass: `access_token`, `refresh_token`, `expires_in`, `expires_at`, `is_expired`, `user_id`, `user_name`, `user_account` |
-| `gppt.LoginError`, `gppt.TokenError` | Raised when the browser login fails / pixiv rejects the request |
+| `gppt.LoginError`, `gppt.TokenError` | Raised when a login yields no authorization code / pixiv rejects the request |

@@ -2,7 +2,10 @@
 
 pixiv's mobile OAuth flow hands the browser an authorization code by
 redirecting to a ``pixiv://`` deep link. We intercept that request to recover
-the code, then exchange it for tokens with the PKCE verifier generated here.
+the code, then exchange it for tokens with the PKCE verifier it was started with.
+
+This is the ``e2e`` authentication method. :mod:`gppt.oauth` is the other one:
+same PKCE flow, but the user drives their own browser and pastes the code back.
 
 Based on:
 - https://gist.github.com/ZipFile/c9ebedb224406f4f11845ab700124362
@@ -13,14 +16,9 @@ from __future__ import annotations
 
 import re
 import sys
-from base64 import urlsafe_b64encode
-from dataclasses import dataclass
-from hashlib import sha256
 from pathlib import Path
 from random import uniform
-from secrets import token_urlsafe
 from typing import TYPE_CHECKING, Final
-from urllib.parse import urlencode
 from urllib.request import getproxies
 
 import pyotp
@@ -30,11 +28,21 @@ from playwright.sync_api import TimeoutError as PWTimeoutError
 from playwright.sync_api import sync_playwright
 
 from gppt.consts import LOGIN_URL, REDIRECT_URI, USER_AGENT
+from gppt.oauth import Authorization, LoginError, build_login_url, generate_pkce
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
     from playwright.sync_api import Locator, Page, ProxySettings, Request
+
+# Re-exported: they used to live here, and are shared with `gppt.oauth`.
+__all__ = [
+    "Authorization",
+    "LoginError",
+    "TotpProvider",
+    "fetch_authorization",
+    "is_chromium_installed",
+]
 
 PROXIES: Final = getproxies()
 
@@ -69,18 +77,6 @@ BROWSER_ARGS: Final[list[str]] = [
     "--no-sandbox",
     f"--user-agent={USER_AGENT}",
 ]
-
-
-class LoginError(RuntimeError):
-    """Raised when the browser login does not yield an authorization code."""
-
-
-@dataclass
-class Authorization:
-    """An authorization code plus the PKCE verifier it must be exchanged with."""
-
-    code: str
-    code_verifier: str
 
 
 class TotpProvider:
@@ -181,7 +177,7 @@ def fetch_authorization(
         LoginError: If the login form never appears, the login fails, 2FA is
             required but unavailable, or no authorization code is captured.
     """
-    code_verifier, code_challenge = _oauth_pkce()
+    code_verifier, code_challenge = generate_pkce()
     captured: dict[str, str] = {}
 
     with sync_playwright() as pw:
@@ -201,7 +197,7 @@ def fetch_authorization(
         page.on("request", on_request)
 
         try:
-            page.goto(f"{LOGIN_URL}?{urlencode(_login_params(code_challenge))}")
+            page.goto(build_login_url(code_challenge))
             _wait_for_form(page)
             if username and password:
                 _fill_login_form(page, username, password)
@@ -224,27 +220,12 @@ def fetch_authorization(
     return Authorization(code=captured["code"], code_verifier=code_verifier)
 
 
-def _login_params(code_challenge: str) -> dict[str, str]:
-    return {
-        "code_challenge": code_challenge,
-        "code_challenge_method": "S256",
-        "client": "pixiv-android",
-    }
-
-
 def _proxy_settings() -> ProxySettings | None:
     """Map ``ALL_PROXY`` / ``HTTPS_PROXY`` / ``HTTP_PROXY`` onto Playwright."""
     for key in ("all", "https", "http"):
         if key in PROXIES:
             return {"server": PROXIES[key]}
     return None
-
-
-def _oauth_pkce() -> tuple[str, str]:
-    """Generate a PKCE verifier/challenge pair (RFC 7636, S256)."""
-    code_verifier = token_urlsafe(32)
-    digest = urlsafe_b64encode(sha256(code_verifier.encode("ascii")).digest()).rstrip(b"=")
-    return code_verifier, digest.decode("ascii")
 
 
 def _wait_for_form(page: Page) -> None:

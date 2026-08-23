@@ -16,8 +16,8 @@ from gppt.consts import AUTH_TOKEN_URL, CALLBACK_URI, CLIENT_ID, CLIENT_SECRET, 
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from gppt.browser import Authorization
     from gppt.model_types import LoginInfo
+    from gppt.oauth import Authorization
 
 TIMEOUT: Final = 10.0
 
@@ -96,7 +96,7 @@ def exchange(authorization: Authorization) -> Token:
     """Exchange an authorization code for a token pair.
 
     Args:
-        authorization (Authorization): Code and PKCE verifier from the browser login.
+        authorization (Authorization): Code and PKCE verifier from a login.
 
     Returns:
         Token: The issued token.

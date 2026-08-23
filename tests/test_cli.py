@@ -30,6 +30,7 @@ def config_dir(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
     monkeypatch.delenv(config.USERNAME_ENV, raising=False)
     monkeypatch.delenv(config.PASSWORD_ENV, raising=False)
     monkeypatch.delenv(config.TOTP_SECRET_ENV, raising=False)
+    monkeypatch.delenv(config.AUTH_METHOD_ENV, raising=False)
     return tmp_path
 
 
@@ -46,6 +47,32 @@ def no_browser(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, Any]]:
     monkeypatch.setattr(api, "is_chromium_installed", lambda: True)
     monkeypatch.setattr(token, "exchange", lambda _: _token())
     return calls
+
+
+@pytest.fixture
+def oauth_flow(monkeypatch: pytest.MonkeyPatch) -> list[dict[str, Any]]:
+    """Replace the paste-the-code flow with a recorder, so nothing reads stdin."""
+    calls: list[dict[str, Any]] = []
+
+    def fake_request(**kwargs: Any) -> Authorization:
+        calls.append(kwargs)
+        return Authorization(code="the-code", code_verifier="the-verifier")
+
+    monkeypatch.setattr(api, "request_authorization", fake_request)
+    monkeypatch.setattr(token, "exchange", lambda _: _token())
+    return calls
+
+
+@pytest.fixture
+def no_login(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Make either login method an immediate test failure."""
+
+    def explode(*_: Any, **__: Any) -> Authorization:
+        msg = "should not have logged in"
+        raise AssertionError(msg)
+
+    monkeypatch.setattr(api, "fetch_authorization", explode)
+    monkeypatch.setattr(api, "request_authorization", explode)
 
 
 def test_login_runs_the_browser_and_saves_the_token(
@@ -184,7 +211,7 @@ def test_configure_writes_the_profile(
     config_dir: Path,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    answers = iter(["me@example.com"])
+    answers = iter(["e2e", "me@example.com"])
     secrets = iter(["hunter2", "JBSWY3DPEHPK3PXP"])
     monkeypatch.setattr("builtins.input", lambda _: next(answers))
     monkeypatch.setattr(cli.getpass, "getpass", lambda _: next(secrets))
@@ -205,7 +232,7 @@ def test_configure_keeps_existing_values_on_empty_input(
 ) -> None:
     stored = config.ProfileConfig(username="old", password="old-pw", totp_secret="old-totp")
     config.save("work", stored)
-    answers = iter([""])
+    answers = iter(["", ""])
     monkeypatch.setattr("builtins.input", lambda _: next(answers))
     monkeypatch.setattr(cli.getpass, "getpass", lambda _: "")
 
@@ -228,3 +255,137 @@ def test_no_subcommand_is_an_error() -> None:
         cli.main([])
 
     assert exc.value.code == 2
+
+
+def test_login_follows_the_profiles_oauth_method(
+    config_dir: Path,
+    oauth_flow: list[dict[str, Any]],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def explode(*_: Any, **__: Any) -> Authorization:
+        msg = "the e2e path should not run for an oauth profile"
+        raise AssertionError(msg)
+
+    monkeypatch.setattr(api, "fetch_authorization", explode)
+    config.save("work", config.ProfileConfig(auth_method=config.AUTH_OAUTH))
+
+    assert cli.main(["login", "-p", "work"]) == 0
+
+    assert len(oauth_flow) == 1
+    assert json.loads((config_dir / "work.token.json").read_text(encoding="utf-8"))["access_token"] == "at"
+
+
+def test_login_oauth_flag_overrides_an_e2e_profile(
+    config_dir: Path,  # noqa: ARG001
+    oauth_flow: list[dict[str, Any]],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def explode(*_: Any, **__: Any) -> Authorization:
+        msg = "the e2e path should not run under --oauth"
+        raise AssertionError(msg)
+
+    monkeypatch.setattr(api, "fetch_authorization", explode)
+    config.save("work", config.ProfileConfig(username="me", password="pw"))
+
+    assert cli.main(["login", "-p", "work", "--oauth"]) == 0
+
+    assert len(oauth_flow) == 1
+
+
+def test_login_e2e_flag_overrides_an_oauth_profile(
+    config_dir: Path,  # noqa: ARG001
+    no_browser: list[dict[str, Any]],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def explode(**_: Any) -> Authorization:
+        msg = "the oauth path should not run under --e2e"
+        raise AssertionError(msg)
+
+    monkeypatch.setattr(api, "request_authorization", explode)
+    config.save("work", config.ProfileConfig(username="me", password="pw", auth_method=config.AUTH_OAUTH))
+
+    assert cli.main(["login", "-p", "work", "--e2e"]) == 0
+
+    assert no_browser[0]["username"] == "me"
+
+
+def test_login_reuses_the_cached_token_before_asking_for_a_code(
+    config_dir: Path,  # noqa: ARG001
+    no_login: None,  # noqa: ARG001
+) -> None:
+    config.save("work", config.ProfileConfig(auth_method=config.AUTH_OAUTH))
+    token.save("work", _token("cached"))
+
+    assert cli.main(["login", "-p", "work", "--oauth"]) == 0
+
+
+def test_login_rejects_both_method_flags_at_once() -> None:
+    with pytest.raises(SystemExit) as exc:
+        cli.main(["login", "--e2e", "--oauth"])
+
+    assert exc.value.code == 2
+
+
+def test_login_reports_an_unknown_configured_method(
+    config_dir: Path,  # noqa: ARG001
+    no_login: None,  # noqa: ARG001
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    config.save("work", config.ProfileConfig(auth_method="chrome"))
+
+    assert cli.main(["login", "-p", "work"]) == 1
+
+    assert "chrome" in capsys.readouterr().err
+
+
+def test_configure_oauth_skips_the_credential_prompts(
+    monkeypatch: pytest.MonkeyPatch,
+    config_dir: Path,  # noqa: ARG001
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    stored = config.ProfileConfig(username="old", password="old-pw", totp_secret="old-totp")
+    config.save("work", stored)
+
+    def explode(_: str) -> str:
+        msg = "oauth should not ask for a password"
+        raise AssertionError(msg)
+
+    monkeypatch.setattr("builtins.input", lambda _: "oauth")
+    monkeypatch.setattr(cli.getpass, "getpass", explode)
+
+    assert cli.main(["configure", "-p", "work"]) == 0
+
+    assert config.load("work") == config.ProfileConfig(
+        username="old",
+        password="old-pw",
+        totp_secret="old-totp",
+        auth_method=config.AUTH_OAUTH,
+    )
+    assert "Keeping the stored credentials" in capsys.readouterr().out
+
+
+def test_configure_re_asks_until_the_method_is_a_known_one(
+    monkeypatch: pytest.MonkeyPatch,
+    config_dir: Path,  # noqa: ARG001
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    answers = iter(["firefox", "oauth"])
+    monkeypatch.setattr("builtins.input", lambda _: next(answers))
+
+    assert cli.main(["configure", "-p", "work"]) == 0
+
+    assert config.load("work").auth_method == config.AUTH_OAUTH
+    assert "firefox" in capsys.readouterr().out
+
+
+def test_configure_suggests_e2e_when_the_stored_method_is_unreadable(
+    monkeypatch: pytest.MonkeyPatch,
+    config_dir: Path,  # noqa: ARG001
+) -> None:
+    config.save("work", config.ProfileConfig(auth_method="chrome"))
+    monkeypatch.setattr("builtins.input", lambda _: "")
+    monkeypatch.setattr(cli.getpass, "getpass", lambda _: "")
+
+    assert cli.main(["configure", "-p", "work"]) == 0
+
+    assert config.load("work").auth_method == config.AUTH_E2E

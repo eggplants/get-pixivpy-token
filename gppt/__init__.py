@@ -2,8 +2,8 @@
 
 import importlib.metadata
 
-from gppt.api import get_token, login, refresh
-from gppt.browser import LoginError
+from gppt.api import get_token, login, oauth_login, refresh
+from gppt.oauth import LoginError
 from gppt.token import Token, TokenError
 
 try:
@@ -19,5 +19,6 @@ __all__ = [
     "__version__",
     "get_token",
     "login",
+    "oauth_login",
     "refresh",
 ]

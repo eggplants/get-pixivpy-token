@@ -90,6 +90,9 @@
                     <a class="function" href="#login">login</a>
             </li>
             <li>
+                    <a class="function" href="#oauth_login">oauth_login</a>
+            </li>
+            <li>
                     <a class="function" href="#refresh">refresh</a>
             </li>
     </ul>
@@ -157,7 +160,8 @@ gppt<span class="w"> </span>login
 <pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;plain username or op:// link&gt;&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;plain password or op:// link&gt;&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;totp_secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;base32 secret, otpauth:// URI, or op:// link&gt;&quot;</span>
+<span class="w">  </span><span class="nt">&quot;totp_secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;base32 secret, otpauth:// URI, or op:// link&gt;&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;auth_method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;e2e&quot;</span><span class="w"> </span><span class="c1">// or &quot;oauth&quot;</span>
 <span class="p">}</span>
 </code></pre>
 </div>
@@ -180,13 +184,16 @@ gppt<span class="w"> </span>login
 <h3 id="two-factor-authentication">Two-factor authentication</h3>
 
 <p>If your account has 2FA enabled, pixiv asks for a verification code after the
-password. <code><a href="">gppt</a></code> fills it in from <code>totp_secret</code> — the base32 secret pixiv shows
-you when you set up an authenticator app, the <code>otpauth://</code> URI behind its QR
-code, or an <code>op://</code> reference to either. This is what makes an unattended
-headless login possible on a 2FA account.</p>
+password. With the <code>e2e</code> method <code><a href="">gppt</a></code> fills it in from <code>totp_secret</code> — the
+base32 secret pixiv shows you when you set up an authenticator app, the
+<code>otpauth://</code> URI behind its QR code, or an <code>op://</code> reference to either. This is
+what makes an unattended headless login possible on a 2FA account.</p>
 
 <p>Leave <code>totp_secret</code> blank and <code>gppt login</code> prompts for a code on stdin instead,
 only when pixiv actually asks for one. Accounts without 2FA are unaffected.</p>
+
+<p>None of this applies to the <code>oauth</code> method: you are in your own browser, so
+pixiv's 2FA prompt is just part of the login you are doing by hand.</p>
 
 <h3 id="environment-variables">Environment variables</h3>
 
@@ -203,6 +210,10 @@ only when pixiv actually asks for one. Accounts without 2FA are unaffected.</p>
   <td>Override the profile's credentials — lets a container or CI job log in with no config file</td>
 </tr>
 <tr>
+  <td><code>GPPT_AUTH_METHOD</code></td>
+  <td>Override the profile's authentication method (<code>e2e</code> or <code>oauth</code>)</td>
+</tr>
+<tr>
   <td><code>GPPT_CONFIG_DIR</code></td>
   <td>Directory holding profiles and cached tokens (default: <code>$XDG_CONFIG_HOME/gppt</code>)</td>
 </tr>
@@ -216,7 +227,7 @@ only when pixiv actually asks for one. Accounts without 2FA are unaffected.</p>
 <h3 id="from-python">From Python</h3>
 
 <p><code><a href="#get_token">gppt.get_token()</a></code> is the library form of <code>gppt login</code>: it reuses the cached
-token, refreshes it, or opens the browser if needed.</p>
+token, refreshes it, or logs in — by the profile's method — if needed.</p>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">gppt</span>
@@ -231,6 +242,17 @@ token, refreshes it, or opens the browser if needed.</p>
 
 <p>It is silent by default; pass <code>notify=print</code> to see the same progress messages
 the CLI writes.</p>
+
+<p><code><a href="#oauth_login">gppt.oauth_login()</a></code> is the OAuth2 PKCE flow as a library call — it prints the
+login URL, opens it, and reads the pasted code from stdin. No credentials, no
+files:</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">token</span> <span class="o">=</span> <span class="n"><a href="#oauth_login">gppt.oauth_login</a></span><span class="p">()</span>
+</code></pre>
+</div>
+
+<p>Point it at your own UI with <code>prompt=</code> and <code>notify=</code>, and pass <code>open_browser=False</code> to only print the URL.</p>
 
 <p>For a one-off login that reads and writes nothing on disk, use <code><a href="#login">gppt.login()</a></code>:</p>
 
@@ -265,12 +287,16 @@ invoked only if pixiv asks for a code:</p>
 </thead>
 <tbody>
 <tr>
-  <td><code><a href="#get_token">gppt.get_token</a>(profile="default", *, headless=True, force=False, save=True, notify=None, totp_prompt=None)</code></td>
-  <td>A valid token for a stored profile, logging in only if needed</td>
+  <td><code><a href="#get_token">gppt.get_token</a>(profile="default", *, method=None, headless=True, force=False, save=True, notify=None, totp_prompt=None)</code></td>
+  <td>A valid token for a stored profile, logging in only if needed. <code>method</code> is <code>"e2e"</code>, <code>"oauth"</code>, or None for whatever the profile says</td>
 </tr>
 <tr>
   <td><code><a href="#login">gppt.login</a>(username="", password="", totp_secret="", *, headless=None, totp_prompt=None)</code></td>
   <td>One browser login; no files touched</td>
+</tr>
+<tr>
+  <td><code><a href="#oauth_login">gppt.oauth_login</a>(*, open_browser=True, prompt=None, notify=None)</code></td>
+  <td>One OAuth2 PKCE login — you paste the code; no files touched</td>
 </tr>
 <tr>
   <td><code><a href="#refresh">gppt.refresh</a>(refresh_token)</code></td>
@@ -282,7 +308,7 @@ invoked only if pixiv asks for a code:</p>
 </tr>
 <tr>
   <td><code><a href="#LoginError">gppt.LoginError</a></code>, <code><a href="#TokenError">gppt.TokenError</a></code></td>
-  <td>Raised when the browser login fails / pixiv rejects the request</td>
+  <td>Raised when a login yields no authorization code / pixiv rejects the request</td>
 </tr>
 </tbody>
 </table>
@@ -296,8 +322,8 @@ invoked only if pixiv asks for a code:</p>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">importlib.metadata</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">gppt.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_token</span><span class="p">,</span> <span class="n">login</span><span class="p">,</span> <span class="n">refresh</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">gppt.browser</span><span class="w"> </span><span class="kn">import</span> <span class="n">LoginError</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">gppt.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_token</span><span class="p">,</span> <span class="n">login</span><span class="p">,</span> <span class="n">oauth_login</span><span class="p">,</span> <span class="n">refresh</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">gppt.oauth</span><span class="w"> </span><span class="kn">import</span> <span class="n">LoginError</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">gppt.token</span><span class="w"> </span><span class="kn">import</span> <span class="n">Token</span><span class="p">,</span> <span class="n">TokenError</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="k">try</span><span class="p">:</span>
@@ -313,8 +339,9 @@ invoked only if pixiv asks for a code:</p>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="s2">&quot;__version__&quot;</span><span class="p">,</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="s2">&quot;get_token&quot;</span><span class="p">,</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="s2">&quot;login&quot;</span><span class="p">,</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="s2">&quot;refresh&quot;</span><span class="p">,</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="p">]</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="s2">&quot;oauth_login&quot;</span><span class="p">,</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="s2">&quot;refresh&quot;</span><span class="p">,</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="p">]</span>
 </span></pre></div>
 
 
@@ -330,12 +357,12 @@ invoked only if pixiv asks for a code:</p>
 
     </div>
     <a class="headerlink" href="#LoginError"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="LoginError-75"><a href="#LoginError-75"><span class="linenos">75</span></a><span class="k">class</span><span class="w"> </span><span class="nc">LoginError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
-</span><span id="LoginError-76"><a href="#LoginError-76"><span class="linenos">76</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when the browser login does not yield an authorization code.&quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="LoginError-51"><a href="#LoginError-51"><span class="linenos">51</span></a><span class="k">class</span><span class="w"> </span><span class="nc">LoginError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
+</span><span id="LoginError-52"><a href="#LoginError-52"><span class="linenos">52</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a login does not yield an authorization code.&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Raised when the browser login does not yield an authorization code.</p>
+            <div class="docstring"><p>Raised when a login does not yield an authorization code.</p>
 </div>
 
 
@@ -632,7 +659,7 @@ invoked only if pixiv asks for a code:</p>
                 <section id="__version__">
                     <div class="attr variable">
             <span class="name">__version__</span>        =
-<span class="default_value">&#39;0.0.0.post1+ae74e53&#39;</span>
+<span class="default_value">&#39;0.0.0.post1+3df41b6&#39;</span>
 
         
     </div>
@@ -646,82 +673,99 @@ invoked only if pixiv asks for a code:</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">get_token</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">profile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">headless</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">save</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">notify</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">totp_prompt</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n"><a href="#Token">Token</a></span>:</span></span>
+        <span class="name">get_token</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">profile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">headless</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">save</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">notify</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">totp_prompt</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n"><a href="#Token">Token</a></span>:</span></span>
 
                 <label class="view-source-button" for="get_token-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#get_token"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="get_token-93"><a href="#get_token-93"><span class="linenos"> 93</span></a><span class="k">def</span><span class="w"> </span><span class="nf">get_token</span><span class="p">(</span>
-</span><span id="get_token-94"><a href="#get_token-94"><span class="linenos"> 94</span></a>    <span class="n">profile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">DEFAULT_PROFILE</span><span class="p">,</span>
-</span><span id="get_token-95"><a href="#get_token-95"><span class="linenos"> 95</span></a>    <span class="o">*</span><span class="p">,</span>
-</span><span id="get_token-96"><a href="#get_token-96"><span class="linenos"> 96</span></a>    <span class="n">headless</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="get_token-97"><a href="#get_token-97"><span class="linenos"> 97</span></a>    <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="get_token-98"><a href="#get_token-98"><span class="linenos"> 98</span></a>    <span class="n">save</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="get_token-99"><a href="#get_token-99"><span class="linenos"> 99</span></a>    <span class="n">notify</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="get_token-100"><a href="#get_token-100"><span class="linenos">100</span></a>    <span class="n">totp_prompt</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="get_token-101"><a href="#get_token-101"><span class="linenos">101</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
-</span><span id="get_token-102"><a href="#get_token-102"><span class="linenos">102</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a usable token for a stored profile, logging in only if needed.</span>
-</span><span id="get_token-103"><a href="#get_token-103"><span class="linenos">103</span></a>
-</span><span id="get_token-104"><a href="#get_token-104"><span class="linenos">104</span></a><span class="sd">    The cached token is returned while it is still valid, then refreshed with</span>
-</span><span id="get_token-105"><a href="#get_token-105"><span class="linenos">105</span></a><span class="sd">    its refresh token, and only then is the browser opened. This is exactly</span>
-</span><span id="get_token-106"><a href="#get_token-106"><span class="linenos">106</span></a><span class="sd">    what ``gppt login`` does.</span>
-</span><span id="get_token-107"><a href="#get_token-107"><span class="linenos">107</span></a>
-</span><span id="get_token-108"><a href="#get_token-108"><span class="linenos">108</span></a><span class="sd">    Args:</span>
-</span><span id="get_token-109"><a href="#get_token-109"><span class="linenos">109</span></a><span class="sd">        profile (str): Profile name, as created by ``gppt configure``.</span>
-</span><span id="get_token-110"><a href="#get_token-110"><span class="linenos">110</span></a><span class="sd">            ``GPPT_USERNAME`` / ``GPPT_PASSWORD`` override its credentials.</span>
-</span><span id="get_token-111"><a href="#get_token-111"><span class="linenos">111</span></a><span class="sd">        headless (bool): Run the browser without a visible window. Forced to</span>
-</span><span id="get_token-112"><a href="#get_token-112"><span class="linenos">112</span></a><span class="sd">            False when the profile has no credentials to type in.</span>
-</span><span id="get_token-113"><a href="#get_token-113"><span class="linenos">113</span></a><span class="sd">        force (bool): Ignore the cached token and log in through the browser.</span>
-</span><span id="get_token-114"><a href="#get_token-114"><span class="linenos">114</span></a><span class="sd">        save (bool): Write the issued token back to the profile&#39;s cache.</span>
-</span><span id="get_token-115"><a href="#get_token-115"><span class="linenos">115</span></a><span class="sd">        notify (Callable[[str], None] | None): Called with progress messages</span>
-</span><span id="get_token-116"><a href="#get_token-116"><span class="linenos">116</span></a><span class="sd">            (&quot;Reusing the cached token.&quot;, ...). Silent by default.</span>
-</span><span id="get_token-117"><a href="#get_token-117"><span class="linenos">117</span></a><span class="sd">        totp_prompt (Callable[[], str] | None): Called for a verification code</span>
-</span><span id="get_token-118"><a href="#get_token-118"><span class="linenos">118</span></a><span class="sd">            when 2FA is requested and the profile has no TOTP secret.</span>
-</span><span id="get_token-119"><a href="#get_token-119"><span class="linenos">119</span></a>
-</span><span id="get_token-120"><a href="#get_token-120"><span class="linenos">120</span></a><span class="sd">    Returns:</span>
-</span><span id="get_token-121"><a href="#get_token-121"><span class="linenos">121</span></a><span class="sd">        Token: A token that is valid now.</span>
-</span><span id="get_token-122"><a href="#get_token-122"><span class="linenos">122</span></a>
-</span><span id="get_token-123"><a href="#get_token-123"><span class="linenos">123</span></a><span class="sd">    Raises:</span>
-</span><span id="get_token-124"><a href="#get_token-124"><span class="linenos">124</span></a><span class="sd">        LoginError: If the browser login does not yield an authorization code.</span>
-</span><span id="get_token-125"><a href="#get_token-125"><span class="linenos">125</span></a><span class="sd">        TokenError: If pixiv rejects the authorization code.</span>
-</span><span id="get_token-126"><a href="#get_token-126"><span class="linenos">126</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="get_token-127"><a href="#get_token-127"><span class="linenos">127</span></a>    <span class="n">say</span> <span class="o">=</span> <span class="n">notify</span> <span class="ow">or</span> <span class="n">_silent</span>
-</span><span id="get_token-128"><a href="#get_token-128"><span class="linenos">128</span></a>
-</span><span id="get_token-129"><a href="#get_token-129"><span class="linenos">129</span></a>    <span class="n">issued</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">force</span> <span class="k">else</span> <span class="n">_from_cache</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">say</span><span class="p">)</span>
-</span><span id="get_token-130"><a href="#get_token-130"><span class="linenos">130</span></a>    <span class="k">if</span> <span class="n">issued</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="get_token-131"><a href="#get_token-131"><span class="linenos">131</span></a>        <span class="n">issued</span> <span class="o">=</span> <span class="n">_browser_login</span><span class="p">(</span>
-</span><span id="get_token-132"><a href="#get_token-132"><span class="linenos">132</span></a>            <span class="n">config</span><span class="o">.</span><span class="n">load_or_default</span><span class="p">(</span><span class="n">profile</span><span class="p">),</span>
-</span><span id="get_token-133"><a href="#get_token-133"><span class="linenos">133</span></a>            <span class="n">headless</span><span class="o">=</span><span class="n">headless</span><span class="p">,</span>
-</span><span id="get_token-134"><a href="#get_token-134"><span class="linenos">134</span></a>            <span class="n">say</span><span class="o">=</span><span class="n">say</span><span class="p">,</span>
-</span><span id="get_token-135"><a href="#get_token-135"><span class="linenos">135</span></a>            <span class="n">totp_prompt</span><span class="o">=</span><span class="n">totp_prompt</span><span class="p">,</span>
-</span><span id="get_token-136"><a href="#get_token-136"><span class="linenos">136</span></a>        <span class="p">)</span>
-</span><span id="get_token-137"><a href="#get_token-137"><span class="linenos">137</span></a>
-</span><span id="get_token-138"><a href="#get_token-138"><span class="linenos">138</span></a>    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
-</span><span id="get_token-139"><a href="#get_token-139"><span class="linenos">139</span></a>        <span class="n">token</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">issued</span><span class="p">)</span>
-</span><span id="get_token-140"><a href="#get_token-140"><span class="linenos">140</span></a>    <span class="k">return</span> <span class="n">issued</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="get_token-128"><a href="#get_token-128"><span class="linenos">128</span></a><span class="k">def</span><span class="w"> </span><span class="nf">get_token</span><span class="p">(</span>
+</span><span id="get_token-129"><a href="#get_token-129"><span class="linenos">129</span></a>    <span class="n">profile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">DEFAULT_PROFILE</span><span class="p">,</span>
+</span><span id="get_token-130"><a href="#get_token-130"><span class="linenos">130</span></a>    <span class="o">*</span><span class="p">,</span>
+</span><span id="get_token-131"><a href="#get_token-131"><span class="linenos">131</span></a>    <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="get_token-132"><a href="#get_token-132"><span class="linenos">132</span></a>    <span class="n">headless</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="get_token-133"><a href="#get_token-133"><span class="linenos">133</span></a>    <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="get_token-134"><a href="#get_token-134"><span class="linenos">134</span></a>    <span class="n">save</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="get_token-135"><a href="#get_token-135"><span class="linenos">135</span></a>    <span class="n">notify</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="get_token-136"><a href="#get_token-136"><span class="linenos">136</span></a>    <span class="n">totp_prompt</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="get_token-137"><a href="#get_token-137"><span class="linenos">137</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
+</span><span id="get_token-138"><a href="#get_token-138"><span class="linenos">138</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a usable token for a stored profile, logging in only if needed.</span>
+</span><span id="get_token-139"><a href="#get_token-139"><span class="linenos">139</span></a>
+</span><span id="get_token-140"><a href="#get_token-140"><span class="linenos">140</span></a><span class="sd">    The cached token is returned while it is still valid, then refreshed with</span>
+</span><span id="get_token-141"><a href="#get_token-141"><span class="linenos">141</span></a><span class="sd">    its refresh token, and only then is a login started. This is exactly what</span>
+</span><span id="get_token-142"><a href="#get_token-142"><span class="linenos">142</span></a><span class="sd">    ``gppt login`` does.</span>
+</span><span id="get_token-143"><a href="#get_token-143"><span class="linenos">143</span></a>
+</span><span id="get_token-144"><a href="#get_token-144"><span class="linenos">144</span></a><span class="sd">    Args:</span>
+</span><span id="get_token-145"><a href="#get_token-145"><span class="linenos">145</span></a><span class="sd">        profile (str): Profile name, as created by ``gppt configure``.</span>
+</span><span id="get_token-146"><a href="#get_token-146"><span class="linenos">146</span></a><span class="sd">            ``GPPT_USERNAME`` / ``GPPT_PASSWORD`` override its credentials.</span>
+</span><span id="get_token-147"><a href="#get_token-147"><span class="linenos">147</span></a><span class="sd">        method (str | None): ``&quot;e2e&quot;`` to drive a browser with the profile&#39;s</span>
+</span><span id="get_token-148"><a href="#get_token-148"><span class="linenos">148</span></a><span class="sd">            stored credentials, ``&quot;oauth&quot;`` to log in yourself and paste the</span>
+</span><span id="get_token-149"><a href="#get_token-149"><span class="linenos">149</span></a><span class="sd">            code back. None uses the profile&#39;s configured method, which</span>
+</span><span id="get_token-150"><a href="#get_token-150"><span class="linenos">150</span></a><span class="sd">            ``GPPT_AUTH_METHOD`` overrides.</span>
+</span><span id="get_token-151"><a href="#get_token-151"><span class="linenos">151</span></a><span class="sd">        headless (bool): Run the browser without a visible window. Forced to</span>
+</span><span id="get_token-152"><a href="#get_token-152"><span class="linenos">152</span></a><span class="sd">            False when the profile has no credentials to type in. Unused by</span>
+</span><span id="get_token-153"><a href="#get_token-153"><span class="linenos">153</span></a><span class="sd">            the ``oauth`` method.</span>
+</span><span id="get_token-154"><a href="#get_token-154"><span class="linenos">154</span></a><span class="sd">        force (bool): Ignore the cached token and log in again.</span>
+</span><span id="get_token-155"><a href="#get_token-155"><span class="linenos">155</span></a><span class="sd">        save (bool): Write the issued token back to the profile&#39;s cache.</span>
+</span><span id="get_token-156"><a href="#get_token-156"><span class="linenos">156</span></a><span class="sd">        notify (Callable[[str], None] | None): Called with progress messages</span>
+</span><span id="get_token-157"><a href="#get_token-157"><span class="linenos">157</span></a><span class="sd">            (&quot;Reusing the cached token.&quot;, ...). Silent by default.</span>
+</span><span id="get_token-158"><a href="#get_token-158"><span class="linenos">158</span></a><span class="sd">        totp_prompt (Callable[[], str] | None): Called for a verification code</span>
+</span><span id="get_token-159"><a href="#get_token-159"><span class="linenos">159</span></a><span class="sd">            when 2FA is requested and the profile has no TOTP secret. Unused</span>
+</span><span id="get_token-160"><a href="#get_token-160"><span class="linenos">160</span></a><span class="sd">            by the ``oauth`` method.</span>
+</span><span id="get_token-161"><a href="#get_token-161"><span class="linenos">161</span></a>
+</span><span id="get_token-162"><a href="#get_token-162"><span class="linenos">162</span></a><span class="sd">    Returns:</span>
+</span><span id="get_token-163"><a href="#get_token-163"><span class="linenos">163</span></a><span class="sd">        Token: A token that is valid now.</span>
+</span><span id="get_token-164"><a href="#get_token-164"><span class="linenos">164</span></a>
+</span><span id="get_token-165"><a href="#get_token-165"><span class="linenos">165</span></a><span class="sd">    Raises:</span>
+</span><span id="get_token-166"><a href="#get_token-166"><span class="linenos">166</span></a><span class="sd">        ValueError: If ``method`` names no known authentication method.</span>
+</span><span id="get_token-167"><a href="#get_token-167"><span class="linenos">167</span></a><span class="sd">        LoginError: If the login does not yield an authorization code.</span>
+</span><span id="get_token-168"><a href="#get_token-168"><span class="linenos">168</span></a><span class="sd">        TokenError: If pixiv rejects the authorization code.</span>
+</span><span id="get_token-169"><a href="#get_token-169"><span class="linenos">169</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="get_token-170"><a href="#get_token-170"><span class="linenos">170</span></a>    <span class="n">say</span> <span class="o">=</span> <span class="n">notify</span> <span class="ow">or</span> <span class="n">_silent</span>
+</span><span id="get_token-171"><a href="#get_token-171"><span class="linenos">171</span></a>
+</span><span id="get_token-172"><a href="#get_token-172"><span class="linenos">172</span></a>    <span class="n">issued</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">force</span> <span class="k">else</span> <span class="n">_from_cache</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">say</span><span class="p">)</span>
+</span><span id="get_token-173"><a href="#get_token-173"><span class="linenos">173</span></a>    <span class="k">if</span> <span class="n">issued</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="get_token-174"><a href="#get_token-174"><span class="linenos">174</span></a>        <span class="n">profile_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">load_or_default</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+</span><span id="get_token-175"><a href="#get_token-175"><span class="linenos">175</span></a>        <span class="n">resolved</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">normalize_auth_method</span><span class="p">(</span><span class="n">method</span> <span class="ow">or</span> <span class="n">profile_config</span><span class="o">.</span><span class="n">auth_method</span><span class="p">)</span>
+</span><span id="get_token-176"><a href="#get_token-176"><span class="linenos">176</span></a>        <span class="n">issued</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="get_token-177"><a href="#get_token-177"><span class="linenos">177</span></a>            <span class="c1"># `notify`, not `say`: `say` is silent by default, and this flow</span>
+</span><span id="get_token-178"><a href="#get_token-178"><span class="linenos">178</span></a>            <span class="c1"># reads a pasted code -- nobody can answer an invisible prompt.</span>
+</span><span id="get_token-179"><a href="#get_token-179"><span class="linenos">179</span></a>            <span class="n">oauth_login</span><span class="p">(</span><span class="n">notify</span><span class="o">=</span><span class="n">notify</span><span class="p">)</span>
+</span><span id="get_token-180"><a href="#get_token-180"><span class="linenos">180</span></a>            <span class="k">if</span> <span class="n">resolved</span> <span class="o">==</span> <span class="n">config</span><span class="o">.</span><span class="n">AUTH_OAUTH</span>
+</span><span id="get_token-181"><a href="#get_token-181"><span class="linenos">181</span></a>            <span class="k">else</span> <span class="n">_browser_login</span><span class="p">(</span><span class="n">profile_config</span><span class="p">,</span> <span class="n">headless</span><span class="o">=</span><span class="n">headless</span><span class="p">,</span> <span class="n">say</span><span class="o">=</span><span class="n">say</span><span class="p">,</span> <span class="n">totp_prompt</span><span class="o">=</span><span class="n">totp_prompt</span><span class="p">)</span>
+</span><span id="get_token-182"><a href="#get_token-182"><span class="linenos">182</span></a>        <span class="p">)</span>
+</span><span id="get_token-183"><a href="#get_token-183"><span class="linenos">183</span></a>
+</span><span id="get_token-184"><a href="#get_token-184"><span class="linenos">184</span></a>    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+</span><span id="get_token-185"><a href="#get_token-185"><span class="linenos">185</span></a>        <span class="n">token</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">issued</span><span class="p">)</span>
+</span><span id="get_token-186"><a href="#get_token-186"><span class="linenos">186</span></a>    <span class="k">return</span> <span class="n">issued</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Return a usable token for a stored profile, logging in only if needed.</p>
 
 <p>The cached token is returned while it is still valid, then refreshed with
-its refresh token, and only then is the browser opened. This is exactly
-what <code>gppt login</code> does.</p>
+its refresh token, and only then is a login started. This is exactly what
+<code>gppt login</code> does.</p>
 
 <h6 id="arguments">Arguments:</h6>
 
 <ul>
 <li><strong>profile (str):</strong>  Profile name, as created by <code>gppt configure</code>.
 <code>GPPT_USERNAME</code> / <code>GPPT_PASSWORD</code> override its credentials.</li>
+<li><strong>method (str | None):</strong>  <code>"e2e"</code> to drive a browser with the profile's
+stored credentials, <code>"oauth"</code> to log in yourself and paste the
+code back. None uses the profile's configured method, which
+<code>GPPT_AUTH_METHOD</code> overrides.</li>
 <li><strong>headless (bool):</strong>  Run the browser without a visible window. Forced to
-False when the profile has no credentials to type in.</li>
-<li><strong>force (bool):</strong>  Ignore the cached token and log in through the browser.</li>
+False when the profile has no credentials to type in. Unused by
+the <code>oauth</code> method.</li>
+<li><strong>force (bool):</strong>  Ignore the cached token and log in again.</li>
 <li><strong>save (bool):</strong>  Write the issued token back to the profile's cache.</li>
 <li><strong>notify (Callable[[str], None] | None):</strong>  Called with progress messages
 ("Reusing the cached token.", ...). Silent by default.</li>
 <li><strong>totp_prompt (Callable[[], str] | None):</strong>  Called for a verification code
-when 2FA is requested and the profile has no TOTP secret.</li>
+when 2FA is requested and the profile has no TOTP secret. Unused
+by the <code>oauth</code> method.</li>
 </ul>
 
 <h6 id="returns">Returns:</h6>
@@ -733,7 +777,8 @@ when 2FA is requested and the profile has no TOTP secret.</li>
 <h6 id="raises">Raises:</h6>
 
 <ul>
-<li><strong>LoginError:</strong>  If the browser login does not yield an authorization code.</li>
+<li><strong>ValueError:</strong>  If <code>method</code> names no known authentication method.</li>
+<li><strong>LoginError:</strong>  If the login does not yield an authorization code.</li>
 <li><strong>TokenError:</strong>  If pixiv rejects the authorization code.</li>
 </ul>
 </div>
@@ -751,54 +796,54 @@ when 2FA is requested and the profile has no TOTP secret.</li>
 
     </div>
     <a class="headerlink" href="#login"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="login-43"><a href="#login-43"><span class="linenos">43</span></a><span class="k">def</span><span class="w"> </span><span class="nf">login</span><span class="p">(</span>
-</span><span id="login-44"><a href="#login-44"><span class="linenos">44</span></a>    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-</span><span id="login-45"><a href="#login-45"><span class="linenos">45</span></a>    <span class="n">password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-</span><span id="login-46"><a href="#login-46"><span class="linenos">46</span></a>    <span class="n">totp_secret</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-</span><span id="login-47"><a href="#login-47"><span class="linenos">47</span></a>    <span class="o">*</span><span class="p">,</span>
-</span><span id="login-48"><a href="#login-48"><span class="linenos">48</span></a>    <span class="n">headless</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="login-49"><a href="#login-49"><span class="linenos">49</span></a>    <span class="n">totp_prompt</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="login-50"><a href="#login-50"><span class="linenos">50</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
-</span><span id="login-51"><a href="#login-51"><span class="linenos">51</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Log in through the browser and return the issued token.</span>
-</span><span id="login-52"><a href="#login-52"><span class="linenos">52</span></a>
-</span><span id="login-53"><a href="#login-53"><span class="linenos">53</span></a><span class="sd">    Nothing is read from or written to disk, so this is the direct replacement</span>
-</span><span id="login-54"><a href="#login-54"><span class="linenos">54</span></a><span class="sd">    for the v4 ``GetPixivToken().login()``. Every credential may be given as an</span>
-</span><span id="login-55"><a href="#login-55"><span class="linenos">55</span></a><span class="sd">    ``op://`` 1Password reference.</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="login-47"><a href="#login-47"><span class="linenos">47</span></a><span class="k">def</span><span class="w"> </span><span class="nf">login</span><span class="p">(</span>
+</span><span id="login-48"><a href="#login-48"><span class="linenos">48</span></a>    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span id="login-49"><a href="#login-49"><span class="linenos">49</span></a>    <span class="n">password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span id="login-50"><a href="#login-50"><span class="linenos">50</span></a>    <span class="n">totp_secret</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span id="login-51"><a href="#login-51"><span class="linenos">51</span></a>    <span class="o">*</span><span class="p">,</span>
+</span><span id="login-52"><a href="#login-52"><span class="linenos">52</span></a>    <span class="n">headless</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="login-53"><a href="#login-53"><span class="linenos">53</span></a>    <span class="n">totp_prompt</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="login-54"><a href="#login-54"><span class="linenos">54</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
+</span><span id="login-55"><a href="#login-55"><span class="linenos">55</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Log in through the browser and return the issued token.</span>
 </span><span id="login-56"><a href="#login-56"><span class="linenos">56</span></a>
-</span><span id="login-57"><a href="#login-57"><span class="linenos">57</span></a><span class="sd">    Args:</span>
-</span><span id="login-58"><a href="#login-58"><span class="linenos">58</span></a><span class="sd">        username (str): pixiv ID / e-mail address. Empty means a manual login.</span>
-</span><span id="login-59"><a href="#login-59"><span class="linenos">59</span></a><span class="sd">        password (str): pixiv password. Empty means a manual login.</span>
-</span><span id="login-60"><a href="#login-60"><span class="linenos">60</span></a><span class="sd">        totp_secret (str): Base32 TOTP secret or ``otpauth://`` URI, for an</span>
-</span><span id="login-61"><a href="#login-61"><span class="linenos">61</span></a><span class="sd">            account with two-factor authentication enabled.</span>
-</span><span id="login-62"><a href="#login-62"><span class="linenos">62</span></a><span class="sd">        headless (bool | None): Run the browser without a visible window.</span>
-</span><span id="login-63"><a href="#login-63"><span class="linenos">63</span></a><span class="sd">            Defaults to True when both credentials are given, False otherwise.</span>
-</span><span id="login-64"><a href="#login-64"><span class="linenos">64</span></a><span class="sd">        totp_prompt (Callable[[], str] | None): Called for a verification code</span>
-</span><span id="login-65"><a href="#login-65"><span class="linenos">65</span></a><span class="sd">            when 2FA is requested and no ``totp_secret`` is set.</span>
-</span><span id="login-66"><a href="#login-66"><span class="linenos">66</span></a>
-</span><span id="login-67"><a href="#login-67"><span class="linenos">67</span></a><span class="sd">    Returns:</span>
-</span><span id="login-68"><a href="#login-68"><span class="linenos">68</span></a><span class="sd">        Token: The issued token.</span>
-</span><span id="login-69"><a href="#login-69"><span class="linenos">69</span></a>
-</span><span id="login-70"><a href="#login-70"><span class="linenos">70</span></a><span class="sd">    Raises:</span>
-</span><span id="login-71"><a href="#login-71"><span class="linenos">71</span></a><span class="sd">        ValueError: If ``headless`` is True without both credentials -- nobody</span>
-</span><span id="login-72"><a href="#login-72"><span class="linenos">72</span></a><span class="sd">            can type into a window that is not drawn -- or if ``totp_secret``</span>
-</span><span id="login-73"><a href="#login-73"><span class="linenos">73</span></a><span class="sd">            is not a usable TOTP secret.</span>
-</span><span id="login-74"><a href="#login-74"><span class="linenos">74</span></a><span class="sd">        LoginError: If the browser login does not yield an authorization code.</span>
-</span><span id="login-75"><a href="#login-75"><span class="linenos">75</span></a><span class="sd">        TokenError: If pixiv rejects the authorization code.</span>
-</span><span id="login-76"><a href="#login-76"><span class="linenos">76</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="login-77"><a href="#login-77"><span class="linenos">77</span></a>    <span class="n">username</span> <span class="o">=</span> <span class="n">resolve_secret</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
-</span><span id="login-78"><a href="#login-78"><span class="linenos">78</span></a>    <span class="n">password</span> <span class="o">=</span> <span class="n">resolve_secret</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
-</span><span id="login-79"><a href="#login-79"><span class="linenos">79</span></a>    <span class="n">has_credentials</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">username</span> <span class="ow">and</span> <span class="n">password</span><span class="p">)</span>
-</span><span id="login-80"><a href="#login-80"><span class="linenos">80</span></a>
-</span><span id="login-81"><a href="#login-81"><span class="linenos">81</span></a>    <span class="k">if</span> <span class="n">headless</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="login-82"><a href="#login-82"><span class="linenos">82</span></a>        <span class="n">headless</span> <span class="o">=</span> <span class="n">has_credentials</span>
-</span><span id="login-83"><a href="#login-83"><span class="linenos">83</span></a>    <span class="k">elif</span> <span class="n">headless</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">has_credentials</span><span class="p">:</span>
-</span><span id="login-84"><a href="#login-84"><span class="linenos">84</span></a>        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;headless=True needs both a username and a password; a manual login needs a visible window.&quot;</span>
-</span><span id="login-85"><a href="#login-85"><span class="linenos">85</span></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</span><span id="login-86"><a href="#login-86"><span class="linenos">86</span></a>
-</span><span id="login-87"><a href="#login-87"><span class="linenos">87</span></a>    <span class="c1"># Built before the browser starts, so a malformed secret fails immediately.</span>
-</span><span id="login-88"><a href="#login-88"><span class="linenos">88</span></a>    <span class="n">totp</span> <span class="o">=</span> <span class="n">TotpProvider</span><span class="p">(</span><span class="n">resolve_secret</span><span class="p">(</span><span class="n">totp_secret</span><span class="p">),</span> <span class="n">totp_prompt</span><span class="p">)</span>
-</span><span id="login-89"><a href="#login-89"><span class="linenos">89</span></a>
-</span><span id="login-90"><a href="#login-90"><span class="linenos">90</span></a>    <span class="k">return</span> <span class="n">token</span><span class="o">.</span><span class="n">exchange</span><span class="p">(</span><span class="n">fetch_authorization</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">headless</span><span class="o">=</span><span class="n">headless</span><span class="p">,</span> <span class="n">totp</span><span class="o">=</span><span class="n">totp</span><span class="p">))</span>
+</span><span id="login-57"><a href="#login-57"><span class="linenos">57</span></a><span class="sd">    Nothing is read from or written to disk, so this is the direct replacement</span>
+</span><span id="login-58"><a href="#login-58"><span class="linenos">58</span></a><span class="sd">    for the v4 ``GetPixivToken().login()``. Every credential may be given as an</span>
+</span><span id="login-59"><a href="#login-59"><span class="linenos">59</span></a><span class="sd">    ``op://`` 1Password reference.</span>
+</span><span id="login-60"><a href="#login-60"><span class="linenos">60</span></a>
+</span><span id="login-61"><a href="#login-61"><span class="linenos">61</span></a><span class="sd">    Args:</span>
+</span><span id="login-62"><a href="#login-62"><span class="linenos">62</span></a><span class="sd">        username (str): pixiv ID / e-mail address. Empty means a manual login.</span>
+</span><span id="login-63"><a href="#login-63"><span class="linenos">63</span></a><span class="sd">        password (str): pixiv password. Empty means a manual login.</span>
+</span><span id="login-64"><a href="#login-64"><span class="linenos">64</span></a><span class="sd">        totp_secret (str): Base32 TOTP secret or ``otpauth://`` URI, for an</span>
+</span><span id="login-65"><a href="#login-65"><span class="linenos">65</span></a><span class="sd">            account with two-factor authentication enabled.</span>
+</span><span id="login-66"><a href="#login-66"><span class="linenos">66</span></a><span class="sd">        headless (bool | None): Run the browser without a visible window.</span>
+</span><span id="login-67"><a href="#login-67"><span class="linenos">67</span></a><span class="sd">            Defaults to True when both credentials are given, False otherwise.</span>
+</span><span id="login-68"><a href="#login-68"><span class="linenos">68</span></a><span class="sd">        totp_prompt (Callable[[], str] | None): Called for a verification code</span>
+</span><span id="login-69"><a href="#login-69"><span class="linenos">69</span></a><span class="sd">            when 2FA is requested and no ``totp_secret`` is set.</span>
+</span><span id="login-70"><a href="#login-70"><span class="linenos">70</span></a>
+</span><span id="login-71"><a href="#login-71"><span class="linenos">71</span></a><span class="sd">    Returns:</span>
+</span><span id="login-72"><a href="#login-72"><span class="linenos">72</span></a><span class="sd">        Token: The issued token.</span>
+</span><span id="login-73"><a href="#login-73"><span class="linenos">73</span></a>
+</span><span id="login-74"><a href="#login-74"><span class="linenos">74</span></a><span class="sd">    Raises:</span>
+</span><span id="login-75"><a href="#login-75"><span class="linenos">75</span></a><span class="sd">        ValueError: If ``headless`` is True without both credentials -- nobody</span>
+</span><span id="login-76"><a href="#login-76"><span class="linenos">76</span></a><span class="sd">            can type into a window that is not drawn -- or if ``totp_secret``</span>
+</span><span id="login-77"><a href="#login-77"><span class="linenos">77</span></a><span class="sd">            is not a usable TOTP secret.</span>
+</span><span id="login-78"><a href="#login-78"><span class="linenos">78</span></a><span class="sd">        LoginError: If the browser login does not yield an authorization code.</span>
+</span><span id="login-79"><a href="#login-79"><span class="linenos">79</span></a><span class="sd">        TokenError: If pixiv rejects the authorization code.</span>
+</span><span id="login-80"><a href="#login-80"><span class="linenos">80</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="login-81"><a href="#login-81"><span class="linenos">81</span></a>    <span class="n">username</span> <span class="o">=</span> <span class="n">resolve_secret</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+</span><span id="login-82"><a href="#login-82"><span class="linenos">82</span></a>    <span class="n">password</span> <span class="o">=</span> <span class="n">resolve_secret</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+</span><span id="login-83"><a href="#login-83"><span class="linenos">83</span></a>    <span class="n">has_credentials</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">username</span> <span class="ow">and</span> <span class="n">password</span><span class="p">)</span>
+</span><span id="login-84"><a href="#login-84"><span class="linenos">84</span></a>
+</span><span id="login-85"><a href="#login-85"><span class="linenos">85</span></a>    <span class="k">if</span> <span class="n">headless</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="login-86"><a href="#login-86"><span class="linenos">86</span></a>        <span class="n">headless</span> <span class="o">=</span> <span class="n">has_credentials</span>
+</span><span id="login-87"><a href="#login-87"><span class="linenos">87</span></a>    <span class="k">elif</span> <span class="n">headless</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">has_credentials</span><span class="p">:</span>
+</span><span id="login-88"><a href="#login-88"><span class="linenos">88</span></a>        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;headless=True needs both a username and a password; a manual login needs a visible window.&quot;</span>
+</span><span id="login-89"><a href="#login-89"><span class="linenos">89</span></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+</span><span id="login-90"><a href="#login-90"><span class="linenos">90</span></a>
+</span><span id="login-91"><a href="#login-91"><span class="linenos">91</span></a>    <span class="c1"># Built before the browser starts, so a malformed secret fails immediately.</span>
+</span><span id="login-92"><a href="#login-92"><span class="linenos">92</span></a>    <span class="n">totp</span> <span class="o">=</span> <span class="n">TotpProvider</span><span class="p">(</span><span class="n">resolve_secret</span><span class="p">(</span><span class="n">totp_secret</span><span class="p">),</span> <span class="n">totp_prompt</span><span class="p">)</span>
+</span><span id="login-93"><a href="#login-93"><span class="linenos">93</span></a>
+</span><span id="login-94"><a href="#login-94"><span class="linenos">94</span></a>    <span class="k">return</span> <span class="n">token</span><span class="o">.</span><span class="n">exchange</span><span class="p">(</span><span class="n">fetch_authorization</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">headless</span><span class="o">=</span><span class="n">headless</span><span class="p">,</span> <span class="n">totp</span><span class="o">=</span><span class="n">totp</span><span class="p">))</span>
 </span></pre></div>
 
 
@@ -840,6 +885,83 @@ is not a usable TOTP secret.</li>
 
 
                 </section>
+                <section id="oauth_login">
+                            <input id="oauth_login-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">oauth_login</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">open_browser</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">prompt</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">notify</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n"><a href="#Token">Token</a></span>:</span></span>
+
+                <label class="view-source-button" for="oauth_login-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#oauth_login"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="oauth_login-97"><a href="#oauth_login-97"><span class="linenos"> 97</span></a><span class="k">def</span><span class="w"> </span><span class="nf">oauth_login</span><span class="p">(</span>
+</span><span id="oauth_login-98"><a href="#oauth_login-98"><span class="linenos"> 98</span></a>    <span class="o">*</span><span class="p">,</span>
+</span><span id="oauth_login-99"><a href="#oauth_login-99"><span class="linenos"> 99</span></a>    <span class="n">open_browser</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="oauth_login-100"><a href="#oauth_login-100"><span class="linenos">100</span></a>    <span class="n">prompt</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="oauth_login-101"><a href="#oauth_login-101"><span class="linenos">101</span></a>    <span class="n">notify</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="oauth_login-102"><a href="#oauth_login-102"><span class="linenos">102</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
+</span><span id="oauth_login-103"><a href="#oauth_login-103"><span class="linenos">103</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Log in through the OAuth2 PKCE flow and return the issued token.</span>
+</span><span id="oauth_login-104"><a href="#oauth_login-104"><span class="linenos">104</span></a>
+</span><span id="oauth_login-105"><a href="#oauth_login-105"><span class="linenos">105</span></a><span class="sd">    You open pixiv in your own browser and paste the authorization code back,</span>
+</span><span id="oauth_login-106"><a href="#oauth_login-106"><span class="linenos">106</span></a><span class="sd">    so gppt never sees your credentials and no headless browser is launched.</span>
+</span><span id="oauth_login-107"><a href="#oauth_login-107"><span class="linenos">107</span></a><span class="sd">    Nothing is read from or written to disk.</span>
+</span><span id="oauth_login-108"><a href="#oauth_login-108"><span class="linenos">108</span></a>
+</span><span id="oauth_login-109"><a href="#oauth_login-109"><span class="linenos">109</span></a><span class="sd">    Args:</span>
+</span><span id="oauth_login-110"><a href="#oauth_login-110"><span class="linenos">110</span></a><span class="sd">        open_browser (bool): Also try to open the login URL in the default</span>
+</span><span id="oauth_login-111"><a href="#oauth_login-111"><span class="linenos">111</span></a><span class="sd">            browser. It is printed to stderr either way.</span>
+</span><span id="oauth_login-112"><a href="#oauth_login-112"><span class="linenos">112</span></a><span class="sd">        prompt (Callable[[str], str] | None): Called with a prompt string to</span>
+</span><span id="oauth_login-113"><a href="#oauth_login-113"><span class="linenos">113</span></a><span class="sd">            read the pasted code. Defaults to reading a line from stdin, with</span>
+</span><span id="oauth_login-114"><a href="#oauth_login-114"><span class="linenos">114</span></a><span class="sd">            the prompt itself written to stderr.</span>
+</span><span id="oauth_login-115"><a href="#oauth_login-115"><span class="linenos">115</span></a><span class="sd">        notify (Callable[[str], None] | None): Called with the instructions and</span>
+</span><span id="oauth_login-116"><a href="#oauth_login-116"><span class="linenos">116</span></a><span class="sd">            the login URL. Defaults to writing to stderr.</span>
+</span><span id="oauth_login-117"><a href="#oauth_login-117"><span class="linenos">117</span></a>
+</span><span id="oauth_login-118"><a href="#oauth_login-118"><span class="linenos">118</span></a><span class="sd">    Returns:</span>
+</span><span id="oauth_login-119"><a href="#oauth_login-119"><span class="linenos">119</span></a><span class="sd">        Token: The issued token.</span>
+</span><span id="oauth_login-120"><a href="#oauth_login-120"><span class="linenos">120</span></a>
+</span><span id="oauth_login-121"><a href="#oauth_login-121"><span class="linenos">121</span></a><span class="sd">    Raises:</span>
+</span><span id="oauth_login-122"><a href="#oauth_login-122"><span class="linenos">122</span></a><span class="sd">        LoginError: If the pasted text carries no authorization code.</span>
+</span><span id="oauth_login-123"><a href="#oauth_login-123"><span class="linenos">123</span></a><span class="sd">        TokenError: If pixiv rejects the authorization code.</span>
+</span><span id="oauth_login-124"><a href="#oauth_login-124"><span class="linenos">124</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="oauth_login-125"><a href="#oauth_login-125"><span class="linenos">125</span></a>    <span class="k">return</span> <span class="n">token</span><span class="o">.</span><span class="n">exchange</span><span class="p">(</span><span class="n">request_authorization</span><span class="p">(</span><span class="n">open_browser</span><span class="o">=</span><span class="n">open_browser</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="n">prompt</span><span class="p">,</span> <span class="n">notify</span><span class="o">=</span><span class="n">notify</span><span class="p">))</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Log in through the OAuth2 PKCE flow and return the issued token.</p>
+
+<p>You open pixiv in your own browser and paste the authorization code back,
+so gppt never sees your credentials and no headless browser is launched.
+Nothing is read from or written to disk.</p>
+
+<h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>open_browser (bool):</strong>  Also try to open the login URL in the default
+browser. It is printed to stderr either way.</li>
+<li><strong>prompt (Callable[[str], str] | None):</strong>  Called with a prompt string to
+read the pasted code. Defaults to reading a line from stdin, with
+the prompt itself written to stderr.</li>
+<li><strong>notify (Callable[[str], None] | None):</strong>  Called with the instructions and
+the login URL. Defaults to writing to stderr.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>Token: The issued token.</p>
+</blockquote>
+
+<h6 id="raises">Raises:</h6>
+
+<ul>
+<li><strong>LoginError:</strong>  If the pasted text carries no authorization code.</li>
+<li><strong>TokenError:</strong>  If pixiv rejects the authorization code.</li>
+</ul>
+</div>
+
+
+                </section>
                 <section id="refresh">
                             <input id="refresh-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -851,19 +973,19 @@ is not a usable TOTP secret.</li>
 
     </div>
     <a class="headerlink" href="#refresh"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="refresh-28"><a href="#refresh-28"><span class="linenos">28</span></a><span class="k">def</span><span class="w"> </span><span class="nf">refresh</span><span class="p">(</span><span class="n">refresh_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
-</span><span id="refresh-29"><a href="#refresh-29"><span class="linenos">29</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Obtain a fresh token pair from a refresh token.</span>
-</span><span id="refresh-30"><a href="#refresh-30"><span class="linenos">30</span></a>
-</span><span id="refresh-31"><a href="#refresh-31"><span class="linenos">31</span></a><span class="sd">    Args:</span>
-</span><span id="refresh-32"><a href="#refresh-32"><span class="linenos">32</span></a><span class="sd">        refresh_token (str): Refresh token from a previous login.</span>
-</span><span id="refresh-33"><a href="#refresh-33"><span class="linenos">33</span></a>
-</span><span id="refresh-34"><a href="#refresh-34"><span class="linenos">34</span></a><span class="sd">    Returns:</span>
-</span><span id="refresh-35"><a href="#refresh-35"><span class="linenos">35</span></a><span class="sd">        Token: The issued token.</span>
-</span><span id="refresh-36"><a href="#refresh-36"><span class="linenos">36</span></a>
-</span><span id="refresh-37"><a href="#refresh-37"><span class="linenos">37</span></a><span class="sd">    Raises:</span>
-</span><span id="refresh-38"><a href="#refresh-38"><span class="linenos">38</span></a><span class="sd">        TokenError: If pixiv rejects the refresh token.</span>
-</span><span id="refresh-39"><a href="#refresh-39"><span class="linenos">39</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="refresh-40"><a href="#refresh-40"><span class="linenos">40</span></a>    <span class="k">return</span> <span class="n">token</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">refresh_token</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="refresh-32"><a href="#refresh-32"><span class="linenos">32</span></a><span class="k">def</span><span class="w"> </span><span class="nf">refresh</span><span class="p">(</span><span class="n">refresh_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
+</span><span id="refresh-33"><a href="#refresh-33"><span class="linenos">33</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Obtain a fresh token pair from a refresh token.</span>
+</span><span id="refresh-34"><a href="#refresh-34"><span class="linenos">34</span></a>
+</span><span id="refresh-35"><a href="#refresh-35"><span class="linenos">35</span></a><span class="sd">    Args:</span>
+</span><span id="refresh-36"><a href="#refresh-36"><span class="linenos">36</span></a><span class="sd">        refresh_token (str): Refresh token from a previous login.</span>
+</span><span id="refresh-37"><a href="#refresh-37"><span class="linenos">37</span></a>
+</span><span id="refresh-38"><a href="#refresh-38"><span class="linenos">38</span></a><span class="sd">    Returns:</span>
+</span><span id="refresh-39"><a href="#refresh-39"><span class="linenos">39</span></a><span class="sd">        Token: The issued token.</span>
+</span><span id="refresh-40"><a href="#refresh-40"><span class="linenos">40</span></a>
+</span><span id="refresh-41"><a href="#refresh-41"><span class="linenos">41</span></a><span class="sd">    Raises:</span>
+</span><span id="refresh-42"><a href="#refresh-42"><span class="linenos">42</span></a><span class="sd">        TokenError: If pixiv rejects the refresh token.</span>
+</span><span id="refresh-43"><a href="#refresh-43"><span class="linenos">43</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="refresh-44"><a href="#refresh-44"><span class="linenos">44</span></a>    <span class="k">return</span> <span class="n">token</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">refresh_token</span><span class="p">)</span>
 </span></pre></div>
 
 

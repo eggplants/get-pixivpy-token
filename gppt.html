@@ -24,7 +24,8 @@
   <li><a href="#gppt-get-pixivpy-token"><code>gppt</code>: get-pixivpy-token</a>
   <ul>
     <li><a href="#install">Install</a></li>
-    <li><a href="#usage">Usage</a></li>
+    <li><a href="#cli">CLI</a></li>
+    <li><a href="#library">Library</a></li>
   </ul></li>
 </ul>
 
@@ -141,9 +142,7 @@ gppt    </h1>
 </code></pre>
 </div>
 
-<h2 id="usage">Usage</h2>
-
-<p><code><a href="">gppt</a></code> has two commands: <code>configure</code> stores an account in a profile, <code><a href="#login">login</a></code> gets you a token.</p>
+<h2 id="cli">CLI</h2>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="c1"># Configure a profile (writes to: ~/.config/gppt/&lt;profile&gt;.json by default)</span>
@@ -181,20 +180,6 @@ gppt<span class="w"> </span>login
 </code></pre>
 </div>
 
-<h3 id="two-factor-authentication">Two-factor authentication</h3>
-
-<p>If your account has 2FA enabled, pixiv asks for a verification code after the
-password. With the <code>e2e</code> method <code><a href="">gppt</a></code> fills it in from <code>totp_secret</code> — the
-base32 secret pixiv shows you when you set up an authenticator app, the
-<code>otpauth://</code> URI behind its QR code, or an <code>op://</code> reference to either. This is
-what makes an unattended headless login possible on a 2FA account.</p>
-
-<p>Leave <code>totp_secret</code> blank and <code>gppt login</code> prompts for a code on stdin instead,
-only when pixiv actually asks for one. Accounts without 2FA are unaffected.</p>
-
-<p>None of this applies to the <code>oauth</code> method: you are in your own browser, so
-pixiv's 2FA prompt is just part of the login you are doing by hand.</p>
-
 <h3 id="environment-variables">Environment variables</h3>
 
 <table>
@@ -224,7 +209,9 @@ pixiv's 2FA prompt is just part of the login you are doing by hand.</p>
 </tbody>
 </table>
 
-<h3 id="from-python">From Python</h3>
+<h2 id="library">Library</h2>
+
+<p><details></p>
 
 <p><code><a href="#get_token">gppt.get_token()</a></code> is the library form of <code>gppt login</code>: it reuses the cached
 token, refreshes it, or logs in — by the profile's method — if needed.</p>
@@ -312,6 +299,8 @@ invoked only if pixiv asks for a code:</p>
 </tr>
 </tbody>
 </table>
+
+<p></details></p>
 </div>
 
                         <input id="mod-gppt-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -659,7 +648,7 @@ invoked only if pixiv asks for a code:</p>
                 <section id="__version__">
                     <div class="attr variable">
             <span class="name">__version__</span>        =
-<span class="default_value">&#39;0.0.0.post1+65f95cd&#39;</span>
+<span class="default_value">&#39;0.0.0.post1+c3a60ce&#39;</span>
 
         
     </div>

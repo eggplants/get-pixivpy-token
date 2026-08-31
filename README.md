@@ -29,9 +29,7 @@
 pip install gppt
 ```
 
-## Usage
-
-`gppt` has two commands: `configure` stores an account in a profile, `login` gets you a token.
+## CLI
 
 ```bash
 # Configure a profile (writes to: ~/.config/gppt/<profile>.json by default)
@@ -66,20 +64,6 @@ gppt login
 }
 ```
 
-### Two-factor authentication
-
-If your account has 2FA enabled, pixiv asks for a verification code after the
-password. With the `e2e` method `gppt` fills it in from `totp_secret` — the
-base32 secret pixiv shows you when you set up an authenticator app, the
-`otpauth://` URI behind its QR code, or an `op://` reference to either. This is
-what makes an unattended headless login possible on a 2FA account.
-
-Leave `totp_secret` blank and `gppt login` prompts for a code on stdin instead,
-only when pixiv actually asks for one. Accounts without 2FA are unaffected.
-
-None of this applies to the `oauth` method: you are in your own browser, so
-pixiv's 2FA prompt is just part of the login you are doing by hand.
-
 ### Environment variables
 
 | Variable | Effect |
@@ -89,7 +73,9 @@ pixiv's 2FA prompt is just part of the login you are doing by hand.
 | `GPPT_CONFIG_DIR` | Directory holding profiles and cached tokens (default: `$XDG_CONFIG_HOME/gppt`) |
 | `ALL_PROXY`, `HTTPS_PROXY`, `HTTP_PROXY` | Proxy used by both the browser and the token requests |
 
-### From Python
+## Library
+
+<details>
 
 `gppt.get_token()` is the library form of `gppt login`: it reuses the cached
 token, refreshes it, or logs in — by the profile's method — if needed.
@@ -146,3 +132,5 @@ token = gppt.refresh("...")
 | `gppt.refresh(refresh_token)` | Refresh token → new token |
 | `gppt.Token` | Result dataclass: `access_token`, `refresh_token`, `expires_in`, `expires_at`, `is_expired`, `user_id`, `user_name`, `user_account` |
 | `gppt.LoginError`, `gppt.TokenError` | Raised when a login yields no authorization code / pixiv rejects the request |
+
+</details>

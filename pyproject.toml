@@ -8,14 +8,24 @@ description = "Get your Pixiv token (for running upbit/pixivpy)"
 readme = "README.md"
 keywords = [
   "api",
+  "cli",
+  "login",
+  "oauth",
   "pixiv",
+  "pixivpy",
+  "playwright",
+  "refresh-token",
   "token",
 ]
 license = "MIT"
 authors = [ { name = "eggplants", email = "w10776e8w@yahoo.co.jp" } ]
 requires-python = ">=3.10,<4"
 classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.10",
@@ -24,6 +34,9 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
   "Programming Language :: Python :: Implementation :: CPython",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Utilities",
   "Typing :: Typed",
 ]
 dynamic = [ "version" ]
@@ -33,6 +46,8 @@ dependencies = [
   "pyotp>=2.9,<3",
   "requests>=2.32.3,<3",
 ]
+urls.Documentation = "https://egpl.dev/get-pixivpy-token/"
+urls.Issues = "https://github.com/eggplants/get-pixivpy-token/issues"
 urls.Repository = "https://github.com/eggplants/get-pixivpy-token"
 scripts.gppt = "gppt.cli:main"
 

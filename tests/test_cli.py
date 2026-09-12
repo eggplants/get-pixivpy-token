@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any
 
 import pytest
 
-from gppt import api, cli, config, token, __version__
+from gppt import __version__, api, cli, config, token
 from gppt.browser import Authorization, LoginError
 
 if TYPE_CHECKING:

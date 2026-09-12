@@ -81,7 +81,10 @@ line-length = 120
 format.indent-style = "space"
 format.quote-style = "double"
 lint.select = [ "ALL" ]
-lint.ignore = [ "COM812" ]
+lint.ignore = [
+  "COM812",
+  "CPY001", # Missing copyright notice (this project does not use file headers)
+]
 lint.per-file-ignores."gppt/api.py" = [
   "PLR0913", # Too many arguments -- they are optional keyword-only knobs
 ]

@@ -157,10 +157,10 @@ gppt<span class="w"> </span>login
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;plain username or op:// link&gt;&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;plain password or op:// link&gt;&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;totp_secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;base32 secret, otpauth:// URI, or op:// link&gt;&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;auth_method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;e2e&quot;</span><span class="w"> </span><span class="c1">// or &quot;oauth&quot;</span>
+<span class="w">  </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;plain username or op:// link&gt;"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"password"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;plain password or op:// link&gt;"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"totp_secret"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;base32 secret, otpauth:// URI, or op:// link&gt;"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"auth_method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"e2e"</span><span class="w"> </span><span class="c1">// or "oauth"</span>
 <span class="p">}</span>
 </code></pre>
 </div>
@@ -169,13 +169,13 @@ gppt<span class="w"> </span>login
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;access_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;***&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;refresh_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;***&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;expires_in&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3600</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;expires_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-08-08T16:34:57.776005+00:00&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;user_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;***&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;user_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;***&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;user_account&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;***&quot;</span>
+<span class="w">  </span><span class="nt">"access_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"***"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"refresh_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"***"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"expires_in"</span><span class="p">:</span><span class="w"> </span><span class="mi">3600</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"expires_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-08-08T16:34:57.776005+00:00"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"***"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"user_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"***"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"user_account"</span><span class="p">:</span><span class="w"> </span><span class="s2">"***"</span>
 <span class="p">}</span>
 </code></pre>
 </div>
@@ -220,7 +220,7 @@ token, refreshes it, or logs in — by the profile's method — if needed.</p>
 <pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">gppt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pixivpy3</span><span class="w"> </span><span class="kn">import</span> <span class="n">AppPixivAPI</span>
 
-<span class="n">token</span> <span class="o">=</span> <span class="n"><a href="#get_token">gppt.get_token</a></span><span class="p">()</span>  <span class="c1"># profile &quot;default&quot;, configured with `gppt configure`</span>
+<span class="n">token</span> <span class="o">=</span> <span class="n"><a href="#get_token">gppt.get_token</a></span><span class="p">()</span>  <span class="c1"># profile "default", configured with `gppt configure`</span>
 
 <span class="n">aapi</span> <span class="o">=</span> <span class="n">AppPixivAPI</span><span class="p">()</span>
 <span class="n">aapi</span><span class="o">.</span><span class="n">auth</span><span class="p">(</span><span class="n">refresh_token</span><span class="o">=</span><span class="n">token</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">)</span>
@@ -244,7 +244,7 @@ files:</p>
 <p>For a one-off login that reads and writes nothing on disk, use <code><a href="#login">gppt.login()</a></code>:</p>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="n">token</span> <span class="o">=</span> <span class="n"><a href="#login">gppt.login</a></span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+<pre><span></span><code><span class="n">token</span> <span class="o">=</span> <span class="n"><a href="#login">gppt.login</a></span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s2">"..."</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">"..."</span><span class="p">)</span>
 <span class="n">token</span><span class="o">.</span><span class="n">access_token</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">expires_in</span>
 </code></pre>
 </div>
@@ -253,15 +253,15 @@ files:</p>
 invoked only if pixiv asks for a code:</p>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="n">token</span> <span class="o">=</span> <span class="n"><a href="#login">gppt.login</a></span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="s2">&quot;JBSWY3DPEHPK3PXP&quot;</span><span class="p">)</span>
-<span class="n">token</span> <span class="o">=</span> <span class="n"><a href="#login">gppt.login</a></span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">totp_prompt</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;code: &quot;</span><span class="p">))</span>
+<pre><span></span><code><span class="n">token</span> <span class="o">=</span> <span class="n"><a href="#login">gppt.login</a></span><span class="p">(</span><span class="s2">"..."</span><span class="p">,</span> <span class="s2">"..."</span><span class="p">,</span> <span class="s2">"JBSWY3DPEHPK3PXP"</span><span class="p">)</span>
+<span class="n">token</span> <span class="o">=</span> <span class="n"><a href="#login">gppt.login</a></span><span class="p">(</span><span class="s2">"..."</span><span class="p">,</span> <span class="s2">"..."</span><span class="p">,</span> <span class="n">totp_prompt</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">input</span><span class="p">(</span><span class="s2">"code: "</span><span class="p">))</span>
 </code></pre>
 </div>
 
 <p>And <code><a href="#refresh">gppt.refresh()</a></code> exchanges a refresh token you are storing yourself:</p>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="n">token</span> <span class="o">=</span> <span class="n"><a href="#refresh">gppt.refresh</a></span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+<pre><span></span><code><span class="n">token</span> <span class="o">=</span> <span class="n"><a href="#refresh">gppt.refresh</a></span><span class="p">(</span><span class="s2">"..."</span><span class="p">)</span>
 </code></pre>
 </div>
 
@@ -307,7 +307,7 @@ invoked only if pixiv asks for a code:</p>
 
                         <label class="view-source-button" for="mod-gppt-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;.. include:: ../README.md&quot;&quot;&quot;</span>  <span class="c1"># noqa: D415</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">""".. include:: ../README.md"""</span>  <span class="c1"># noqa: D415</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">importlib.metadata</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
@@ -318,18 +318,18 @@ invoked only if pixiv asks for a code:</p>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="k">try</span><span class="p">:</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="n">__version__</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">version</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="k">except</span> <span class="n">importlib</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">PackageNotFoundError</span><span class="p">:</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.0.0&quot;</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="n">__version__</span> <span class="o">=</span> <span class="s2">"0.0.0"</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="s2">&quot;LoginError&quot;</span><span class="p">,</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="s2">&quot;Token&quot;</span><span class="p">,</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="s2">&quot;TokenError&quot;</span><span class="p">,</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="s2">&quot;__version__&quot;</span><span class="p">,</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="s2">&quot;get_token&quot;</span><span class="p">,</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="s2">&quot;login&quot;</span><span class="p">,</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="s2">&quot;oauth_login&quot;</span><span class="p">,</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="s2">&quot;refresh&quot;</span><span class="p">,</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="s2">"LoginError"</span><span class="p">,</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="s2">"Token"</span><span class="p">,</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="s2">"TokenError"</span><span class="p">,</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="s2">"__version__"</span><span class="p">,</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="s2">"get_token"</span><span class="p">,</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="s2">"login"</span><span class="p">,</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="s2">"oauth_login"</span><span class="p">,</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="s2">"refresh"</span><span class="p">,</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="p">]</span>
 </span></pre></div>
 
@@ -347,7 +347,7 @@ invoked only if pixiv asks for a code:</p>
     </div>
     <a class="headerlink" href="#LoginError"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="LoginError-51"><a href="#LoginError-51"><span class="linenos">51</span></a><span class="k">class</span><span class="w"> </span><span class="nc">LoginError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
-</span><span id="LoginError-52"><a href="#LoginError-52"><span class="linenos">52</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a login does not yield an authorization code.&quot;&quot;&quot;</span>
+</span><span id="LoginError-52"><a href="#LoginError-52"><span class="linenos">52</span></a><span class="w">    </span><span class="sd">"""Raised when a login does not yield an authorization code."""</span>
 </span></pre></div>
 
 
@@ -370,23 +370,23 @@ invoked only if pixiv asks for a code:</p>
     <a class="headerlink" href="#Token"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Token-40"><a href="#Token-40"><span class="linenos">40</span></a><span class="nd">@dataclass</span>
 </span><span id="Token-41"><a href="#Token-41"><span class="linenos">41</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Token</span><span class="p">:</span>
-</span><span id="Token-42"><a href="#Token-42"><span class="linenos">42</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A pixiv OAuth token pair with its absolute expiry time.&quot;&quot;&quot;</span>
+</span><span id="Token-42"><a href="#Token-42"><span class="linenos">42</span></a><span class="w">    </span><span class="sd">"""A pixiv OAuth token pair with its absolute expiry time."""</span>
 </span><span id="Token-43"><a href="#Token-43"><span class="linenos">43</span></a>
 </span><span id="Token-44"><a href="#Token-44"><span class="linenos">44</span></a>    <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span>
 </span><span id="Token-45"><a href="#Token-45"><span class="linenos">45</span></a>    <span class="n">refresh_token</span><span class="p">:</span> <span class="nb">str</span>
 </span><span id="Token-46"><a href="#Token-46"><span class="linenos">46</span></a>    <span class="n">expires_in</span><span class="p">:</span> <span class="nb">int</span>
 </span><span id="Token-47"><a href="#Token-47"><span class="linenos">47</span></a>    <span class="n">expires_at</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># ISO 8601, absolute; `expires_in` is only relative to issue time</span>
-</span><span id="Token-48"><a href="#Token-48"><span class="linenos">48</span></a>    <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-</span><span id="Token-49"><a href="#Token-49"><span class="linenos">49</span></a>    <span class="n">user_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-</span><span id="Token-50"><a href="#Token-50"><span class="linenos">50</span></a>    <span class="n">user_account</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span id="Token-48"><a href="#Token-48"><span class="linenos">48</span></a>    <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+</span><span id="Token-49"><a href="#Token-49"><span class="linenos">49</span></a>    <span class="n">user_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+</span><span id="Token-50"><a href="#Token-50"><span class="linenos">50</span></a>    <span class="n">user_account</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
 </span><span id="Token-51"><a href="#Token-51"><span class="linenos">51</span></a>
 </span><span id="Token-52"><a href="#Token-52"><span class="linenos">52</span></a>    <span class="nd">@property</span>
 </span><span id="Token-53"><a href="#Token-53"><span class="linenos">53</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">is_expired</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="Token-54"><a href="#Token-54"><span class="linenos">54</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the access token has lapsed (or is about to).</span>
+</span><span id="Token-54"><a href="#Token-54"><span class="linenos">54</span></a><span class="w">        </span><span class="sd">"""Whether the access token has lapsed (or is about to).</span>
 </span><span id="Token-55"><a href="#Token-55"><span class="linenos">55</span></a>
 </span><span id="Token-56"><a href="#Token-56"><span class="linenos">56</span></a><span class="sd">        Returns:</span>
 </span><span id="Token-57"><a href="#Token-57"><span class="linenos">57</span></a><span class="sd">            bool: True if the token should no longer be used.</span>
-</span><span id="Token-58"><a href="#Token-58"><span class="linenos">58</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Token-58"><a href="#Token-58"><span class="linenos">58</span></a><span class="sd">        """</span>
 </span><span id="Token-59"><a href="#Token-59"><span class="linenos">59</span></a>        <span class="k">try</span><span class="p">:</span>
 </span><span id="Token-60"><a href="#Token-60"><span class="linenos">60</span></a>            <span class="n">expires_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expires_at</span><span class="p">)</span>
 </span><span id="Token-61"><a href="#Token-61"><span class="linenos">61</span></a>        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
@@ -395,7 +395,7 @@ invoked only if pixiv asks for a code:</p>
 </span><span id="Token-64"><a href="#Token-64"><span class="linenos">64</span></a>
 </span><span id="Token-65"><a href="#Token-65"><span class="linenos">65</span></a>    <span class="nd">@classmethod</span>
 </span><span id="Token-66"><a href="#Token-66"><span class="linenos">66</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">from_response</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">LoginInfo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
-</span><span id="Token-67"><a href="#Token-67"><span class="linenos">67</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a token from a pixiv OAuth response.</span>
+</span><span id="Token-67"><a href="#Token-67"><span class="linenos">67</span></a><span class="w">        </span><span class="sd">"""Build a token from a pixiv OAuth response.</span>
 </span><span id="Token-68"><a href="#Token-68"><span class="linenos">68</span></a>
 </span><span id="Token-69"><a href="#Token-69"><span class="linenos">69</span></a><span class="sd">        Args:</span>
 </span><span id="Token-70"><a href="#Token-70"><span class="linenos">70</span></a><span class="sd">            response (LoginInfo): Decoded response body.</span>
@@ -405,22 +405,22 @@ invoked only if pixiv asks for a code:</p>
 </span><span id="Token-74"><a href="#Token-74"><span class="linenos">74</span></a>
 </span><span id="Token-75"><a href="#Token-75"><span class="linenos">75</span></a><span class="sd">        Raises:</span>
 </span><span id="Token-76"><a href="#Token-76"><span class="linenos">76</span></a><span class="sd">            TokenError: If the response carries no access token.</span>
-</span><span id="Token-77"><a href="#Token-77"><span class="linenos">77</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Token-78"><a href="#Token-78"><span class="linenos">78</span></a>        <span class="n">body</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;dict[str, Any]&quot;</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
-</span><span id="Token-79"><a href="#Token-79"><span class="linenos">79</span></a>        <span class="k">if</span> <span class="s2">&quot;access_token&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">body</span><span class="p">:</span>
-</span><span id="Token-80"><a href="#Token-80"><span class="linenos">80</span></a>            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;pixiv did not return a token: </span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">body</span><span class="p">,</span><span class="w"> </span><span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="Token-77"><a href="#Token-77"><span class="linenos">77</span></a><span class="sd">        """</span>
+</span><span id="Token-78"><a href="#Token-78"><span class="linenos">78</span></a>        <span class="n">body</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">"dict[str, Any]"</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+</span><span id="Token-79"><a href="#Token-79"><span class="linenos">79</span></a>        <span class="k">if</span> <span class="s2">"access_token"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">body</span><span class="p">:</span>
+</span><span id="Token-80"><a href="#Token-80"><span class="linenos">80</span></a>            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"pixiv did not return a token: </span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">body</span><span class="p">,</span><span class="w"> </span><span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
 </span><span id="Token-81"><a href="#Token-81"><span class="linenos">81</span></a>            <span class="k">raise</span> <span class="n">TokenError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 </span><span id="Token-82"><a href="#Token-82"><span class="linenos">82</span></a>
-</span><span id="Token-83"><a href="#Token-83"><span class="linenos">83</span></a>        <span class="n">expires_in</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;expires_in&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-</span><span id="Token-84"><a href="#Token-84"><span class="linenos">84</span></a>        <span class="n">user</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+</span><span id="Token-83"><a href="#Token-83"><span class="linenos">83</span></a>        <span class="n">expires_in</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"expires_in"</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+</span><span id="Token-84"><a href="#Token-84"><span class="linenos">84</span></a>        <span class="n">user</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"user"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
 </span><span id="Token-85"><a href="#Token-85"><span class="linenos">85</span></a>        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-</span><span id="Token-86"><a href="#Token-86"><span class="linenos">86</span></a>            <span class="n">access_token</span><span class="o">=</span><span class="n">body</span><span class="p">[</span><span class="s2">&quot;access_token&quot;</span><span class="p">],</span>
-</span><span id="Token-87"><a href="#Token-87"><span class="linenos">87</span></a>            <span class="n">refresh_token</span><span class="o">=</span><span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;refresh_token&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+</span><span id="Token-86"><a href="#Token-86"><span class="linenos">86</span></a>            <span class="n">access_token</span><span class="o">=</span><span class="n">body</span><span class="p">[</span><span class="s2">"access_token"</span><span class="p">],</span>
+</span><span id="Token-87"><a href="#Token-87"><span class="linenos">87</span></a>            <span class="n">refresh_token</span><span class="o">=</span><span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"refresh_token"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
 </span><span id="Token-88"><a href="#Token-88"><span class="linenos">88</span></a>            <span class="n">expires_in</span><span class="o">=</span><span class="n">expires_in</span><span class="p">,</span>
 </span><span id="Token-89"><a href="#Token-89"><span class="linenos">89</span></a>            <span class="n">expires_at</span><span class="o">=</span><span class="p">(</span><span class="n">_now</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">expires_in</span><span class="p">))</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-</span><span id="Token-90"><a href="#Token-90"><span class="linenos">90</span></a>            <span class="n">user_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)),</span>
-</span><span id="Token-91"><a href="#Token-91"><span class="linenos">91</span></a>            <span class="n">user_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)),</span>
-</span><span id="Token-92"><a href="#Token-92"><span class="linenos">92</span></a>            <span class="n">user_account</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;account&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)),</span>
+</span><span id="Token-90"><a href="#Token-90"><span class="linenos">90</span></a>            <span class="n">user_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)),</span>
+</span><span id="Token-91"><a href="#Token-91"><span class="linenos">91</span></a>            <span class="n">user_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)),</span>
+</span><span id="Token-92"><a href="#Token-92"><span class="linenos">92</span></a>            <span class="n">user_account</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"account"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)),</span>
 </span><span id="Token-93"><a href="#Token-93"><span class="linenos">93</span></a>        <span class="p">)</span>
 </span></pre></div>
 
@@ -432,7 +432,7 @@ invoked only if pixiv asks for a code:</p>
                             <div id="Token.__init__" class="classattr">
                                 <div class="attr function">
             
-        <span class="name">Token</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">refresh_token</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">expires_in</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="n">expires_at</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>,</span><span class="param">	<span class="n">user_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>,</span><span class="param">	<span class="n">user_account</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></span>)</span>
+        <span class="name">Token</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">refresh_token</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">expires_in</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="n">expires_at</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">''</span>,</span><span class="param">	<span class="n">user_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">''</span>,</span><span class="param">	<span class="n">user_account</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">''</span></span>)</span>
 
         
     </div>
@@ -532,11 +532,11 @@ invoked only if pixiv asks for a code:</p>
     <a class="headerlink" href="#Token.is_expired"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Token.is_expired-52"><a href="#Token.is_expired-52"><span class="linenos">52</span></a>    <span class="nd">@property</span>
 </span><span id="Token.is_expired-53"><a href="#Token.is_expired-53"><span class="linenos">53</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">is_expired</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="Token.is_expired-54"><a href="#Token.is_expired-54"><span class="linenos">54</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the access token has lapsed (or is about to).</span>
+</span><span id="Token.is_expired-54"><a href="#Token.is_expired-54"><span class="linenos">54</span></a><span class="w">        </span><span class="sd">"""Whether the access token has lapsed (or is about to).</span>
 </span><span id="Token.is_expired-55"><a href="#Token.is_expired-55"><span class="linenos">55</span></a>
 </span><span id="Token.is_expired-56"><a href="#Token.is_expired-56"><span class="linenos">56</span></a><span class="sd">        Returns:</span>
 </span><span id="Token.is_expired-57"><a href="#Token.is_expired-57"><span class="linenos">57</span></a><span class="sd">            bool: True if the token should no longer be used.</span>
-</span><span id="Token.is_expired-58"><a href="#Token.is_expired-58"><span class="linenos">58</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Token.is_expired-58"><a href="#Token.is_expired-58"><span class="linenos">58</span></a><span class="sd">        """</span>
 </span><span id="Token.is_expired-59"><a href="#Token.is_expired-59"><span class="linenos">59</span></a>        <span class="k">try</span><span class="p">:</span>
 </span><span id="Token.is_expired-60"><a href="#Token.is_expired-60"><span class="linenos">60</span></a>            <span class="n">expires_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expires_at</span><span class="p">)</span>
 </span><span id="Token.is_expired-61"><a href="#Token.is_expired-61"><span class="linenos">61</span></a>        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
@@ -570,7 +570,7 @@ invoked only if pixiv asks for a code:</p>
     <a class="headerlink" href="#Token.from_response"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Token.from_response-65"><a href="#Token.from_response-65"><span class="linenos">65</span></a>    <span class="nd">@classmethod</span>
 </span><span id="Token.from_response-66"><a href="#Token.from_response-66"><span class="linenos">66</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">from_response</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">LoginInfo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
-</span><span id="Token.from_response-67"><a href="#Token.from_response-67"><span class="linenos">67</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a token from a pixiv OAuth response.</span>
+</span><span id="Token.from_response-67"><a href="#Token.from_response-67"><span class="linenos">67</span></a><span class="w">        </span><span class="sd">"""Build a token from a pixiv OAuth response.</span>
 </span><span id="Token.from_response-68"><a href="#Token.from_response-68"><span class="linenos">68</span></a>
 </span><span id="Token.from_response-69"><a href="#Token.from_response-69"><span class="linenos">69</span></a><span class="sd">        Args:</span>
 </span><span id="Token.from_response-70"><a href="#Token.from_response-70"><span class="linenos">70</span></a><span class="sd">            response (LoginInfo): Decoded response body.</span>
@@ -580,22 +580,22 @@ invoked only if pixiv asks for a code:</p>
 </span><span id="Token.from_response-74"><a href="#Token.from_response-74"><span class="linenos">74</span></a>
 </span><span id="Token.from_response-75"><a href="#Token.from_response-75"><span class="linenos">75</span></a><span class="sd">        Raises:</span>
 </span><span id="Token.from_response-76"><a href="#Token.from_response-76"><span class="linenos">76</span></a><span class="sd">            TokenError: If the response carries no access token.</span>
-</span><span id="Token.from_response-77"><a href="#Token.from_response-77"><span class="linenos">77</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Token.from_response-78"><a href="#Token.from_response-78"><span class="linenos">78</span></a>        <span class="n">body</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;dict[str, Any]&quot;</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
-</span><span id="Token.from_response-79"><a href="#Token.from_response-79"><span class="linenos">79</span></a>        <span class="k">if</span> <span class="s2">&quot;access_token&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">body</span><span class="p">:</span>
-</span><span id="Token.from_response-80"><a href="#Token.from_response-80"><span class="linenos">80</span></a>            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;pixiv did not return a token: </span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">body</span><span class="p">,</span><span class="w"> </span><span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="Token.from_response-77"><a href="#Token.from_response-77"><span class="linenos">77</span></a><span class="sd">        """</span>
+</span><span id="Token.from_response-78"><a href="#Token.from_response-78"><span class="linenos">78</span></a>        <span class="n">body</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">"dict[str, Any]"</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+</span><span id="Token.from_response-79"><a href="#Token.from_response-79"><span class="linenos">79</span></a>        <span class="k">if</span> <span class="s2">"access_token"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">body</span><span class="p">:</span>
+</span><span id="Token.from_response-80"><a href="#Token.from_response-80"><span class="linenos">80</span></a>            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"pixiv did not return a token: </span><span class="si">{</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">body</span><span class="p">,</span><span class="w"> </span><span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
 </span><span id="Token.from_response-81"><a href="#Token.from_response-81"><span class="linenos">81</span></a>            <span class="k">raise</span> <span class="n">TokenError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 </span><span id="Token.from_response-82"><a href="#Token.from_response-82"><span class="linenos">82</span></a>
-</span><span id="Token.from_response-83"><a href="#Token.from_response-83"><span class="linenos">83</span></a>        <span class="n">expires_in</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;expires_in&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-</span><span id="Token.from_response-84"><a href="#Token.from_response-84"><span class="linenos">84</span></a>        <span class="n">user</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+</span><span id="Token.from_response-83"><a href="#Token.from_response-83"><span class="linenos">83</span></a>        <span class="n">expires_in</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"expires_in"</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+</span><span id="Token.from_response-84"><a href="#Token.from_response-84"><span class="linenos">84</span></a>        <span class="n">user</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"user"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
 </span><span id="Token.from_response-85"><a href="#Token.from_response-85"><span class="linenos">85</span></a>        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-</span><span id="Token.from_response-86"><a href="#Token.from_response-86"><span class="linenos">86</span></a>            <span class="n">access_token</span><span class="o">=</span><span class="n">body</span><span class="p">[</span><span class="s2">&quot;access_token&quot;</span><span class="p">],</span>
-</span><span id="Token.from_response-87"><a href="#Token.from_response-87"><span class="linenos">87</span></a>            <span class="n">refresh_token</span><span class="o">=</span><span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;refresh_token&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+</span><span id="Token.from_response-86"><a href="#Token.from_response-86"><span class="linenos">86</span></a>            <span class="n">access_token</span><span class="o">=</span><span class="n">body</span><span class="p">[</span><span class="s2">"access_token"</span><span class="p">],</span>
+</span><span id="Token.from_response-87"><a href="#Token.from_response-87"><span class="linenos">87</span></a>            <span class="n">refresh_token</span><span class="o">=</span><span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"refresh_token"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
 </span><span id="Token.from_response-88"><a href="#Token.from_response-88"><span class="linenos">88</span></a>            <span class="n">expires_in</span><span class="o">=</span><span class="n">expires_in</span><span class="p">,</span>
 </span><span id="Token.from_response-89"><a href="#Token.from_response-89"><span class="linenos">89</span></a>            <span class="n">expires_at</span><span class="o">=</span><span class="p">(</span><span class="n">_now</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">expires_in</span><span class="p">))</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-</span><span id="Token.from_response-90"><a href="#Token.from_response-90"><span class="linenos">90</span></a>            <span class="n">user_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)),</span>
-</span><span id="Token.from_response-91"><a href="#Token.from_response-91"><span class="linenos">91</span></a>            <span class="n">user_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)),</span>
-</span><span id="Token.from_response-92"><a href="#Token.from_response-92"><span class="linenos">92</span></a>            <span class="n">user_account</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;account&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)),</span>
+</span><span id="Token.from_response-90"><a href="#Token.from_response-90"><span class="linenos">90</span></a>            <span class="n">user_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)),</span>
+</span><span id="Token.from_response-91"><a href="#Token.from_response-91"><span class="linenos">91</span></a>            <span class="n">user_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)),</span>
+</span><span id="Token.from_response-92"><a href="#Token.from_response-92"><span class="linenos">92</span></a>            <span class="n">user_account</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"account"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)),</span>
 </span><span id="Token.from_response-93"><a href="#Token.from_response-93"><span class="linenos">93</span></a>        <span class="p">)</span>
 </span></pre></div>
 
@@ -636,7 +636,7 @@ invoked only if pixiv asks for a code:</p>
     </div>
     <a class="headerlink" href="#TokenError"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="TokenError-36"><a href="#TokenError-36"><span class="linenos">36</span></a><span class="k">class</span><span class="w"> </span><span class="nc">TokenError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
-</span><span id="TokenError-37"><a href="#TokenError-37"><span class="linenos">37</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when the pixiv OAuth endpoint does not return a token.&quot;&quot;&quot;</span>
+</span><span id="TokenError-37"><a href="#TokenError-37"><span class="linenos">37</span></a><span class="w">    </span><span class="sd">"""Raised when the pixiv OAuth endpoint does not return a token."""</span>
 </span></pre></div>
 
 
@@ -648,7 +648,7 @@ invoked only if pixiv asks for a code:</p>
                 <section id="__version__">
                     <div class="attr variable">
             <span class="name">__version__</span>        =
-<span class="default_value">&#39;0.0.0.post1+3798fb8&#39;</span>
+<span class="default_value">&#39;0.0.0-post.1+7eaf455&#39;</span>
 
         
     </div>
@@ -662,7 +662,7 @@ invoked only if pixiv asks for a code:</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">get_token</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">profile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">headless</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">save</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">notify</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">totp_prompt</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n"><a href="#Token">Token</a></span>:</span></span>
+        <span class="name">get_token</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">profile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'default'</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">headless</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">save</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">notify</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">totp_prompt</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n"><a href="#Token">Token</a></span>:</span></span>
 
                 <label class="view-source-button" for="get_token-view-source"><span>View Source</span></label>
 
@@ -678,7 +678,7 @@ invoked only if pixiv asks for a code:</p>
 </span><span id="get_token-135"><a href="#get_token-135"><span class="linenos">135</span></a>    <span class="n">notify</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="get_token-136"><a href="#get_token-136"><span class="linenos">136</span></a>    <span class="n">totp_prompt</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="get_token-137"><a href="#get_token-137"><span class="linenos">137</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
-</span><span id="get_token-138"><a href="#get_token-138"><span class="linenos">138</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a usable token for a stored profile, logging in only if needed.</span>
+</span><span id="get_token-138"><a href="#get_token-138"><span class="linenos">138</span></a><span class="w">    </span><span class="sd">"""Return a usable token for a stored profile, logging in only if needed.</span>
 </span><span id="get_token-139"><a href="#get_token-139"><span class="linenos">139</span></a>
 </span><span id="get_token-140"><a href="#get_token-140"><span class="linenos">140</span></a><span class="sd">    The cached token is returned while it is still valid, then refreshed with</span>
 </span><span id="get_token-141"><a href="#get_token-141"><span class="linenos">141</span></a><span class="sd">    its refresh token, and only then is a login started. This is exactly what</span>
@@ -687,17 +687,17 @@ invoked only if pixiv asks for a code:</p>
 </span><span id="get_token-144"><a href="#get_token-144"><span class="linenos">144</span></a><span class="sd">    Args:</span>
 </span><span id="get_token-145"><a href="#get_token-145"><span class="linenos">145</span></a><span class="sd">        profile (str): Profile name, as created by ``gppt configure``.</span>
 </span><span id="get_token-146"><a href="#get_token-146"><span class="linenos">146</span></a><span class="sd">            ``GPPT_USERNAME`` / ``GPPT_PASSWORD`` override its credentials.</span>
-</span><span id="get_token-147"><a href="#get_token-147"><span class="linenos">147</span></a><span class="sd">        method (str | None): ``&quot;e2e&quot;`` to drive a browser with the profile&#39;s</span>
-</span><span id="get_token-148"><a href="#get_token-148"><span class="linenos">148</span></a><span class="sd">            stored credentials, ``&quot;oauth&quot;`` to log in yourself and paste the</span>
-</span><span id="get_token-149"><a href="#get_token-149"><span class="linenos">149</span></a><span class="sd">            code back. None uses the profile&#39;s configured method, which</span>
+</span><span id="get_token-147"><a href="#get_token-147"><span class="linenos">147</span></a><span class="sd">        method (str | None): ``"e2e"`` to drive a browser with the profile's</span>
+</span><span id="get_token-148"><a href="#get_token-148"><span class="linenos">148</span></a><span class="sd">            stored credentials, ``"oauth"`` to log in yourself and paste the</span>
+</span><span id="get_token-149"><a href="#get_token-149"><span class="linenos">149</span></a><span class="sd">            code back. None uses the profile's configured method, which</span>
 </span><span id="get_token-150"><a href="#get_token-150"><span class="linenos">150</span></a><span class="sd">            ``GPPT_AUTH_METHOD`` overrides.</span>
 </span><span id="get_token-151"><a href="#get_token-151"><span class="linenos">151</span></a><span class="sd">        headless (bool): Run the browser without a visible window. Forced to</span>
 </span><span id="get_token-152"><a href="#get_token-152"><span class="linenos">152</span></a><span class="sd">            False when the profile has no credentials to type in. Unused by</span>
 </span><span id="get_token-153"><a href="#get_token-153"><span class="linenos">153</span></a><span class="sd">            the ``oauth`` method.</span>
 </span><span id="get_token-154"><a href="#get_token-154"><span class="linenos">154</span></a><span class="sd">        force (bool): Ignore the cached token and log in again.</span>
-</span><span id="get_token-155"><a href="#get_token-155"><span class="linenos">155</span></a><span class="sd">        save (bool): Write the issued token back to the profile&#39;s cache.</span>
+</span><span id="get_token-155"><a href="#get_token-155"><span class="linenos">155</span></a><span class="sd">        save (bool): Write the issued token back to the profile's cache.</span>
 </span><span id="get_token-156"><a href="#get_token-156"><span class="linenos">156</span></a><span class="sd">        notify (Callable[[str], None] | None): Called with progress messages</span>
-</span><span id="get_token-157"><a href="#get_token-157"><span class="linenos">157</span></a><span class="sd">            (&quot;Reusing the cached token.&quot;, ...). Silent by default.</span>
+</span><span id="get_token-157"><a href="#get_token-157"><span class="linenos">157</span></a><span class="sd">            ("Reusing the cached token.", ...). Silent by default.</span>
 </span><span id="get_token-158"><a href="#get_token-158"><span class="linenos">158</span></a><span class="sd">        totp_prompt (Callable[[], str] | None): Called for a verification code</span>
 </span><span id="get_token-159"><a href="#get_token-159"><span class="linenos">159</span></a><span class="sd">            when 2FA is requested and the profile has no TOTP secret. Unused</span>
 </span><span id="get_token-160"><a href="#get_token-160"><span class="linenos">160</span></a><span class="sd">            by the ``oauth`` method.</span>
@@ -709,7 +709,7 @@ invoked only if pixiv asks for a code:</p>
 </span><span id="get_token-166"><a href="#get_token-166"><span class="linenos">166</span></a><span class="sd">        ValueError: If ``method`` names no known authentication method.</span>
 </span><span id="get_token-167"><a href="#get_token-167"><span class="linenos">167</span></a><span class="sd">        LoginError: If the login does not yield an authorization code.</span>
 </span><span id="get_token-168"><a href="#get_token-168"><span class="linenos">168</span></a><span class="sd">        TokenError: If pixiv rejects the authorization code.</span>
-</span><span id="get_token-169"><a href="#get_token-169"><span class="linenos">169</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="get_token-169"><a href="#get_token-169"><span class="linenos">169</span></a><span class="sd">    """</span>
 </span><span id="get_token-170"><a href="#get_token-170"><span class="linenos">170</span></a>    <span class="n">say</span> <span class="o">=</span> <span class="n">notify</span> <span class="ow">or</span> <span class="n">_silent</span>
 </span><span id="get_token-171"><a href="#get_token-171"><span class="linenos">171</span></a>
 </span><span id="get_token-172"><a href="#get_token-172"><span class="linenos">172</span></a>    <span class="n">issued</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">force</span> <span class="k">else</span> <span class="n">_from_cache</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">say</span><span class="p">)</span>
@@ -779,21 +779,21 @@ by the <code>oauth</code> method.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">login</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>,</span><span class="param">	<span class="n">password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>,</span><span class="param">	<span class="n">totp_secret</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">headless</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">totp_prompt</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n"><a href="#Token">Token</a></span>:</span></span>
+        <span class="name">login</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">''</span>,</span><span class="param">	<span class="n">password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">''</span>,</span><span class="param">	<span class="n">totp_secret</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">''</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">headless</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">totp_prompt</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n"><a href="#Token">Token</a></span>:</span></span>
 
                 <label class="view-source-button" for="login-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#login"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="login-47"><a href="#login-47"><span class="linenos">47</span></a><span class="k">def</span><span class="w"> </span><span class="nf">login</span><span class="p">(</span>
-</span><span id="login-48"><a href="#login-48"><span class="linenos">48</span></a>    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-</span><span id="login-49"><a href="#login-49"><span class="linenos">49</span></a>    <span class="n">password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-</span><span id="login-50"><a href="#login-50"><span class="linenos">50</span></a>    <span class="n">totp_secret</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span id="login-48"><a href="#login-48"><span class="linenos">48</span></a>    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+</span><span id="login-49"><a href="#login-49"><span class="linenos">49</span></a>    <span class="n">password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+</span><span id="login-50"><a href="#login-50"><span class="linenos">50</span></a>    <span class="n">totp_secret</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
 </span><span id="login-51"><a href="#login-51"><span class="linenos">51</span></a>    <span class="o">*</span><span class="p">,</span>
 </span><span id="login-52"><a href="#login-52"><span class="linenos">52</span></a>    <span class="n">headless</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="login-53"><a href="#login-53"><span class="linenos">53</span></a>    <span class="n">totp_prompt</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="login-54"><a href="#login-54"><span class="linenos">54</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
-</span><span id="login-55"><a href="#login-55"><span class="linenos">55</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Log in through the browser and return the issued token.</span>
+</span><span id="login-55"><a href="#login-55"><span class="linenos">55</span></a><span class="w">    </span><span class="sd">"""Log in through the browser and return the issued token.</span>
 </span><span id="login-56"><a href="#login-56"><span class="linenos">56</span></a>
 </span><span id="login-57"><a href="#login-57"><span class="linenos">57</span></a><span class="sd">    Nothing is read from or written to disk, so this is the direct replacement</span>
 </span><span id="login-58"><a href="#login-58"><span class="linenos">58</span></a><span class="sd">    for the v4 ``GetPixivToken().login()``. Every credential may be given as an</span>
@@ -818,7 +818,7 @@ by the <code>oauth</code> method.</li>
 </span><span id="login-77"><a href="#login-77"><span class="linenos">77</span></a><span class="sd">            is not a usable TOTP secret.</span>
 </span><span id="login-78"><a href="#login-78"><span class="linenos">78</span></a><span class="sd">        LoginError: If the browser login does not yield an authorization code.</span>
 </span><span id="login-79"><a href="#login-79"><span class="linenos">79</span></a><span class="sd">        TokenError: If pixiv rejects the authorization code.</span>
-</span><span id="login-80"><a href="#login-80"><span class="linenos">80</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="login-80"><a href="#login-80"><span class="linenos">80</span></a><span class="sd">    """</span>
 </span><span id="login-81"><a href="#login-81"><span class="linenos">81</span></a>    <span class="n">username</span> <span class="o">=</span> <span class="n">resolve_secret</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
 </span><span id="login-82"><a href="#login-82"><span class="linenos">82</span></a>    <span class="n">password</span> <span class="o">=</span> <span class="n">resolve_secret</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
 </span><span id="login-83"><a href="#login-83"><span class="linenos">83</span></a>    <span class="n">has_credentials</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">username</span> <span class="ow">and</span> <span class="n">password</span><span class="p">)</span>
@@ -826,7 +826,7 @@ by the <code>oauth</code> method.</li>
 </span><span id="login-85"><a href="#login-85"><span class="linenos">85</span></a>    <span class="k">if</span> <span class="n">headless</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="login-86"><a href="#login-86"><span class="linenos">86</span></a>        <span class="n">headless</span> <span class="o">=</span> <span class="n">has_credentials</span>
 </span><span id="login-87"><a href="#login-87"><span class="linenos">87</span></a>    <span class="k">elif</span> <span class="n">headless</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">has_credentials</span><span class="p">:</span>
-</span><span id="login-88"><a href="#login-88"><span class="linenos">88</span></a>        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;headless=True needs both a username and a password; a manual login needs a visible window.&quot;</span>
+</span><span id="login-88"><a href="#login-88"><span class="linenos">88</span></a>        <span class="n">msg</span> <span class="o">=</span> <span class="s2">"headless=True needs both a username and a password; a manual login needs a visible window."</span>
 </span><span id="login-89"><a href="#login-89"><span class="linenos">89</span></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 </span><span id="login-90"><a href="#login-90"><span class="linenos">90</span></a>
 </span><span id="login-91"><a href="#login-91"><span class="linenos">91</span></a>    <span class="c1"># Built before the browser starts, so a malformed secret fails immediately.</span>
@@ -891,7 +891,7 @@ is not a usable TOTP secret.</li>
 </span><span id="oauth_login-100"><a href="#oauth_login-100"><span class="linenos">100</span></a>    <span class="n">prompt</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="oauth_login-101"><a href="#oauth_login-101"><span class="linenos">101</span></a>    <span class="n">notify</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="oauth_login-102"><a href="#oauth_login-102"><span class="linenos">102</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
-</span><span id="oauth_login-103"><a href="#oauth_login-103"><span class="linenos">103</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Log in through the OAuth2 PKCE flow and return the issued token.</span>
+</span><span id="oauth_login-103"><a href="#oauth_login-103"><span class="linenos">103</span></a><span class="w">    </span><span class="sd">"""Log in through the OAuth2 PKCE flow and return the issued token.</span>
 </span><span id="oauth_login-104"><a href="#oauth_login-104"><span class="linenos">104</span></a>
 </span><span id="oauth_login-105"><a href="#oauth_login-105"><span class="linenos">105</span></a><span class="sd">    You open pixiv in your own browser and paste the authorization code back,</span>
 </span><span id="oauth_login-106"><a href="#oauth_login-106"><span class="linenos">106</span></a><span class="sd">    so gppt never sees your credentials and no headless browser is launched.</span>
@@ -912,7 +912,7 @@ is not a usable TOTP secret.</li>
 </span><span id="oauth_login-121"><a href="#oauth_login-121"><span class="linenos">121</span></a><span class="sd">    Raises:</span>
 </span><span id="oauth_login-122"><a href="#oauth_login-122"><span class="linenos">122</span></a><span class="sd">        LoginError: If the pasted text carries no authorization code.</span>
 </span><span id="oauth_login-123"><a href="#oauth_login-123"><span class="linenos">123</span></a><span class="sd">        TokenError: If pixiv rejects the authorization code.</span>
-</span><span id="oauth_login-124"><a href="#oauth_login-124"><span class="linenos">124</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="oauth_login-124"><a href="#oauth_login-124"><span class="linenos">124</span></a><span class="sd">    """</span>
 </span><span id="oauth_login-125"><a href="#oauth_login-125"><span class="linenos">125</span></a>    <span class="k">return</span> <span class="n">token</span><span class="o">.</span><span class="n">exchange</span><span class="p">(</span><span class="n">request_authorization</span><span class="p">(</span><span class="n">open_browser</span><span class="o">=</span><span class="n">open_browser</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="n">prompt</span><span class="p">,</span> <span class="n">notify</span><span class="o">=</span><span class="n">notify</span><span class="p">))</span>
 </span></pre></div>
 
@@ -963,7 +963,7 @@ the login URL. Defaults to writing to stderr.</li>
     </div>
     <a class="headerlink" href="#refresh"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="refresh-32"><a href="#refresh-32"><span class="linenos">32</span></a><span class="k">def</span><span class="w"> </span><span class="nf">refresh</span><span class="p">(</span><span class="n">refresh_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
-</span><span id="refresh-33"><a href="#refresh-33"><span class="linenos">33</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Obtain a fresh token pair from a refresh token.</span>
+</span><span id="refresh-33"><a href="#refresh-33"><span class="linenos">33</span></a><span class="w">    </span><span class="sd">"""Obtain a fresh token pair from a refresh token.</span>
 </span><span id="refresh-34"><a href="#refresh-34"><span class="linenos">34</span></a>
 </span><span id="refresh-35"><a href="#refresh-35"><span class="linenos">35</span></a><span class="sd">    Args:</span>
 </span><span id="refresh-36"><a href="#refresh-36"><span class="linenos">36</span></a><span class="sd">        refresh_token (str): Refresh token from a previous login.</span>
@@ -973,7 +973,7 @@ the login URL. Defaults to writing to stderr.</li>
 </span><span id="refresh-40"><a href="#refresh-40"><span class="linenos">40</span></a>
 </span><span id="refresh-41"><a href="#refresh-41"><span class="linenos">41</span></a><span class="sd">    Raises:</span>
 </span><span id="refresh-42"><a href="#refresh-42"><span class="linenos">42</span></a><span class="sd">        TokenError: If pixiv rejects the refresh token.</span>
-</span><span id="refresh-43"><a href="#refresh-43"><span class="linenos">43</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="refresh-43"><a href="#refresh-43"><span class="linenos">43</span></a><span class="sd">    """</span>
 </span><span id="refresh-44"><a href="#refresh-44"><span class="linenos">44</span></a>    <span class="k">return</span> <span class="n">token</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">refresh_token</span><span class="p">)</span>
 </span></pre></div>
 

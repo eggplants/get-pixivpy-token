@@ -1,5 +1,5 @@
 version = 1
-revision = 4
+revision = 5
 requires-python = ">=3.10, <4"
 
 [options]
@@ -379,6 +379,7 @@ wheels = [
 [[package]]
 name = "gppt"
 source = { editable = "." }
+default-groups = ["dev", "docs"]
 dependencies = [
     { name = "install-playwright" },
     { name = "playwright" },
@@ -854,7 +855,7 @@ wheels = [
 
 [[package]]
 name = "pymarkdownlnt"
-version = "0.9.40"
+version = "0.9.41"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "application-file-scanner" },
@@ -863,9 +864,9 @@ dependencies = [
     { name = "py-walk" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/60/ea/a784da505745c5eb19b7b6be62a0cee4c25c42ba72e010413a7ebaa40ca7/pymarkdownlnt-0.9.40.tar.gz", hash = "sha256:9e6b1137b9f4b496da10f838bc30f66e4c182a0bf53d93d3afce65a541ded091", size = 467022, upload-time = "2026-09-13T20:29:33.319Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/fc/ba/196874ceaa6c603e39578e92fa1dc8356dec3205d2437c7b1f7bcf606825/pymarkdownlnt-0.9.41.tar.gz", hash = "sha256:d6a477498feacf004ba1eea1847e70cbb083c7175ee62bde7a8f11bf2ce943cb", size = 473432, upload-time = "2026-10-13T01:52:52.595Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4e/1e/e2d60317291cedff329cfe08dff7d5a2aefe51ef5f336997e1f2e8a08a94/pymarkdownlnt-0.9.40-py3-none-any.whl", hash = "sha256:de92072911fcb1e5476a7d453078d51457329f5e5cfd78c37d29efc363500262", size = 549389, upload-time = "2026-09-13T20:29:31.653Z" },
+    { url = "https://files.pythonhosted.org/packages/83/03/807220c611e4ff59045c70815d9ca0c8c3a7b4352e8cad0fb7efc1463073/pymarkdownlnt-0.9.41-py3-none-any.whl", hash = "sha256:677985658f0d452c9d0a639d2aca11060a99874c127b3d7513d7f33dc5462973", size = 557287, upload-time = "2026-10-13T01:52:51.397Z" },
 ]
 
 [[package]]

@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: jdx/mise-action@7a4e45a543138629540c9a1616d08632b893e492 # v5.0.1
       - run: mise run ci
-      - uses: MishaKav/pytest-coverage-comment@432ac90e8d345c93e1d90ee0838b35913abc9c9b # v1.12.2
+      - uses: MishaKav/pytest-coverage-comment@93af7d8b7260ffe62dd0eb35bebd01c544f204e9 # v1.12.5
         if: github.event_name == 'pull_request'
         with:
           pytest-coverage-path: ./pytest-coverage.txt
